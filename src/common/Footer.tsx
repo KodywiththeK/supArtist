@@ -86,12 +86,19 @@ export default function Footer() {
           <AiFillHome className='text-2xl mt-3'/>
           <span>홈</span>
         </button>
-        <button onClick={() => navigate('/recruitment')}
+        <button onClick={() => {
+          if(userInfo === null) {
+            confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+          } else navigate('/recruitment')}}
           className='flex flex-col w-full justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
           <BsCardChecklist className='text-2xl mt-3'/>
           <span>모집공고</span>  
         </button>
-        <button onClick={() => navigate(`/${userId}`)}
+        <button onClick={() => {
+          if(userInfo === null) {
+            confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+          } else navigate(`/${userId}`)
+          }}
           className='flex flex-col w-full justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
           <BsFillPersonFill className='text-2xl mt-3'/>
           <span>프로필</span>

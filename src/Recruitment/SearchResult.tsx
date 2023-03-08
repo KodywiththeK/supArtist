@@ -9,8 +9,8 @@ import { user, UserDataType } from "../recoil/user"
 import { AuthContext } from "../store/AuthContext"
 import { doc, updateDoc } from "firebase/firestore"
 import { db } from "../firebase/firebase"
-import { sorting } from "../recoil/sorting"
-import Pagination from "./Pagination"
+import { sorting, sortingDefaultValue } from "../recoil/sorting"
+import { RiArrowGoBackFill } from "react-icons/ri"
 
 
 export interface sortDataType {
@@ -21,7 +21,7 @@ export interface sortDataType {
   search: string
 }
 
-export default function Recruitment() {
+export default function SearchResult() {
   const navigate = useNavigate()
 
   //auth
@@ -33,9 +33,6 @@ export default function Recruitment() {
   const curUser = (userData?.find(i => i.id === userInfo?.uid)) as UserDataType
   console.log(recruitmentData)
 
-  // 필터 상태
-  const [filter, setFilter] = useState(false)
-
   // 데이터 정렬 정보
   const [sortData, setSortData] = useRecoilState(sorting)
   console.log(sortData)
@@ -43,33 +40,30 @@ export default function Recruitment() {
   // 데이터 sorting function
   const getResultData = (recruitment:ProjectType[]) => {
     let resultData = [...recruitment]
-    if(sortData.except) {resultData = resultData.filter(i => i.state===true)}
-      else {resultData = [...recruitment]}
-    if(!sortData.sort) resultData = resultData.sort((a,b) => Number(a.schedule.split('-').join('')) - Number(b.schedule.split('-').join('')))
-      else resultData= resultData.sort((a,b) => Number(b.id.slice(0,12)) - Number(a.id.slice(0,12)))
-    if(sortData.genre.length > 0) resultData = resultData.filter(i => sortData.genre.includes(i.genre))
-      else resultData
-    if(sortData.team.length > 0) resultData = resultData.filter(i => sortData.team.includes(i.team))
-      else resultData
+    if(sortData.search) {
+      resultData = resultData.filter(i => i.title.split(' ').join('').includes(sortData.search.split(' ').join('')))
+    }
     return resultData
   }
 
   return (
     <div className="relative bg-zinc-200 min-h-screen">
-      <Filter filter={filter} setFilter={setFilter}/>
-      <div onClick={() => setFilter(true)}
-        className="absolute flex items-center justify-center right-[5%] top-10 text-2xl font-bold cursor-pointer">
-        <span className="mr-2">Filter</span>
-        <HiAdjustmentsHorizontal />
+      <div onClick={() => {
+        navigate('/recruitment')
+        setSortData(sortingDefaultValue)
+      }}
+        className="absolute flex items-center justify-center right-[5%] top-10 text-xl font-bold cursor-pointer">
+        <span className="mr-2">돌아가기</span>
+        <RiArrowGoBackFill />
       </div>
       <button onClick={() => navigate('/newProject')}
         className="btn absolute right-[5%] top-36 w-36 text-lg border border-black">내 프로젝트 생성</button>
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="w-full text-center text-[40px] font-bold mb-24">Recruitments</h2>
+        <h2 className="w-full text-center text-[40px] font-bold mb-24">{`${sortData.search}의 검색 결과`}</h2>
         <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           
           {getResultData(recruitmentData).map((data, index) => (
-            <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl">
+            <Link to={`/recruitment/${data.id}`} key={index} className="group drop-shadow-xl">
               <div className="relative aspect-w-1 aspect-h-1 w-ful overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
                 <img
                   src={data.pic}
@@ -111,9 +105,9 @@ export default function Recruitment() {
               </div>
             </Link>
           ))}
+
         </div>
       </div>
-      <Pagination />
     </div>
   )
 }

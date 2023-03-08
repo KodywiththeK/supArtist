@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import homeVideo from '../images/filmVideo.mp4'
 import cover from '../images/videoCover.png'
-import { BsCaretDownFill } from 'react-icons/bs'
-import logo from '../images/MainLogo.png'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../store/AuthContext'
 
 
 export default function HomeVisual() {
 
-  // const [menu, setMenu] = useState(false)
+  const navigate = useNavigate()
+  const userInfo = useContext(AuthContext)
 
   return (
     <div className={`w-full h-[910px] top-0 transition-all overflow-hidden flex items-end bg-white relative`}>
@@ -31,7 +32,12 @@ export default function HomeVisual() {
           당신이 선택한 작품의 제작과정을 함께하며, <br />
           그 현장의 열정을 직접 경험해보세요!
         </div>
-        <button className='btn btn--white border-white text-2xl w-[250px] mt-5'>스태프 지원하러 가기</button>
+        <button onClick={() => {
+          if(userInfo === null) {
+            confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+          } else navigate('/recruitment')
+        }}
+          className='btn btn--white border-white text-2xl w-[250px] mt-5' tabIndex={0}>스태프 지원하러 가기</button>
       </div>
     </div>
   )

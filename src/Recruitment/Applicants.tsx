@@ -62,8 +62,7 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
     const recruitmentResult = await getRecruitmentData([]);
     setRecruitmentData(recruitmentResult)
   } 
-
-  const doneHandler = async(e:React.MouseEvent) => {
+  const doneHandler = async(e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if(confirm('모집을 마감하시겠습니까?')) {
       updateDocData('recruitment', thisData?.id, {state: false, applicant: [...thisData.confirmed]})
@@ -181,9 +180,9 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
                       <div className="mt-6">
                         <button onClick={(e) => doneHandler(e)}
                           className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 disabled:bg-zinc-300"
-                          disabled={thisData?.confirmed.length !== Number(thisData?.teamNum)}
+                          disabled={(thisData?.confirmed.length !== Number(thisData?.teamNum)) || !thisData.state}
                         >
-                          모집 마감하기
+                          {thisData.state ? '모집 마감하기' : '모집이 마감되었습니다.'}
                         </button>
                       </div>
                     </div>

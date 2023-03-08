@@ -3,18 +3,22 @@ import { doc, updateDoc } from "firebase/firestore"
 import React, { useContext, useState } from "react"
 import { AiFillHeart, AiOutlineCheck, AiOutlineHeart } from "react-icons/ai"
 import { BsFileCheck } from "react-icons/bs"
+import { RiArrowGoBackFill } from "react-icons/ri"
 import { useNavigate, useParams } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { db, updateDocData } from "../firebase/firebase"
 import { getRecruitmentData, ProjectType, recruitment } from "../recoil/recruitment"
+import { sorting, sortingDefaultValue } from "../recoil/sorting"
 import { getUserData, user, UserDataType } from "../recoil/user"
 import { AuthContext } from "../store/AuthContext"
 import Applicants from './Applicants'
+import { sortDataType } from "./Recruitment"
 
 
 export default function RecruitmentDetail() {
   //리코일
   const [recruitmentData, setRecruitmentData] = useRecoilState<ProjectType[]>(recruitment)
+  const [sortData, setSortData] = useRecoilState<sortDataType>(sorting)
   const [userData, setUserData] = useRecoilState<UserDataType[]>(user)
 
   //현재 로그인된 사용자 정보
@@ -70,7 +74,15 @@ export default function RecruitmentDetail() {
   const [showApplicant, setShowApplicant] = useState(false)
 
   return (
-    <div className="bg-zinc-100">
+    <div className="bg-zinc-100 relative">
+      <div onClick={() => {
+        navigate('/recruitment')
+        setSortData(sortingDefaultValue)
+      }}
+        className="absolute flex items-center justify-center right-[5%] top-10 text-lg font-bold cursor-pointer">
+        <span className="mr-2">목륵으로 돌아가기</span>
+        <RiArrowGoBackFill />
+      </div>
       <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-10 gap-x-8 py-24 px-4 sm:px-6 sm:py-32 lg:max-w-7xl lg:grid-cols-2 lg:px-8">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{thisData?.title}</h2>

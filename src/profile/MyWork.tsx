@@ -11,7 +11,7 @@ export default function MyWork() {
 
   return (<>
     <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>내 프로젝트</label>
-    <div className='flex flex-wrap max-w-[700px]'>
+    <div className='flex flex-wrap justify-around max-w-[700px]'>
       {project.map((data, index) => (
         <Link to={`/recruitment/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">

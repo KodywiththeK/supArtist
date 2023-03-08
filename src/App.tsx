@@ -20,6 +20,7 @@ import NewProject from "./Recruitment/NewProject";
 import { getRecruitmentData, recruitment } from "./recoil/recruitment";
 import OtherProfile from "./profile/OtherProfile";
 import ProjectEdit from "./Recruitment/ProjectEdit";
+import SearchResult from "./Recruitment/SearchResult";
 
 
 export default function App() {
@@ -51,7 +52,9 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path='/' element={<Home />} />
       <Route path='/recruitment' element={<Recruitment />} />
-      <Route path='/recruitment/:id' element={<RecruitmentDetail />} />
+      <Route path='/recruitmentSearch/:value' element={<SearchResult />} />
+
+      <Route path='/recruitmentDetail/:id' element={<RecruitmentDetail />} />
       <Route path='/newProject' element={<NewProject />} />
       <Route path='/projectEdit/:id' element={<ProjectEdit />} />
 

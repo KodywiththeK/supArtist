@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import {BsPersonFill, BsFilm, BsFillCameraReelsFill } from 'react-icons/bs'
 import { AiFillHome, AiFillCaretDown } from 'react-icons/ai'
 import { BiSearch } from 'react-icons/bi'
@@ -8,6 +8,9 @@ import { signOut } from 'firebase/auth'
 import { auth } from '../firebase/firebase'
 import { Default, Mobile } from '../mediaQuery'
 import { useMediaQuery } from 'react-responsive'
+import { useRecoilState } from 'recoil'
+import { sorting, sortingDefaultValue } from '../recoil/sorting'
+import { recruitment } from '../recoil/recruitment'
 
 
 // #41523c
@@ -17,27 +20,44 @@ import { useMediaQuery } from 'react-responsive'
 
 export default function Header() {
 
-  const [profile, setProfile] = useState(false)
-  const [input, setInput] = useState(false)
-  // const [mobileInput, setMobileInput] = useState(false)
-  const [inputValue, setInputValue] = useState('')
-  const userInfo = useContext(AuthContext)
   const navigate = useNavigate()
+
+  // Auth 정보
+  const userInfo = useContext(AuthContext)
+  const userId = userInfo?.uid
+
+  //recoil
+  const [sortData, setSortData] = useRecoilState(sorting)
+  const [recruitmentData, setRecruitmentData] = useRecoilState(recruitment)
+  
+  //profile 창
+  const [profile, setProfile] = useState(false)
+
+  //검색창
+  const [input, setInput] = useState(false)
+  const [inputValue, setInputValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
   const inputHandler = () => {
-    if(inputValue) {
-      console.log(inputValue)
-      setInputValue('')
+    if(inputValue && !input) setInput(!input)
+    if(inputValue && input) {
+      setSortData({...sortData, search: inputValue})
+      navigate(`/recruitmentSearch/${inputValue}`)
+      setInput(!input)
     } else setInput(!input)
   }
-  const userId = userInfo?.uid
-  // const isGoogle = userInfo?.providerData[0].providerId === 'google.com' ? false : true;
 
+  // 검색 자동완성 data
+  const sortedData = recruitmentData.filter(i => i.title.split(' ').join('').includes(inputValue))
+
+  //로그아웃
   const handleLogout = () => {
     if(confirm('로그아웃 하시겠습니까?') ) {
       signOut(auth)
       .then(() => navigate('/login'))
     }
   }
+
+  //media Query
   const isDefault: boolean = useMediaQuery({
     query: "(min-width:768px)",
   });
@@ -52,7 +72,14 @@ export default function Header() {
               <AiFillHome className='mr-2'/>
               <span>Home</span>
             </button>
-            <button onClick={() => navigate('/recruitment')}
+            <button onClick={() => {
+              if(userInfo === null) {
+                confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+              } else {
+              setSortData(sortingDefaultValue)
+              setInputValue('')
+              navigate('/recruitment')
+              }}}
               className='box-content rounded py-5 w-[220px] px-3 border-black flex text-2xl justify-center items-center btn btn--white'>
               <BsFilm className='mr-2' />
               <span>Recruitment</span>
@@ -69,20 +96,57 @@ export default function Header() {
 
         <div className='flex items-start justify-end mt-6 h-[80%] w-[90%] text-2xl mx-2'>
           <div className='flex items-start w-full'>
-            <div className='flex w-full justify-end'>
+            <div className='flex w-full justify-end relative'>
               <Default><>
-              <input className={`${ input ? 'w-[80%] min-w-[60px]  pr-10 bg-white' : 'w-[42px] bg-white text-black'} text-base border border-black px-5 rounded-xl transition-all focus:outline-none`} 
-                type='text' placeholder={`${input ? '검색어를 입력하세요' : ''}`} 
+              <input className={`${ input ? 'w-[100%] min-w-[60px]  pr-10 bg-white' : 'w-[42px] bg-white text-black'} text-base border border-black px-5 rounded-xl transition-all focus:outline-none`} 
+                type='text' placeholder={`${input ? '모집공고의 제목을 검색해보세요' : ''}`} 
+                ref = {inputRef} tabIndex={1}
                 onChange={(e:React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} value={inputValue}
                 onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => {e.key === 'Enter' && inputHandler()}}
                 />
-              <BiSearch onClick={inputHandler}
+              <BiSearch onClick={() => {
+                if(userInfo === null) {
+                  confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+                } else {
+                  inputRef.current?.focus()
+                  inputHandler()
+                }
+              }}
                 className='mr-3 ml-[-40px] box-content rounded-3xl p-2 cursor-pointer'/>
               </></Default>
               <Mobile>
-              <BiSearch onClick={inputHandler}
+              <BiSearch onClick={() => {
+                if(userInfo === null) {
+                  confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+                } else inputHandler
+              }}
                 className='mr-3 bg-white box-content rounded-xl p-2 cursor-pointer'/>
-              </Mobile>              
+              </Mobile>  
+              <Default><>
+                {(inputValue && input) && 
+                <div className='absolute w-[98%] max-h-[250px] bg-white top-[50px] right-[10px] py-2 rounded'>
+                  <div className='w-full max-h-[230px] pr-5 pl-4 overflow-y-scroll'>
+                    {sortedData.length > 0 ? 
+                      <>
+                      {sortedData.map(data => (
+                      <button onClick={() => {
+                        setInput(false) 
+                        navigate(`/recruitmentDetail/${data.id}`)
+                      }}
+                        className='flex items-center tab w-full' tabIndex={1}>
+                        <img src={data.pic} alt='recruitment image' className='object-cover h-14 w-14 rounded-lg py-1 mr-3 box-content cursor-pointer'/>
+                        <div className='text-lg py-1 truncate cursor-pointer hover:underline'>{data.title}</div>
+                      </button>
+                      ))}
+                      </> 
+                      : 
+                      <div className='flex items-center'>
+                        <div className='text-lg py-1 truncate w-full'>검색 결과가 없습니다.</div>
+                      </div> 
+                    }
+                  </div>
+                </div>}</>
+              </Default>            
             </div>
           </div>
           <Default>
@@ -104,8 +168,8 @@ export default function Header() {
     </div> 
     <div className={`w-full bg-white ${profile && isDefault ? 'h-[150px]' : 'h-[80px]'} ` }></div>
     <Mobile><>
-      <div className={`fixed z-20 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-[-80px] visible' : 'mt-[-160px] invisible'} transition-all`}>
-        <input placeholder='검색어를 입력하세요' 
+      <div className={`fixed z-30 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-[-80px] visible' : 'mt-[-160px] invisible'} transition-all`}>
+        <input placeholder='모집 공고의 제목을 검색해보세요' 
           onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => {e.key === 'Enter' && inputHandler()}}
           onChange={(e:React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} 
           value={inputValue} 

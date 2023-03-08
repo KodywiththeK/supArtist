@@ -27,7 +27,7 @@ export default function MyProfile() {
         ))}
       </ul>
       <label className='text-black ml-6 mt-12 mb-10 text-xl font-semibold'>내가 찜한 프로젝트</label>
-      <div className='flex flex-wrap justify-around '>
+      <div className='flex flex-wrap justify-around'>
       {project.map((data, index) => (
         <Link to={`/recruitment/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
