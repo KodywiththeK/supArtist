@@ -175,14 +175,14 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
                     <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
                       <div className="flex justify-between text-lg font-medium text-gray-900">
                         <p>현재 모집률</p>
-                        <p>{thisData?.confirmed ? String(Math.floor(thisData?.confirmed.length / Number(thisData.teamNum) * 100)) + ' %' : '0 %'}</p>
+                        <p>{thisData?.confirmed ? String(Math.floor(thisData?.confirmed.length / Number(thisData?.teamNum) * 100)) + ' %' : '0 %'}</p>
                       </div>
                       <div className="mt-6">
                         <button onClick={(e) => doneHandler(e)}
                           className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 disabled:bg-zinc-300"
-                          disabled={(thisData?.confirmed.length !== Number(thisData?.teamNum)) || !thisData.state}
+                          disabled={(thisData?.confirmed.length !== Number(thisData?.teamNum)) || !thisData?.state}
                         >
-                          {thisData.state ? '모집 마감하기' : '모집이 마감되었습니다.'}
+                          {thisData?.state ? '모집 마감하기' : '모집이 마감되었습니다.'}
                         </button>
                       </div>
                     </div>

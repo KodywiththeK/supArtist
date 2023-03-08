@@ -298,7 +298,7 @@ export default function UserProfileInfoEdit() {
             setExperience('')
             setInfo({...info, experience:[...info.experience, experience]})
           }}
-            className='btn btn--green h-10 w-16 ml-2 p-1'>추가</button>
+            className='btn btn--green border h-10 w-16 ml-2 p-1'>추가</button>
         </div>
       <input 
         disabled={percent !== null && percent! < 100}

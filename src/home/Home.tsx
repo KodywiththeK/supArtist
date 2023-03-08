@@ -13,7 +13,6 @@ export default function Home() {
   
   const userInfo = useContext(AuthContext)
   const [userData, setUserData] = useRecoilState(user)
-  console.log(userData)
   useEffect(() => {
     const reFetch = async() => {
       if(userData.find((user) => user.id === userInfo?.uid) === undefined) {

@@ -38,15 +38,15 @@ const LoginPage = () => {
         }
         <div className='w-full flex justify-center items-center'>
           {form 
-            ? <div className='text-sm font-normal text-black'>No account yet? 
+            ? <div className='text-sm font-normal text-black'>아직 계정이 없다면? 
                 <span onClick={() => onClickHandler(!form)} 
                   className='font-semibold underline underline-offset-2 cursor-pointer ml-2'>
-                    Sign up here
+                    회원가입하기
                 </span>
               </div>
             : <span onClick={() => onClickHandler(!form)} 
             className='font-semibold underline underline-offset-2 cursor-pointer'>
-                Back to Login page
+                로그인 페이지로 돌아가기
               </span>
             }
         </div>
@@ -68,15 +68,15 @@ const LoginPage = () => {
         </div>
         <div className='w-full flex justify-center items-center'>
           {form 
-            ? <div className='text-sm font-normal text-black'>Don't have an account? 
+            ? <div className='text-sm font-normal text-black'>계정이 없다면? 
                 <span onClick={() => onClickHandler(!form)} 
                   className='font-semibold underline underline-offset-2 cursor-pointer ml-2'>
-                    Sign up here
+                    회원가입하기
                 </span>
               </div>
             : <span onClick={() => onClickHandler(!form)} 
             className='font-semibold underline underline-offset-2 cursor-pointer'>
-                Back to Login page
+                로그인 페이지로 돌아가기
               </span>
             }
         </div>

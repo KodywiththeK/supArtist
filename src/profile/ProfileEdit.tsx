@@ -39,7 +39,7 @@ export default function ProfileEdit() {
         <div className='flex flex-col items-end mr-10'>
           <button onClick={() => navigate(`/${userId}/profileEdit`)}
             className={`flex items-center justify-between w-[62%] border border-white rounded-xl text-lg btn btn--white ml-[15%] py-4 mb-5 ${location.includes('profileEdit') ? 'selected': ''}`}>
-            <div className='flex items-center'><AiFillSetting className='mx-2' />프로필 수정</div>
+            <div className='flex items-center'><AiFillSetting className='mx-2' />프로필 설정</div>
             <div><AiOutlineRight /></div>
           </button>
           <button onClick={() => navigate(`/${userId}`)}

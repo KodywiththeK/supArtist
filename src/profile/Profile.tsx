@@ -52,7 +52,7 @@ export default function Profile() {
         <div className='flex flex-col items-end mr-10'>
           <button onClick={() => navigate(`/${userId}/profileEdit`)}
             className={`flex items-center justify-between w-[62%] border border-white rounded-xl text-lg btn btn--white py-4 mb-5 `}>
-            <div className='flex items-center'><AiFillSetting className='mx-2' />프로필 수정</div>
+            <div className='flex items-center'><AiFillSetting className='mx-2' />프로필 설정</div>
             <div><AiOutlineRight /></div>
           </button>
           <button onClick={() => navigate(`/${userId}`)}
@@ -103,7 +103,7 @@ export default function Profile() {
               </tr>
               <tr className='w-full flex border-b border-[#9ec08c] p-4'>
                 <th className='text-left w-[55%] px-5'><RiCake2Line className='inline text-xl mr-2'/>나이</th>
-                <td><>만 { age(data?.bday as string) }세</></td>
+                <td><>{data?.bday ? `만 ${age(data?.bday as string)} 세` : ''}</></td>
               </tr>
               <tr className='w-full flex border-b border-[#9ec08c] p-4'>
                 <th className='text-left w-[55%] px-5'><BsFilm className='inline text-xl mr-2'/>관심분야</th>

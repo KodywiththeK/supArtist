@@ -76,29 +76,29 @@ const LoginForm = (props:LoginFormPropsType) => {
         <form className='w-full flex flex-col'
           onSubmit={props.isForgotPwd ? handleSubmit(onSubmit) : handleSubmit(resetPasswordRequest) }
           >
-          <label className='text-black mt-5 mb-2'>Email</label>
+          <label className='text-black mt-5 mb-2'>이메일</label>
           <input className='w-full text-black py-2 px-4 bg-transparent border rounded-md border-black outline-none focus:outline-none'
             type='email' placeholder='abc@email.com'{...register("email", { required:true, pattern: /^\S+@\S+$/i })}/>
-          {errors.email && errors.email.type === 'required' && <p className='text-red-500 text-sm'>⚠ This email field is required</p>}
-          {errors.email && errors.email.type === 'pattern' && <p className='text-red-500 text-sm'>⚠ Write the right pattern</p>}
+          {errors.email && errors.email.type === 'required' && <p className='text-red-500 text-sm'>⚠ 이메일을 입력해주세요</p>}
+          {errors.email && errors.email.type === 'pattern' && <p className='text-red-500 text-sm'>⚠ 올바른 형식의 이메일을 입력해주세요</p>}
           {props.isForgotPwd && <>
           
-          <label className='text-black mt-3 mb-2'>Password</label>
+          <label className='text-black mt-3 mb-2'>비밀번호</label>
           <input className='w-full text-black py-2 px-4 bg-transparent border rounded-md border-black outline-none focus:outline-none'
-            type='password' placeholder='more than 6 characters' {...register("password", { required: true, minLength: 8 })} />
-          {errors.password && errors.password.type === 'required' && <p className='text-red-500 text-sm'>⚠ This field is required</p>}
-          {errors.password && errors.password.type === 'minLength' && <p className='text-red-500 text-sm'>⚠ Password must have at least 6 characters</p>}
+            type='password' placeholder='********' {...register("password", { required: true, minLength: 8 })} />
+          {errors.password && errors.password.type === 'required' && <p className='text-red-500 text-sm'>⚠ 비밀번호를 입력해주세요</p>}
+          {errors.password && errors.password.type === 'minLength' && <p className='text-red-500 text-sm'>⚠ 비밀번호는 최소 6글자입니다</p>}
           </>}
           <p className='text-right text-sm text-gray-500 hover:underline cursor-pointer' 
             onClick={() => {props.setForgotPwd(!props.isForgotPwd)}}>
-              {props.isForgotPwd ? 'Forgot password?' : 'Back to Login page'}
+              {props.isForgotPwd ? '비밀번호를 잊어버렸나요?' : '로그인페이지로 돌아가기'}
             </p>
-          <input className='w-full text-sm text-white bg-black rounded-md mt-6 mb-2 py-3 cursor-pointer'
-            type="submit" value={props.isForgotPwd ? 'Log In' : 'Send Email'}/>
+          <input className='w-full text-base text-white bg-black rounded-md mt-6 mb-2 py-3 cursor-pointer'
+            type="submit" value={props.isForgotPwd ? '로그인' : '인증메일 보내기'}/>
         </form>
-        {props.isForgotPwd && <button className='w-full flex justify-center items-center text-sm text-black bg-white border border-black rounded-md mb-2 py-3 cursor-pointer'
+        {props.isForgotPwd && <button className='w-full flex justify-center items-center text-base text-black bg-white border border-black rounded-md mb-2 py-3 cursor-pointer'
           onClick={() => SignInWithSocialMedia(provider)} 
-          ><FcGoogle className='text-xl mr-1'/>Log in with Google</button>}
+          ><FcGoogle className='text-xl mr-1'/>구글 계정으로 로그인</button>}
         
       </div>
     </>
