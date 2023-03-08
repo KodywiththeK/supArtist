@@ -51,7 +51,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path='/' element={<Home />} />
-      <Route path='/recruitment' element={<Recruitment />} />
+      <Route path='/recruitment/' element={<Recruitment />} />
       <Route path='/recruitmentSearch/:value' element={<SearchResult />} />
 
       <Route path='/recruitmentDetail/:id' element={<RecruitmentDetail />} />

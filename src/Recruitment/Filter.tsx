@@ -89,7 +89,7 @@ export default function Filter(props: FilterPropsType) {
                       </button>
                     </div>
                   </Transition.Child>
-                  <div className="flex h-full flex-col overflow-y-scroll bg-gray-300 py-24 mr-[-16px] shadow-xl">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-gray-200 py-24 mr-[-16px] shadow-xl">
                     <div className="px-4 sm:px-6">
                       <Dialog.Title className="text-2xl text-center mt-2 font-semibold leading-6 text-gray-900">
                         Filter

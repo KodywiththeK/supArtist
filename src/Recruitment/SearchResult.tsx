@@ -11,6 +11,7 @@ import { doc, updateDoc } from "firebase/firestore"
 import { db } from "../firebase/firebase"
 import { sorting, sortingDefaultValue } from "../recoil/sorting"
 import { RiArrowGoBackFill } from "react-icons/ri"
+import Pagination from "./Pagination"
 
 
 export interface sortDataType {
@@ -46,6 +47,12 @@ export default function SearchResult() {
     return resultData
   }
 
+  // 페이지네이션
+  const [postsPerPage, setPostsPerPage] = useState(8)
+  const [curPage, setCurPage] = useState(1)
+  const lastPostIdx = curPage * postsPerPage
+  const firstPostIdx = lastPostIdx - postsPerPage
+
   return (
     <div className="relative bg-zinc-200 min-h-screen">
       <div onClick={() => {
@@ -53,13 +60,21 @@ export default function SearchResult() {
         setSortData(sortingDefaultValue)
       }}
         className="absolute flex items-center justify-center right-[5%] top-10 text-xl font-bold cursor-pointer">
-        <span className="mr-2">돌아가기</span>
+        <span className="mr-2">전체 목록으로 돌아가기</span>
         <RiArrowGoBackFill />
       </div>
-      <button onClick={() => navigate('/newProject')}
-        className="btn absolute right-[5%] top-36 w-36 text-lg border border-black">내 프로젝트 생성</button>
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="w-full text-center text-[40px] font-bold mb-24">{`${sortData.search}의 검색 결과`}</h2>
+        <h2 className="w-full text-center text-[40px] font-bold mt-10 mb-14">{`"${sortData.search}"의 검색 결과`}</h2>
+        <div className="flex w-full justify-between mb-10">
+          <div className="flex items-center justify-between w-36 text-lg font-semibold">
+            <input type='number' value={postsPerPage} min={1}
+              onChange={(e) => setPostsPerPage(Number(e.target.value))} 
+              className=" border border-black rounded w-16 border-none focus:outline-none"/>
+            <span>개씩 보기</span>
+          </div>
+          <button onClick={() => navigate('/newProject')}
+            className="btn w-36 text-lg border border-black">내 프로젝트 생성</button>
+        </div>
         <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           
           {getResultData(recruitmentData).map((data, index) => (
@@ -105,8 +120,8 @@ export default function SearchResult() {
               </div>
             </Link>
           ))}
-
         </div>
+        <Pagination resultData={getResultData(recruitmentData)} postsPerPage={postsPerPage} curPage={curPage} setCurPage={setCurPage} first={firstPostIdx} last={lastPostIdx}/>
       </div>
     </div>
   )

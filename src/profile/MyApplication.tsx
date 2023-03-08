@@ -19,15 +19,16 @@ export default function MyApplication() {
   }
 
   return (<>
+  <div className='flex flex-col w-full max-w-[700px] pr-10'>
     <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>지원 내역</label>
-    <div className='flex flex-wrap justify-around max-w-[700px]'>
+    <div className='flex flex-wrap justify-around'>
       {project.map((data, index) => (
-        <Link to={`/recruitment/${data.id}`} key={index} className="group mb-10 mx-2">
+        <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group mb-10 mx-2">
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
             <img
               src={data.pic}
               alt='작품 이미지'
-              className="h-[250px] w-[300px] object-cover object-center object-contain group-hover:opacity-75"
+              className="h-[250px] w-[290px] object-cover object-center object-contain group-hover:opacity-75"
               />
           </div>
           <h3 className="mt-4 text-base text-black">{data.title}</h3>
@@ -39,7 +40,8 @@ export default function MyApplication() {
           </div>
         </Link>
       ))}
-      </div>
+    </div>
+  </div>
       </>
   )
 }

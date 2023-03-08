@@ -54,6 +54,16 @@ export default function Recruitment() {
     return resultData
   }
 
+  // 페이지네이션
+  const [postsPerPage, setPostsPerPage] = useState(8)
+  const [curPage, setCurPage] = useState(1)
+  const lastPostIdx = curPage * postsPerPage
+  const firstPostIdx = lastPostIdx - postsPerPage
+  // const start = 0
+
+
+
+
   return (
     <div className="relative bg-zinc-200 min-h-screen">
       <Filter filter={filter} setFilter={setFilter}/>
@@ -62,13 +72,21 @@ export default function Recruitment() {
         <span className="mr-2">Filter</span>
         <HiAdjustmentsHorizontal />
       </div>
-      <button onClick={() => navigate('/newProject')}
-        className="btn absolute right-[5%] top-36 w-36 text-lg border border-black">내 프로젝트 생성</button>
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="w-full text-center text-[40px] font-bold mb-24">Recruitments</h2>
+        <h2 className="w-full text-center text-[40px] font-bold mt-10 mb-14">Recruitments</h2>
+        <div className="flex w-full justify-between mb-10">
+          <div className="flex items-center justify-between w-36 text-lg font-semibold">
+            <input type='number' value={postsPerPage} min={1}
+              onChange={(e) => setPostsPerPage(Number(e.target.value))} 
+              className=" border border-black rounded w-16 border-none focus:outline-none"/>
+            <span>개씩 보기</span>
+          </div>
+          <button onClick={() => navigate('/newProject')}
+            className="btn w-36 text-lg border border-black">내 프로젝트 생성</button>
+        </div>
         <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           
-          {getResultData(recruitmentData).map((data, index) => (
+          {getResultData(recruitmentData).slice(firstPostIdx, lastPostIdx).map((data, index) => (
             <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl">
               <div className="relative aspect-w-1 aspect-h-1 w-ful overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
                 <img
@@ -112,8 +130,8 @@ export default function Recruitment() {
             </Link>
           ))}
         </div>
+        <Pagination resultData={getResultData(recruitmentData)} postsPerPage={postsPerPage} curPage={curPage} setCurPage={setCurPage} first={firstPostIdx} last={lastPostIdx}/>
       </div>
-      <Pagination />
     </div>
   )
 }

@@ -17,7 +17,7 @@ export default function MyProfile() {
 
   return (
     <>
-    <div className='flex flex-col w-full max-w-[700px] pr-10 h-[20%]'>
+    <div className='flex flex-col w-full max-w-[700px] pr-10'>
       <label className='text-black ml-6 my-4 text-xl font-semibold'>경력사항</label>
       <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 text-xl w-full max-w-[600px]">
         {data?.experience.map((t,i) => (
@@ -29,7 +29,7 @@ export default function MyProfile() {
       <label className='text-black ml-6 mt-12 mb-10 text-xl font-semibold'>내가 찜한 프로젝트</label>
       <div className='flex flex-wrap justify-around'>
       {project.map((data, index) => (
-        <Link to={`/recruitment/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
+        <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
             <img
               src={data.pic}

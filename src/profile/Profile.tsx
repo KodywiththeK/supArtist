@@ -129,9 +129,9 @@ export default function Profile() {
           <button onClick={() => navigate(`/${userId}`)}
             className={`py-5 mr-8 cursor-pointer break-keep border border-transparent ${!location.includes('myApplication') && !location.includes('myWork') ? 'border-t-black border-[1.5px] text-black': 'text-gray-400'}`}>경력사항</button>
           <button onClick={() => navigate(`/${userId}/myApplication`)}
-            className={`py-5 mx-8 cursor-pointer break-keep border border-transparent ${location.includes('myApplication') ? 'border-t-black border-[1.5px] text-black': 'text-gray-400'}`}>지원현황</button>
+            className={`py-5 mx-8 cursor-pointer break-keep border border-transparent ${location.includes('myApplication') ? 'border-t-black border-[1.5px] text-black': 'text-gray-400'}`}>지원내역</button>
           <button onClick={() => navigate(`/${userId}/myWork`)}
-            className={`py-5 ml-8 cursor-pointer break-keep border border-transparent ${location.includes('myWork') ? 'border-t-black border-[1.5px] text-black': 'text-gray-400'}`}>작품관리</button>
+            className={`py-5 ml-8 cursor-pointer break-keep border border-transparent ${location.includes('myWork') ? 'border-t-black border-[1.5px] text-black': 'text-gray-400'}`}>내 프로젝트</button>
         </div>
         </></Mobile>
 

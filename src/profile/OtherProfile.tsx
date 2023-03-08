@@ -66,9 +66,9 @@ export default function OtherProfile() {
           </div>
         </div>
         <div className='flex justify-center items-center w-full'>
-          <button onClick={() => navigate(`/${userId}/profileEdit`)}
+          <button 
             className='btn btn--green w-40 flex justify-center items-center mr-2'>팔로우하기<RiUserFollowFill className='ml-2' /></button>
-          <button onClick={handleLogout}
+          <button 
             className='btn btn--green w-40 flex justify-center items-center ml-2'>알림설정<BsFillBellFill className='ml-2' /></button>
         </div>
         <div className={`w-[100%] h-72 flex flex-col items-center mt-10`}>

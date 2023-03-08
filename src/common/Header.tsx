@@ -118,11 +118,12 @@ export default function Header() {
               <BiSearch onClick={() => {
                 if(userInfo === null) {
                   confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
-                } else inputHandler
+                } else inputHandler()
               }}
                 className='mr-3 bg-white box-content rounded-xl p-2 cursor-pointer'/>
               </Mobile>  
-              <Default><>
+              <Default>
+                <>
                 {(inputValue && input) && 
                 <div className='absolute w-[98%] max-h-[250px] bg-white top-[50px] right-[10px] py-2 rounded'>
                   <div className='w-full max-h-[230px] pr-5 pl-4 overflow-y-scroll'>
@@ -145,7 +146,8 @@ export default function Header() {
                       </div> 
                     }
                   </div>
-                </div>}</>
+                </div>}
+                </>
               </Default>            
             </div>
           </div>
@@ -168,7 +170,7 @@ export default function Header() {
     </div> 
     <div className={`w-full bg-white ${profile && isDefault ? 'h-[150px]' : 'h-[80px]'} ` }></div>
     <Mobile><>
-      <div className={`fixed z-30 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-[-80px] visible' : 'mt-[-160px] invisible'} transition-all`}>
+      <div className={`fixed z-40 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-[-80px] visible' : 'mt-[-160px] invisible'} transition-all`}>
         <input placeholder='모집 공고의 제목을 검색해보세요' 
           onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => {e.key === 'Enter' && inputHandler()}}
           onChange={(e:React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} 
@@ -177,6 +179,32 @@ export default function Header() {
         <button className='text-white ml-2 text-xl font-bold'
           onClick={() => setInput(false)}
           >취소</button>
+
+        <>
+        {(inputValue && input) && 
+        <div className='absolute w-[78%] max-h-[250px] bg-white top-[70px] left-[5%] py-2 rounded'>
+          <div className='w-full max-h-[230px] pr-5 pl-4 overflow-y-scroll'>
+            {sortedData.length > 0 ? 
+              <>
+              {sortedData.map(data => (
+              <button onClick={() => {
+                setInput(false) 
+                navigate(`/recruitmentDetail/${data.id}`)
+              }}
+                className='flex items-center tab w-full' tabIndex={1}>
+                <img src={data.pic} alt='recruitment image' className='object-cover h-14 w-14 rounded-lg py-1 mr-3 box-content cursor-pointer'/>
+                <div className='text-lg py-1 truncate cursor-pointer hover:underline'>{data.title}</div>
+              </button>
+              ))}
+              </> 
+              : 
+              <div className='flex items-center'>
+                <div className='text-lg py-1 truncate w-full'>검색 결과가 없습니다.</div>
+              </div> 
+            }
+          </div>
+        </div>}
+        </>
       </div>
     </></Mobile>
     <Default><>
