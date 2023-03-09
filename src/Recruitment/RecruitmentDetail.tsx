@@ -6,7 +6,7 @@ import { BsFileCheck } from "react-icons/bs"
 import { RiArrowGoBackFill } from "react-icons/ri"
 import { useNavigate, useParams } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
-import { db, updateDocData } from "../firebase/firebase"
+import { db, deleteDocData, updateDocData } from "../firebase/firebase"
 import { getRecruitmentData, ProjectType, recruitment } from "../recoil/recruitment"
 import { sorting, sortingDefaultValue } from "../recoil/sorting"
 import { getUserData, user, UserDataType } from "../recoil/user"
@@ -50,26 +50,61 @@ export default function RecruitmentDetail() {
       heart: arr.heart
     })
   }
-
+  console.log(curUser.id)
   const applyHandler = async(e:React.MouseEvent) => {
     e.preventDefault();
-    if(curUser?.apply.includes({id:thisData.id, state:null})) {
+    if(thisData?.applicant.includes(curUser?.id)) {
       alert('이미 지원하신 공고입니다.')
     } else {
       if(confirm(`${thisData?.schedule}에 촬영하는 작품 (${thisData?.title})에 (${thisData?.team})으로 지원합니다. 확인을 누르시면 취소하실 수 없으며, 작성자가 심사 후 결과를 알려드립니다.`)) {
         let userApplyArr = [...curUser?.apply, {id: thisData?.id, state : null}]as {id:string, state:null|boolean}[]
         let recruitmentApplicantArr = [...thisData?.applicant, curUser.id]as string[]
-        updateDocData('userInfo', loginUser?.uid as string, {apply: userApplyArr})
-        updateDocData('recruitment', thisData.id as string, {applicant: recruitmentApplicantArr})
-        const userResult = await getUserData();
-        const recruitmentResult = await getRecruitmentData([]);
-        setUserData(userResult)
-        setRecruitmentData(recruitmentResult)
+        await updateDocData('userInfo', curUser?.id as string, {apply: userApplyArr})
+        .then(async() => {
+          const userResult = await getUserData();
+          setUserData(userResult)
+        })
+        await updateDocData('recruitment', thisData.id as string, {applicant: recruitmentApplicantArr})
+        .then(async() => {
+          const recruitmentResult = await getRecruitmentData([]);
+          setRecruitmentData(recruitmentResult)
+        })
       }
     }
   }
-  // console.log(curUser?.apply)
-  // console.log(thisData?.applicant)
+  const handleProjectRemove = async() => {
+    try {
+      if(confirm('정말 삭제하시겠습니까?')) {
+        await deleteDocData('recruitment', thisData?.id as string)
+        .then(() => {
+          userData.map(i => (
+            i.apply.filter(j => j.id !== thisData?.id as string)
+          ))
+          userData.map(i => (
+            i.heart.filter(j => j !== thisData?.id as string)
+          ))
+        })
+        .then(() => {
+          userData.map( async i => (
+            await updateDocData('userInfo', i.id as string, {
+              apply: i.apply,
+              heart: i.heart
+            })
+          ))
+        })
+        .then(async() => {
+          const userResult = await getUserData();
+          const recruitmentResult = await getRecruitmentData([]);
+          setUserData(userResult)
+          setRecruitmentData(recruitmentResult)
+          alert('삭제 완료되었습니다.')
+          navigate('/recruitment')
+        })
+      } else return;
+    } catch(error) {
+      console.error(error)
+    }
+  }
 
   const [showApplicant, setShowApplicant] = useState(false)
 
@@ -136,7 +171,7 @@ export default function RecruitmentDetail() {
           <div className="flex justify-between max-w-[550px]">
             {curUser?.id !== thisData?.writer ?
               <>
-              {thisData.state ? 
+              {thisData?.state ? 
                 <>
                 {curUser?.heart.includes(thisData?.id as string) ? 
                   <>
@@ -156,7 +191,7 @@ export default function RecruitmentDetail() {
                   </>
                 }
                 
-                {curUser?.apply.includes({id: thisData?.id, state:null}) ? 
+                {thisData?.applicant.includes(curUser?.id) ? 
                   <button onClick={applyHandler}
                     className="btn btn--reverse flex justify-center items-center w-full border border-black ml-2">
                     <span>지원 완료</span>
@@ -181,13 +216,19 @@ export default function RecruitmentDetail() {
               <>
               <button onClick={() => setShowApplicant(true)}
                 className="btn btn--reverse flex justify-center items-center w-full border border-black mr-2">
-                <span>지원자 확인하기</span>
+                <span>지원자 확인</span>
                 <BsFileCheck className="ml-2 text-xl"/>
               </button>
-              <button onClick={() => navigate(`/projectEdit/${thisData.id}`)}
-                className="btn flex justify-center items-center w-full border border-black ml-2">
-                <span>글 수정하기</span>
-              </button>
+              <div className="w-full">
+                <button onClick={() => navigate(`/projectEdit/${thisData?.id}`)}
+                  className="btn flex justify-center items-center w-full h-[40px] border border-black ml-1 mb-1">
+                  <span>프로젝트 수정</span>
+                </button>
+                <button onClick={() => handleProjectRemove()}
+                  className="btn flex justify-center items-center w-full h-[40px] border border-black ml-1 mt-1">
+                  <span>삭제</span>
+                </button>
+              </div>
               </>
             } 
           </div>

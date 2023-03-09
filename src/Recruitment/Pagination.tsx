@@ -16,8 +16,6 @@ interface PaginationPropsType {
 
 export default function Pagination({resultData, postsPerPage, curPage, setCurPage, first, last}: PaginationPropsType) {
 
-  console.log(new Array(Number(Math.ceil(resultData.length / postsPerPage))).fill(0))
-
   const [pageNum, setPageNum] = useState('1')
   const handlePageNum = (e:React.ChangeEvent<HTMLInputElement>) => {
     setPageNum(e.target.value)

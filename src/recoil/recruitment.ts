@@ -17,7 +17,11 @@ export interface ProjectType {
   location: string,
   note: string[],
   applicant: string[],
-  confirmed: string[]
+  confirmed: string[],
+  comments: {
+    id: string,
+    text: string
+  } | null
 }
 
 
@@ -36,7 +40,8 @@ const defaultRecruitmentState: ProjectType = {
   location: '',
   note: [],
   applicant: [],
-  confirmed: []
+  confirmed: [],
+  comments: null
 }
 
 
@@ -62,7 +67,8 @@ export const getRecruitmentData = async(initialState: ProjectType[]):Promise<Pro
         location: doc.data().location,
         note: doc.data().note,
         applicant: doc.data().applicant,
-        confirmed: doc.data().confirmed
+        confirmed: doc.data().confirmed,
+        comments: doc.data().comments
       })
     })
   } catch(err) {

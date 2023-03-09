@@ -31,7 +31,8 @@ export default function NewProject() {
     location: '',
     note: [],
     applicant: [],
-    confirmed: []
+    confirmed: [],
+    comments: null
   })
   const [note, setNote] = useState('')
   const [percent, setPercent] = useState<number | null>(null)

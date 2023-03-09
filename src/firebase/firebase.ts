@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth'
-import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import { doc, getFirestore, updateDoc, deleteDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { collection, getDocs } from "firebase/firestore";
 import { ProjectType } from "../recoil/recruitment";
@@ -26,4 +26,8 @@ export const storage = getStorage(app);
 export const updateDocData = async(key:string, id:string, obj:Partial<ProjectType | UserDataType>) => {
   const docData = doc(db, key, id)
   await updateDoc(docData, obj)
+}
+
+export const deleteDocData = async(key:string, id:string) => {
+  await deleteDoc(doc(db, key, id))
 }
