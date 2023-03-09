@@ -17,10 +17,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <RecoilRoot>
     <AuthProvider>
       <BrowserRouter> 
-        <QueryClientProvider client={queryClient}>
+        {/* <QueryClientProvider client={queryClient}> */}
           <App />
-          <ReactQueryDevtools />
-        </QueryClientProvider>
+          {/* <ReactQueryDevtools /> */}
+        {/* </QueryClientProvider> */}
       </BrowserRouter>
     </AuthProvider>
   </RecoilRoot>

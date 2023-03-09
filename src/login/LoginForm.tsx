@@ -1,11 +1,9 @@
-import { signInWithEmailAndPassword, sendPasswordResetEmail, AuthProvider, GoogleAuthProvider, UserCredential, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { FcGoogle } from 'react-icons/fc'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../firebase/firebase';
-import { doc, getDoc } from "firebase/firestore";
-import { useContext } from 'react';
-import { AuthContext } from '../store/AuthContext';
+import { auth } from '../firebase/firebase';
+import { signInWithGoogle } from './googleLogin';
 
 interface loginType {
   email: string,
@@ -53,17 +51,13 @@ const LoginForm = (props:LoginFormPropsType) => {
         }
       })
   }
-  const provider = new GoogleAuthProvider();
-  const SignInWithSocialMedia = (provider:AuthProvider) => {
-    new Promise<UserCredential>((resolve, reject) => {
-      signInWithPopup(auth, provider)
-        .then(result => {resolve(result)})
-        .then(() => alert('로그인 되었습니다.'))
-        .then(() => navigate('/'))
-        .catch(error => reject(error))
-    })
+
+  const handleGoogleLogin = async() => {
+    await signInWithGoogle()
+    .then(() => alert('로그인 되었습니다.'))
+    .then(() => navigate('/'))
   }
-  // const docRef = doc(db, 'userInfo', )
+
 
   return (
     <>
@@ -97,9 +91,8 @@ const LoginForm = (props:LoginFormPropsType) => {
             type="submit" value={props.isForgotPwd ? '로그인' : '인증메일 보내기'}/>
         </form>
         {props.isForgotPwd && <button className='w-full flex justify-center items-center text-base text-black bg-white border border-black rounded-md mb-2 py-3 cursor-pointer'
-          onClick={() => SignInWithSocialMedia(provider)} 
+          onClick={handleGoogleLogin} 
           ><FcGoogle className='text-xl mr-1'/>구글 계정으로 로그인</button>}
-        
       </div>
     </>
   )
