@@ -81,14 +81,6 @@ export default function UserProfileInfoEdit() {
     file && uploadFile();
   },[file])
   
-  // const saveImgFile = (e:React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = ((e.target as HTMLInputElement).files as FileList)[0]
-    // const reader = new FileReader();
-    //   reader.readAsDataURL(file);
-    //   reader.onloadend = () => {
-    //     setInfo({...info, pic:reader.result});
-    //   };
-  // };
 
   const onCheckedItem = (checked:boolean, name:string, value:string) => {
     if(checked) {

@@ -37,9 +37,9 @@ export default function RecruitmentDetail() {
 
   const heartHandler = async(e:React.MouseEvent) => {
     e.preventDefault();
-    let other = userData.filter((i) => i.id !== curUser.id)
+    let other = userData.filter((i) => i.id !== curUser?.id)
     let arr = {...curUser}
-    if(curUser.heart.includes(thisData?.id as string)) {
+    if(curUser?.heart.includes(thisData?.id as string)) {
       arr = {...curUser, heart: curUser.heart?.filter(i => i !== thisData?.id)}
     } else {
       arr = {...curUser, heart: [...curUser?.heart, thisData?.id] as string[]}
@@ -50,7 +50,7 @@ export default function RecruitmentDetail() {
       heart: arr.heart
     })
   }
-  console.log(curUser.id)
+  console.log(curUser?.id)
   const applyHandler = async(e:React.MouseEvent) => {
     e.preventDefault();
     if(thisData?.applicant.includes(curUser?.id)) {
@@ -58,7 +58,7 @@ export default function RecruitmentDetail() {
     } else {
       if(confirm(`${thisData?.schedule}에 촬영하는 작품 (${thisData?.title})에 (${thisData?.team})으로 지원합니다. 확인을 누르시면 취소하실 수 없으며, 작성자가 심사 후 결과를 알려드립니다.`)) {
         let userApplyArr = [...curUser?.apply, {id: thisData?.id, state : null}]as {id:string, state:null|boolean}[]
-        let recruitmentApplicantArr = [...thisData?.applicant, curUser.id]as string[]
+        let recruitmentApplicantArr = [...thisData?.applicant, curUser?.id]as string[]
         await updateDocData('userInfo', curUser?.id as string, {apply: userApplyArr})
         .then(async() => {
           const userResult = await getUserData();

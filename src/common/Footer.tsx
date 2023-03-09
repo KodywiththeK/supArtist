@@ -3,8 +3,6 @@ import { BsFacebook, BsInstagram, BsYoutube, BsTwitter } from 'react-icons/bs'
 import { Default, Mobile } from '../mediaQuery'
 import { BsCardChecklist, BsFillPersonFill } from 'react-icons/bs'
 import { AiFillHome } from 'react-icons/ai'
-import { HiFilm } from 'react-icons/hi'
-import Logo from '../images/Logo.png'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../store/AuthContext'
 
@@ -17,7 +15,7 @@ export default function Footer() {
   return (<>
     <hr />
     <Default>
-    <div className='relative z-10 flex flex-col justify-center items-center w-full h-72 bg-[#333333]'>
+    <div className='relative z-10 flex flex-col justify-center items-center w-full h-[35vh] bg-[#333333]'>
       <div>
         <span className='text-[#669900] font-bold text-sm after:content-["·"] after:mx-2'>이용약관</span>
         <span className='text-[#CCCCCC] font-bold text-sm after:content-["·"] after:mx-2'>개인정보처리방침</span>

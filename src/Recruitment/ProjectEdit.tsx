@@ -33,7 +33,11 @@ export default function ProjectEdit() {
     location: thisData?.location as string,
     note: thisData?.note as [],
     applicant: thisData?.applicant as [],
-    confirmed: thisData?.confirmed as []
+    confirmed: thisData?.confirmed as [],
+    comments: thisData?.comments as {
+      id: string,
+      text: string
+    } | null
   })
   const [note, setNote] = useState('')
   const [percent, setPercent] = useState<number | null>(null)

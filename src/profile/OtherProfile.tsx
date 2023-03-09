@@ -9,7 +9,6 @@ import { auth } from '../firebase/firebase'
 import { useRecoilValue } from 'recoil'
 import { user } from '../recoil/user'
 import { recruitment } from '../recoil/recruitment'
-import { AiOutlineHeart } from 'react-icons/ai'
 
 
 export default function OtherProfile() {

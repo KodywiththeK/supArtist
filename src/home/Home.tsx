@@ -1,10 +1,9 @@
-import { collection, doc, getDoc, getDocs, query, setDoc } from 'firebase/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil';
 import { db } from '../firebase/firebase';
-import { getUserData, user, UserDataType } from '../recoil/user';
+import { getUserData, user } from '../recoil/user';
 import DefaultImage from '../images/DefaultProfile.jpeg'
-// import { queryUserData } from '../reactQuery/reactQuery';
 import { AuthContext } from '../store/AuthContext';
 import HomeInfo from './HomeInfo';
 import HomeVisual from './HomeVisual';

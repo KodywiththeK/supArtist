@@ -104,7 +104,8 @@ export default function Header() {
                 onChange={(e:React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} value={inputValue}
                 onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => {e.key === 'Enter' && inputHandler()}}
                 />
-              <BiSearch onClick={() => {
+              <BiSearch tabIndex={1}
+                onClick={() => {
                 if(userInfo === null) {
                   confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
                 } else {

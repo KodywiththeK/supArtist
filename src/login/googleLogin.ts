@@ -1,24 +1,8 @@
-import { AuthProvider, signInWithPopup, UserCredential, GoogleAuthProvider, getAuth } from "firebase/auth";
-// import { auth } from "../firebase/firebase";
-
-
-
-// export const SignInWithSocialMedia = (provider:AuthProvider) => {
-
-//   new Promise<UserCredential>((resolve, reject) => {
-//     signInWithPopup(auth, provider)
-//       .then(result => resolve(result))
-//       .then(() => alert('로그인 되었습니다.'))
-//       .catch(error => reject(error))
-//   })
-// }
+import { signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
 
 const provider = new GoogleAuthProvider();
 // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 const auth = getAuth();
-// auth.languageCode = 'it';
-// To apply the default browser preference instead of explicitly setting it.
-// firebase.auth().useDeviceLanguage();
 
 
 export const signInWithGoogle = async() => {
