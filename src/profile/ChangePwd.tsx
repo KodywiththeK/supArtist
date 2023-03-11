@@ -32,8 +32,8 @@ const ChangePwd = () => {
         alert(e)
       })
   };
-  const [pwd, setPwd] = useState('')
   const [inputState, setInputState] = useState(true)
+  const [pwd, setPwd] = useState('')
   const onChangeHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
     setPwd(e.target.value)
   } 

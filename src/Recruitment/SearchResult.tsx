@@ -3,15 +3,15 @@ import Filter from "./Filter"
 import { HiAdjustmentsHorizontal } from 'react-icons/hi2'
 import { Link, useNavigate } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
-import { ProjectType, recruitment } from "../recoil/recruitment"
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai"
-import { user, UserDataType } from "../recoil/user"
 import { AuthContext } from "../store/AuthContext"
 import { doc, updateDoc } from "firebase/firestore"
 import { db } from "../firebase/firebase"
 import { sorting, sortingDefaultValue } from "../recoil/sorting"
 import { RiArrowGoBackFill } from "react-icons/ri"
 import Pagination from "./Pagination"
+import useRecruitmentQuery, { ProjectType } from "../reactQuery/RecruitmentQuery"
+import useUserQuery, { UserDataType } from "../reactQuery/userQuery"
 
 
 export interface sortDataType {
@@ -29,10 +29,14 @@ export default function SearchResult() {
   const userInfo = useContext(AuthContext)
 
   //recoil 유저, 모집공고 정보
-  const [recruitmentData, setRecruitmentData] = useRecoilState<ProjectType[]>(recruitment)
-  const [userData, setUserData] = useRecoilState<UserDataType[]>(user)
-  const curUser = (userData?.find(i => i.id === userInfo?.uid)) as UserDataType
-  console.log(recruitmentData)
+  // const [recruitmentData, setRecruitmentData] = useRecoilState<ProjectType[]>(recruitment)
+  // const [userData, setUserData] = useRecoilState<UserDataType[]>(user)
+  // const curUser = (userData?.find(i => i.id === userInfo?.uid)) as UserDataType
+  
+  //react-query
+  const {isLoading:recruitmentLoading, data:recruitmentData, refetch:recruitmentRefetch} = useRecruitmentQuery() 
+  const {isLoading:userLoading, data:userData, refetch:userRefetch} = useUserQuery()
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === userInfo?.uid) as UserDataType
 
   // 데이터 정렬 정보
   const [sortData, setSortData] = useRecoilState(sorting)
@@ -55,16 +59,16 @@ export default function SearchResult() {
 
   return (
     <div className="relative bg-zinc-200 min-h-screen">
-      <div onClick={() => {
-        navigate('/recruitment')
-        setSortData(sortingDefaultValue)
-      }}
-        className="absolute flex items-center justify-center right-[5%] top-10 text-xl font-bold cursor-pointer">
-        <span className="mr-2">전체 목록으로 돌아가기</span>
-        <RiArrowGoBackFill />
-      </div>
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="w-full text-center text-[40px] font-bold mt-10 mb-14">{`"${sortData.search}"의 검색 결과`}</h2>
+        <h2 className="w-full text-center text-[40px] font-bold mt-2 mb-6">{`"${sortData.search}"의 검색 결과`}</h2>
+        <div onClick={() => {
+          navigate('/recruitment')
+          setSortData(sortingDefaultValue)
+        }}
+          className="flex items-center justify-end w-full mb-5 text-xl font-bold cursor-pointer">
+          <span className="mr-2">전체 목록으로 돌아가기</span>
+          <RiArrowGoBackFill />
+        </div>
         <div className="flex w-full justify-between mb-10">
           <div className="flex items-center justify-between w-36 text-lg font-semibold">
             <input type='number' value={postsPerPage} min={1}
@@ -77,8 +81,8 @@ export default function SearchResult() {
         </div>
         <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           
-          {getResultData(recruitmentData).map((data, index) => (
-            <Link to={`/recruitment/${data.id}`} key={index} className="group drop-shadow-xl">
+          {getResultData(recruitmentData as ProjectType[]).map((data, index) => (
+            <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl">
               <div className="relative aspect-w-1 aspect-h-1 w-ful overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
                 <img
                   src={data.pic}
@@ -98,22 +102,24 @@ export default function SearchResult() {
                 {(curUser && curUser?.heart.includes(data.id)) ? <AiFillHeart onClick={ async(e) => {
                   e.preventDefault();
                   let arr = ({...curUser, heart: curUser?.heart.filter(i => data.id !== i)})
-                  setUserData(userData.map((i) => i.id===curUser.id ? arr : i))
+                  // setUserData(userData.map((i) => i.id===curUser.id ? arr : i))
                   const docData = doc(db, 'userInfo', userInfo?.uid as string)
                   await updateDoc(docData, {
                     heart: arr.heart
                   })
+                  userRefetch();
                 }}
                   className="text-2xl pointer-cursor box-content px-4 py-2 ml-2 text-[red]" />
                   : 
                 <AiOutlineHeart onClick={async(e) => {
                   e.preventDefault();
                   let arr = {...curUser, heart: [...curUser?.heart, data.id]}
-                  setUserData(userData.map((i) => i.id===curUser.id ? arr : i))
+                  // setUserData(userData.map((i) => i.id===curUser.id ? arr : i))
                   const docData = doc(db, 'userInfo', userInfo?.uid as string)
                   await updateDoc(docData, {
                     heart: arr.heart
                   })
+                  userRefetch();
                 }}
                   className="text-2xl pointer-cursor box-content px-4 py-2 ml-2 text-[red]" />}
                 </>}
@@ -121,7 +127,7 @@ export default function SearchResult() {
             </Link>
           ))}
         </div>
-        <Pagination resultData={getResultData(recruitmentData)} postsPerPage={postsPerPage} curPage={curPage} setCurPage={setCurPage} first={firstPostIdx} last={lastPostIdx}/>
+        <Pagination resultData={getResultData(recruitmentData as ProjectType[])} postsPerPage={postsPerPage} curPage={curPage} setCurPage={setCurPage} first={firstPostIdx} last={lastPostIdx}/>
       </div>
     </div>
   )

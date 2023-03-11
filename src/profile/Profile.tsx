@@ -9,8 +9,7 @@ import { Default, Mobile } from '../mediaQuery'
 import { useMediaQuery } from 'react-responsive'
 import { signOut } from 'firebase/auth'
 import { auth } from '../firebase/firebase'
-import { useRecoilValue } from 'recoil'
-import { user } from '../recoil/user'
+import useUserQuery from '../reactQuery/userQuery'
 
 export const age = (bday:string) => {
   const today = new Date();
@@ -22,15 +21,26 @@ export const age = (bday:string) => {
   }
   return age
 }
+
 export default function Profile() {
 
   const navigate = useNavigate()
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
-  const data = useRecoilValue(user).find(i => i.id === userId)
+
+  //recoil
+  // const data = useRecoilValue(user).find(i => i.id === userId)
+
+  //react-query
+  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === userId)
+  console.log(curUser)
+
+  //media-query
   const isDefault: boolean = useMediaQuery({
     query: "(min-width:768px)",
   });
+
   const handleLogout = () => {
     if(confirm('로그아웃 하시겠습니까?') ) {
       signOut(auth)
@@ -81,16 +91,16 @@ export default function Profile() {
       <div className={`${isDefault ? 'w-[60vw] pl-[10%] items-start' : 'w-full items-center'} min-h-screen relative flex flex-col bg-zinc-200`}>
         <div className={`flex ${isDefault ? 'justify-start' : 'justify-center'}  items-center w-full h-52 mt-20 mr-5`}>
           <div className={`flex justify-center items-center ${isDefault? 'w-60 mr-10' : 'w-40 mx-10'} h-52 `}>
-            <img src={data?.pic} alt='My picture' className='w-40 h-40 object-cover border border-[#9ec08c] rounded-[100%]'/>
+            <img src={curUser?.pic} alt='My picture' className='w-40 h-40 object-cover border border-[#9ec08c] rounded-[100%]'/>
           </div>
           <div>
-            <div className='font-bold text-2xl mb-3'>{`${data?.name}`}</div>
+            <div className='font-bold text-2xl mb-3'>{`${curUser?.name}`}</div>
             <div className='flex justify-between w-44 text-lg font-semibold mb-3'>
               <div>팔로우 <span className='font-normal'>56</span></div>
               <div>팔로워 <span className='font-normal'>12</span></div>
             </div>
             <div className='min-w-40 h-14'>
-              <div className='w-full max-w-[16rem]'>{data?.intro}</div>
+              <div className='w-full max-w-[16rem]'>{curUser?.intro}</div>
             </div>
           </div>
         </div>
@@ -99,19 +109,19 @@ export default function Profile() {
             <tbody className='w-full'>
               <tr className='w-full flex border-b border-[#9ec08c] p-4'>
                 <th className='text-left w-[55%] px-5'><BsGenderAmbiguous className='inline text-xl mr-2'/>성별</th>
-                <td>{data?.gender}</td>
+                <td>{curUser?.gender}</td>
               </tr>
               <tr className='w-full flex border-b border-[#9ec08c] p-4'>
                 <th className='text-left w-[55%] px-5'><RiCake2Line className='inline text-xl mr-2'/>나이</th>
-                <td><>{data?.bday ? `만 ${age(data?.bday as string)} 세` : ''}</></td>
+                <td><>{curUser?.bday ? `만 ${age(curUser?.bday as string)} 세` : ''}</></td>
               </tr>
               <tr className='w-full flex border-b border-[#9ec08c] p-4'>
                 <th className='text-left w-[55%] px-5'><BsFilm className='inline text-xl mr-2'/>관심분야</th>
-                <td>{data?.interest.join(', ')}</td>
+                <td>{curUser?.interest.join(', ')}</td>
               </tr>
               <tr className='w-full flex border-b border-[#9ec08c] p-4'>
                 <th className='text-left w-[55%] px-5'><RiTeamLine className='inline text-xl mr-2'/>파트</th>
-                <td>{data?.team.join(', ')}</td>
+                <td>{curUser?.team.join(', ')}</td>
               </tr>
             </tbody>
           </table>

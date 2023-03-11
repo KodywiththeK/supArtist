@@ -10,10 +10,10 @@ import { RiAdvertisementFill } from 'react-icons/ri'
 import { BiSupport } from 'react-icons/bi'
 import { IoMdFlashlight } from 'react-icons/io'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { user } from '../recoil/user'
 import { AuthContext } from '../store/AuthContext'
 import { sortDataType } from './Recruitment'
 import { sorting } from '../recoil/sorting'
+import useUserQuery from '../reactQuery/userQuery'
 
 interface FilterPropsType {
   filter: boolean
@@ -23,10 +23,17 @@ interface FilterPropsType {
 
 export default function Filter(props: FilterPropsType) {
 
+  //auth
   const authInfo = useContext(AuthContext)
-  const userData = useRecoilValue(user)
-  const curUser = userData.find(i => i?.id === authInfo?.uid)
+
+  //recoil
+  // const userData = useRecoilValue(user)
+  // const curUser = userData.find(i => i?.id === authInfo?.uid)
   const [sortData, setSortData] = useRecoilState(sorting)
+
+  //react-query
+  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === authInfo?.uid)
 
   const onChangeHandler = (e:React.ChangeEvent<HTMLInputElement>, name:string, value:string) => {
     if(name === 'except') setSortData({...sortData, except: !sortData.except})

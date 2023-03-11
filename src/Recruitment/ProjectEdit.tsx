@@ -7,17 +7,25 @@ import { db, storage, updateDocData } from '../firebase/firebase';
 import { AuthContext } from '../store/AuthContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { getRecruitmentData, ProjectType, recruitment } from '../recoil/recruitment';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import useRecruitmentQuery, { ProjectType } from '../reactQuery/RecruitmentQuery';
 
 
 export default function ProjectEdit() {
 
+  // auth
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
-  const [recruitmentData, setRecruitmentData] = useRecoilState(recruitment)
+
   const params = useParams()
-  const thisData = recruitmentData.find(i=> i.id === params.id)
+  
+  //recoil
+  // const [recruitmentData, setRecruitmentData] = useRecoilState(recruitment)
+  // const thisData = recruitmentData.find(i=> i.id === params.id)
+
+  //react-query
+  const {isLoading:recruitmentLoading, data:recruitmentData} = useRecruitmentQuery()
+  const thisData = recruitmentData?.map(i => ({...i})).find(i=> i.id === params.id)
+
   const [info, setInfo] = useState<ProjectType>({
     id: thisData?.id as string,
     writer: userId as string,
@@ -88,11 +96,11 @@ export default function ProjectEdit() {
   }
   const confirmHandler = async() => {
     try {
-      updateDocData('recruitment', thisData?.id as string, info)
-      .then( async() => {
-        const result = await getRecruitmentData([])
-        setRecruitmentData(result.sort((a,b) => Number(b.id.slice(0,12)) - Number(a.id.slice(0,12))))
-      })
+      await updateDocData('recruitment', thisData?.id as string, info)
+      // .then( async() => {
+      //   const result = await getRecruitmentData([])
+      //   setRecruitmentData(result.sort((a,b) => Number(b.id.slice(0,12)) - Number(a.id.slice(0,12))))
+      // })
     } catch(e) {
       console.log(e)
     }

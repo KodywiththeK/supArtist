@@ -7,48 +7,50 @@ import { RiArrowGoBackFill } from "react-icons/ri"
 import { useNavigate, useParams } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { db, deleteDocData, updateDocData } from "../firebase/firebase"
-import { getRecruitmentData, ProjectType, recruitment } from "../recoil/recruitment"
+import useRecruitmentQuery, { ProjectType } from "../reactQuery/RecruitmentQuery"
+import useUserQuery, { UserDataType } from "../reactQuery/userQuery"
 import { sorting, sortingDefaultValue } from "../recoil/sorting"
-import { getUserData, user, UserDataType } from "../recoil/user"
 import { AuthContext } from "../store/AuthContext"
 import Applicants from './Applicants'
 import { sortDataType } from "./Recruitment"
 
 
 export default function RecruitmentDetail() {
-  //리코일
-  const [recruitmentData, setRecruitmentData] = useRecoilState<ProjectType[]>(recruitment)
-  const [sortData, setSortData] = useRecoilState<sortDataType>(sorting)
-  const [userData, setUserData] = useRecoilState<UserDataType[]>(user)
-
   //현재 로그인된 사용자 정보
-  const loginUser = useContext(AuthContext)
+  const userInfo = useContext(AuthContext)
   const { id } = useParams()
   const navigate = useNavigate()
 
-  //전역에서 가져온 현재 사용자 정보
-  const curUser = (userData?.find(i => i.id === loginUser?.uid)) as UserDataType
+  //리코일
+  const [sortData, setSortData] = useRecoilState<sortDataType>(sorting)
+  // const [recruitmentData, setRecruitmentData] = useRecoilState<ProjectType[]>(recruitment)
+  // const [userData, setUserData] = useRecoilState<UserDataType[]>(user)
+  // const curUser = userData?.find(i => i.id === loginUser?.uid) as UserDataType
+  // const thisData = recruitmentData.find(items => items.id === id) as ProjectType
+  // const writer = userData.find(user => user.id === thisData?.writer)
 
-  //전역에서 가져온 현재 recruitment 페이지 정보
-  const thisData = recruitmentData.find(items => items.id === id) as ProjectType
-
-  //이 글의 작성자
-  const writer = userData.find(user => user.id === thisData?.writer)
+  //react-query
+  const {isLoading:recruitmentLoading, data:recruitmentData, refetch:recruitmentRefetch} = useRecruitmentQuery()
+  const thisData = recruitmentData?.map(i => ({...i})).find(items => items?.id === id as string) as ProjectType
+  const {isLoading:userLoading, data:userData, refetch:userRefetch} = useUserQuery()
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === userInfo?.uid) as UserDataType
+  const writer = userData?.map(i => ({...i})).find(user => user.id === thisData?.writer) as UserDataType
 
   const heartHandler = async(e:React.MouseEvent) => {
     e.preventDefault();
-    let other = userData.filter((i) => i.id !== curUser?.id)
+    // let other = userData.filter((i) => i.id !== curUser?.id)
     let arr = {...curUser}
     if(curUser?.heart.includes(thisData?.id as string)) {
       arr = {...curUser, heart: curUser.heart?.filter(i => i !== thisData?.id)}
     } else {
       arr = {...curUser, heart: [...curUser?.heart, thisData?.id] as string[]}
     }
-    setUserData([...other, arr])
-    const docData = doc(db, 'userInfo', loginUser?.uid as string)
+    // setUserData([...other, arr])
+    const docData = doc(db, 'userInfo', userInfo?.uid as string)
     await updateDoc(docData, {
       heart: arr.heart
     })
+    userRefetch()
   }
   console.log(curUser?.id)
   const applyHandler = async(e:React.MouseEvent) => {
@@ -60,15 +62,17 @@ export default function RecruitmentDetail() {
         let userApplyArr = [...curUser?.apply, {id: thisData?.id, state : null}]as {id:string, state:null|boolean}[]
         let recruitmentApplicantArr = [...thisData?.applicant, curUser?.id]as string[]
         await updateDocData('userInfo', curUser?.id as string, {apply: userApplyArr})
-        .then(async() => {
-          const userResult = await getUserData();
-          setUserData(userResult)
-        })
+        userRefetch();
+        // .then(async() => {
+        //   const userResult = await getUserData();
+        //   setUserData(userResult)
+        // })
         await updateDocData('recruitment', thisData.id as string, {applicant: recruitmentApplicantArr})
-        .then(async() => {
-          const recruitmentResult = await getRecruitmentData([]);
-          setRecruitmentData(recruitmentResult)
-        })
+        recruitmentRefetch();
+        // .then(async() => {
+        //   const recruitmentResult = await getRecruitmentData([]);
+        //   setRecruitmentData(recruitmentResult)
+        // })
       }
     }
   }
@@ -77,15 +81,15 @@ export default function RecruitmentDetail() {
       if(confirm('정말 삭제하시겠습니까?')) {
         await deleteDocData('recruitment', thisData?.id as string)
         .then(() => {
-          userData.map(i => (
+          userData?.map(i => (
             i.apply.filter(j => j.id !== thisData?.id as string)
           ))
-          userData.map(i => (
+          userData?.map(i => (
             i.heart.filter(j => j !== thisData?.id as string)
           ))
         })
         .then(() => {
-          userData.map( async i => (
+          userData?.map( async i => (
             await updateDocData('userInfo', i.id as string, {
               apply: i.apply,
               heart: i.heart
@@ -93,10 +97,11 @@ export default function RecruitmentDetail() {
           ))
         })
         .then(async() => {
-          const userResult = await getUserData();
-          const recruitmentResult = await getRecruitmentData([]);
-          setUserData(userResult)
-          setRecruitmentData(recruitmentResult)
+          // const userResult = await getUserData();
+          // const recruitmentResult = await getRecruitmentData([]);
+          // setUserData(userResult)
+          // setRecruitmentData(recruitmentResult)
+          userRefetch();
           alert('삭제 완료되었습니다.')
           navigate('/recruitment')
         })
@@ -126,7 +131,7 @@ export default function RecruitmentDetail() {
             <div className="border-t border-gray-300 pt-4">
               <dt className="font-medium text-xl text-gray-900">작성자</dt>
               <div onClick={() => {
-                writer?.id=== loginUser?.uid ? navigate(`/${loginUser?.uid}`) : navigate(`/other/${writer?.id}`)
+                writer?.id=== userInfo?.uid ? navigate(`/${userInfo?.uid}`) : navigate(`/other/${writer?.id}`)
               }}
                 className="flex items-center cursor-pointer mt-2 hover:underline">
                 <img src={writer?.pic} alt={`${writer?.name}님의 프로필`} className='h-16 w-16 object-cover rounded-[100%] mr-3' />

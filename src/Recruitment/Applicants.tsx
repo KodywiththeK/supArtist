@@ -2,11 +2,11 @@ import React, { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useRecoilState } from 'recoil'
-import { getUserData, user, UserDataType } from '../recoil/user'
 import { age } from '../profile/Profile'
 import { useNavigate } from 'react-router-dom'
-import { getRecruitmentData, ProjectType, recruitment } from '../recoil/recruitment'
 import { updateDocData } from '../firebase/firebase'
+import useUserQuery from '../reactQuery/userQuery'
+import useRecruitmentQuery, { ProjectType } from '../reactQuery/RecruitmentQuery'
 
 
 interface ApplicantsPropsType {
@@ -17,34 +17,47 @@ interface ApplicantsPropsType {
 
 export default function Applicants({thisData, showApplicant, setShowApplicant}: ApplicantsPropsType) {
 
-  const [userData, setUserData] = useRecoilState<UserDataType[]>(user)
-  const [recruitmentData, setRecruitmentData] = useRecoilState<ProjectType[]>(recruitment)
-  const applicantData = userData.filter(i => thisData?.applicant.includes(i.id))
+  // recoil
+  // const [userData, setUserData] = useRecoilState<UserDataType[]>(user)
+  // const [recruitmentData, setRecruitmentData] = useRecoilState<ProjectType[]>(recruitment)
+  // const applicantData = userData.filter(i => thisData?.applicant.includes(i.id))
+  
+  // react-query
+  const {isLoading:userLoading, data:userData, refetch:userRefetch } = useUserQuery()
+  const { refetch } = useRecruitmentQuery()
+  const applicantData = userData?.map(i => ({...i})).filter(i => thisData?.applicant.includes(i.id))
+  // const project = recruitmentData?.map(i => ({...i})).filter(item => curUser?.heart?.includes(item.id))
   console.log(applicantData)
+
+
   const navigate = useNavigate()
 
   const acceptHandler = async(e:React.MouseEvent, userId:string) => {
     e.preventDefault();
     if(thisData?.confirmed.includes(userId)){
-      updateDocData('recruitment', thisData?.id, {confirmed: thisData?.confirmed.filter(i=> i !== userId)})
+      await updateDocData('recruitment', thisData?.id, {confirmed: thisData?.confirmed.filter(i=> i !== userId)})
     } else {
-      updateDocData('recruitment', thisData?.id, {confirmed: [...thisData?.confirmed, userId]})
+      await updateDocData('recruitment', thisData?.id, {confirmed: [...thisData?.confirmed, userId]})
     }
-    const recruitmentResult = await getRecruitmentData([]);
-    setRecruitmentData(recruitmentResult)
+    refetch();
+    
+    // const recruitmentResult = await getRecruitmentData([]);
+    // setRecruitmentData(recruitmentResult)
   }
   const removeHandler = async(e:React.MouseEvent, userId: string) => {
     e.preventDefault();
-    updateDocData('recruitment', thisData?.id, {applicant: thisData?.applicant.filter(i => i !== userId)})
-    const recruitmentResult = await getRecruitmentData([]);
-    setRecruitmentData(recruitmentResult)
+    await updateDocData('recruitment', thisData?.id, {applicant: thisData?.applicant.filter(i => i !== userId)})
+    refetch();
+    // const recruitmentResult = await getRecruitmentData([]);
+    // setRecruitmentData(recruitmentResult)
   } 
   const doneHandler = async(e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if(confirm('모집을 마감하시겠습니까?')) {
-      updateDocData('recruitment', thisData?.id, {state: false, applicant: [...thisData.confirmed]})
-      applicantData.map((user) => {
-        updateDocData('userInfo', user.id, 
+      await updateDocData('recruitment', thisData?.id, {state: false, applicant: [...thisData.confirmed]})
+      refetch();
+      applicantData?.map(async (user) => {
+        await updateDocData('userInfo', user.id, 
           { apply: user.apply.map((i) => (
             thisData.confirmed.includes(user.id) ?
               i.id === thisData.id ? {...i, state: true} : {...i} 
@@ -52,10 +65,11 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
               i.id === thisData.id ? {...i, state: false} : {...i}
         ))})
       })
-      const userResult = await getUserData();
-      const recruitmentResult = await getRecruitmentData([]);
-      setUserData(userResult)
-      setRecruitmentData(recruitmentResult)
+      userRefetch()
+      // const userResult = await getUserData();
+      // const recruitmentResult = await getRecruitmentData([]);
+      // setUserData(userResult)
+      // setRecruitmentData(recruitmentResult)
       setShowApplicant(false)
     }
   }
@@ -106,19 +120,19 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
 
                       <div className="mt-8 ">
                         <div className="flow-root">
-                          <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {applicantData.map((user) => (
-                              <li key={user?.id} className={`flex py-5 px-2 ${thisData?.confirmed.includes(user?.id) ? "border-[2px] border-indigo-600 rounded-2xl" : 'border border-transparent'}`}>
-                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                  <img onClick={() => navigate(`/other/${user.id}`)}
+                          <ul role="list" className="h-full my-3">
+                            {applicantData?.map((user) => (
+                              <li key={user?.id} className={`flex py-5 px-2 mb-3 transition-all ${thisData?.confirmed.includes(user?.id) ? "border-[2px] border-indigo-600 rounded-2xl" : 'border border-[2px] border-transparent'}`}>
+                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-black">
+                                  <img onClick={() => navigate(`/other/${user?.id}`)}
                                     src={user?.pic}
-                                    alt={`${user.name} 사진`}
+                                    alt={`${user?.name} 사진`}
                                     className="h-full w-full object-cover object-center cursor-pointer"
                                   />
                                 </div>
                                 <div className="ml-4 flex flex-1 flex-col">
                                   <div>
-                                    <div onClick={() => navigate(`/other/${user.id}`)}
+                                    <div onClick={() => navigate(`/other/${user?.id}`)}
                                       className="flex justify-between text-lg font-medium text-gray-900 cursor-pointer hover:underline">
                                       <h3>{user?.name}</h3>
                                     </div>
@@ -126,14 +140,14 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
                                   </div>
                                   <div className="flex flex-1 items-end justify-end text-sm">
                                     <div className="flex">
-                                      <button onClick={(e) => acceptHandler(e, user.id)}
+                                      <button onClick={(e) => acceptHandler(e, user?.id)}
                                         type="button"
                                         className="font-medium text-indigo-600 hover:text-indigo-500 mr-6"
                                       >
-                                        {`${thisData?.confirmed.includes(user.id) ? 'Cancel' : 'Accept'}`}
+                                        {`${thisData?.confirmed.includes(user?.id) ? 'Cancel' : 'Accept'}`}
                                       </button>
                                       {!thisData?.confirmed.includes(user?.id) && 
-                                      <button onClick={(e) => removeHandler(e, user.id)}
+                                      <button onClick={(e) => removeHandler(e, user?.id)}
                                         type="button"
                                         className="font-medium text-indigo-600 hover:text-indigo-500 mr-4"
                                       >

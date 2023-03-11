@@ -1,6 +1,6 @@
 import { collection, getDocs, query } from "firebase/firestore";
-import { atom, DefaultValue, RecoilState, StoreID } from "recoil";
 import { db } from "../firebase/firebase";
+import { useQuery } from '@tanstack/react-query'
 
 export interface ProjectType {
   id: string,
@@ -25,34 +25,14 @@ export interface ProjectType {
 }
 
 
-const defaultRecruitmentState: ProjectType = {
-  id: '',
-  writer:'',
-  state: true,
-  pic: '',
-  title: '',
-  intro: '',
-  genre: '',
-  team: '',
-  teamNum: '',
-  pay: '',
-  schedule: '',
-  location: '',
-  note: [],
-  applicant: [],
-  confirmed: [],
-  comments: null
-}
-
-
-export const getRecruitmentData = async(initialState: ProjectType[]):Promise<ProjectType[]> => {
-  // const list:ProjectType[] = []
+const getRecruitmentData = async():Promise<ProjectType[]> => {
+  const list:ProjectType[] = []
   try {
     const docRef = collection(db, 'recruitment')
     const q = query(docRef)
     const docSnap = await getDocs(q)
     docSnap.docs.map((doc) => {
-      initialState.push({
+      list.push({
         id: doc.data().id,
         writer: doc.data().writer,
         state: doc.data().state,
@@ -74,13 +54,15 @@ export const getRecruitmentData = async(initialState: ProjectType[]):Promise<Pro
   } catch(err) {
     console.log(err + "No such document!");
   }
-  return initialState
+  return list
 }
 
-
-export const recruitment = atom<ProjectType[]>({
-  key: 'recruitment',
-  default: [defaultRecruitmentState],
-})
-
-
+// { onSuccess, onError }: {onSuccess: ((data:ProjectType[]) => void) | undefined, onError:((err:unknown) => void) | undefined}
+export default function useRecruitmentQuery() {
+  return useQuery(['recruitment'], getRecruitmentData, {
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true, // react-query는 사용자가 사용하는 윈도우가 다른 곳을 갔다가 다시 화면으로 돌아오면 이 함수를 재실행합니다. 그 재실행 여부 옵션 입니다.
+    retry: 3, // 실패시 재호출 몇번 할지
+  })
+}

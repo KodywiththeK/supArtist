@@ -1,16 +1,25 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
-import { recruitment } from '../recoil/recruitment'
-import { user } from '../recoil/user'
+import useRecruitmentQuery from '../reactQuery/RecruitmentQuery'
+import useUserQuery from '../reactQuery/userQuery'
 
 export default function MyApplication() {
 
   const { profile } = useParams()
-  const recruitmentData = useRecoilValue(recruitment)
-  const userData = useRecoilValue(user)
-  const project = recruitmentData.filter(item => item.applicant.includes(profile as string))
-  const curUser = userData.find(i => i?.id === profile as string)
+
+  //recoil
+  // const recruitmentData = useRecoilValue(recruitment)
+  // const userData = useRecoilValue(user)
+  // const project = recruitmentData.filter(item => item.applicant.includes(profile as string))
+  // const curUser = userData.find(i => i?.id === profile as string)
+
+  //react-query
+  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const {isLoading:recruitmentLoading, data:recruitmentData} = useRecruitmentQuery()
+  const curUser = userData?.map(i => ({...i})).find(i => i?.id === profile as string)
+  const project = recruitmentData?.map(i => ({...i})).filter(item => item.applicant.includes(profile as string))
+
   const defineState = (dataId:string) => {
     const data = curUser?.apply.find(i => i.id === dataId)
     if(data?.state === null) return '심사중'
@@ -22,7 +31,7 @@ export default function MyApplication() {
   <div className='flex flex-col w-full max-w-[700px] pr-10'>
     <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>지원 내역</label>
     <div className='flex flex-wrap justify-around'>
-      {project.map((data, index) => (
+      {project?.map((data, index) => (
         <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group mb-10 mx-2">
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
             <img

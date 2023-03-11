@@ -1,13 +1,15 @@
 import '../App.css';
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRef } from 'react';
-import { createUserWithEmailAndPassword, updateProfile, User } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, User, UserCredential } from 'firebase/auth';
 import { auth, db } from '../firebase/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import DefaultImage from '../images/DefaultProfile.jpeg'
 import { useNavigate } from 'react-router-dom';
-import { getUserData, user } from '../recoil/user';
 import { useRecoilState } from 'recoil';
+import { useMutation } from '@tanstack/react-query'
+import useUserQuery from '../reactQuery/userQuery';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 interface dataType {
   email: string,
@@ -21,40 +23,56 @@ interface SignUpFormPropsType {
   setForgotPwd: (boolean: boolean) => void
 }
 
+
+export const defaultImage = async() => {
+  return await getDownloadURL(ref(getStorage(), 'DefaultProfile.jpeg'))
+}
+
 const SignUpForm = (props:SignUpFormPropsType) => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<dataType>();
   const navigate = useNavigate()
-
-  const [userData, setUserData] = useRecoilState(user)
-  const names = userData.map(i => i.name)
   
-  const onSubmit: SubmitHandler<dataType> = (data) => {
+
+  //recoil
+  // const [userData, setUserData] = useRecoilState(user)
+  // const names = userData.map(i => i.name)
+
+  //react-query
+  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const names = userData?.map(i => ({...i})).map(i => i.name)
+
+  // const { mutate } = useMutation(setUser)
+  
+  const onSubmit: SubmitHandler<dataType> = async(data) => {
+    const image = await defaultImage();
     createUserWithEmailAndPassword(auth, data.email, data.password)
-    .then((result) => {
-      updateProfile(auth.currentUser as User, {
-        displayName: data.name
+    .then(async(result) => {
+      await updateProfile(auth.currentUser as User, {
+        displayName: data.name,
+        photoURL: image
       })
+      console.log(result)
       return result
     })
-    .then((result) => {
-      setDoc(doc(db, 'userInfo', String(result.user.uid)), {
+    .then(async(result) => {
+      await setDoc(doc(db, 'userInfo', String(result.user.uid)), {
         email: result.user.email,
-        name: data.name,
+        name: result.user.displayName,
         phone: '',
-        pic: DefaultImage,
-        intro: '',
+        pic: result.user.photoURL,
+        intro: '프로필 설정에 들어가서 프로필을 작성해보세요!',
         gender: '',
         bday: '',
         interest: [],
         team: [],
-        experience: [],
+        experience: ['완성도 높은 프로필을 작성할수록 합격률이 올라갑니다 :)'],
         heart: [],
         apply: []
       })
     })
     .then(async() => {
-      const userResult = await getUserData();
-      setUserData(userResult)
+      // const userResult = await getUserData();
+      // setUserData(userResult)
       alert('회원가입 성공')
       navigate('/')
       props.setForm(true)
@@ -96,7 +114,7 @@ const SignUpForm = (props:SignUpFormPropsType) => {
             className='w-full text-black py-2 px-4 bg-transparent border rounded-md border-black outline-none focus:outline-none'
             placeholder='write under 20 letters'
             {...register("name", { 
-              validate: (value) => !names.includes(value),
+              validate: (value) => !names?.includes(value),
               required: true, maxLength: 20 
               })} />
           {errors.name && errors.name.type === "required" && (<p className='text-red-500 text-sm'>⚠ 사용자 이름은 필수 입력값입니다.</p>)}

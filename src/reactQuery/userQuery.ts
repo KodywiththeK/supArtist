@@ -1,7 +1,8 @@
 import { collection, getDocs, query } from "firebase/firestore";
-import { atom } from "recoil";
-import { db } from "../firebase/firebase";
-import { ProjectType } from "./recruitment";
+import { db, database } from "../firebase/firebase";
+import { useQuery } from '@tanstack/react-query'
+
+
 
 export interface UserDataType {
   id: string
@@ -19,28 +20,7 @@ export interface UserDataType {
   apply: {id: string, state: null | boolean }[]
 }
 
-const defaultUserState: UserDataType = {
-  id: '',
-  email: '',
-  name: '',
-  phone: '',
-  pic: '',
-  intro: '',
-  gender: '',
-  bday: '',
-  interest: [],
-  team: [],
-  experience: [],
-  heart: [],
-  apply: []
-}
-
-export const user = atom<UserDataType[]>({
-  key: 'userInfo',
-  default: [defaultUserState]
-})
-
-export const getUserData = async():Promise<UserDataType[]> => {
+const getUserData = async():Promise<UserDataType[]> => {
   const list:UserDataType[] = []
   try {
     const docRef = collection(db, 'userInfo')
@@ -68,3 +48,13 @@ export const getUserData = async():Promise<UserDataType[]> => {
   }
   return list
 }
+// { onSuccess, onError }: {onSuccess: ((data:UserDataType[]) => void) | undefined, onError:((err:unknown) => void) | undefined}
+export default function useUserQuery() {
+  return useQuery(['userInfo'], getUserData, {
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true, // react-query는 사용자가 사용하는 윈도우가 다른 곳을 갔다가 다시 화면으로 돌아오면 이 함수를 재실행합니다. 그 재실행 여부 옵션 입니다.
+    retry: 3, // 실패시 재호출 몇번 할지
+  })
+}
+

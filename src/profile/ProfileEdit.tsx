@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import { auth } from '../firebase/firebase'
 import { Default } from '../mediaQuery'
-import { user } from '../recoil/user'
+import useUserQuery from '../reactQuery/userQuery'
 import { AuthContext } from '../store/AuthContext'
 import BasicInfoEdit from './BasicInfoEdit'
 import UserProfileInfoEdit from './UserProfileInfoEdit'
@@ -21,9 +21,18 @@ export default function ProfileEdit() {
       .then(() => navigate('/'))
     }
   }
+
+  //auth
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
-  const data = useRecoilValue(user).find(i => i.id === userId)
+
+  //recoil
+  // const data = useRecoilValue(user).find(i => i.id === userId)
+
+  //react-query
+  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === userId)
+
   const location = useLocation().pathname
   const isDefault: boolean = useMediaQuery({
     query: "(min-width:768px)",
@@ -34,7 +43,7 @@ export default function ProfileEdit() {
       <Default><>
       <div className='fixed w-[40vw] min-h-screen bg-zinc-800 text-white flex flex-col '>
         <div className='flex items-center justify-center w-[100%] mt-32'>
-          <div className='text-2xl font-bold mb-12'>{`${data?.name} 님`}</div>
+          <div className='text-2xl font-bold mb-12'>{`${curUser?.name} 님`}</div>
         </div>
         <div className='flex flex-col items-end mr-10'>
           <button onClick={() => navigate(`/${userId}/profileEdit`)}

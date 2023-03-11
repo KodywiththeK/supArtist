@@ -7,15 +7,19 @@ import { db, storage } from '../firebase/firebase';
 import { AuthContext } from '../store/AuthContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { getRecruitmentData, ProjectType, recruitment } from '../recoil/recruitment';
-import { useSetRecoilState } from 'recoil';
+import { ProjectType } from '../reactQuery/RecruitmentQuery';
 
 
 export default function NewProject() {
 
+  //auth
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
-  const setRecruitmentData = useSetRecoilState(recruitment)
+
+  //recoil
+  // const setRecruitmentData = useSetRecoilState(recruitment)
+
+  //useStates
   const [info, setInfo] = useState<ProjectType>({
     id: '',
     writer: userId as string,
@@ -37,6 +41,7 @@ export default function NewProject() {
   const [note, setNote] = useState('')
   const [percent, setPercent] = useState<number | null>(null)
   const [file, setFile] = useState<File>()
+
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -84,10 +89,10 @@ export default function NewProject() {
   const confirmHandler = async() => {
     try {
       await setDoc(doc(db, 'recruitment', info.id), info)
-      .then( async() => {
-        const result = await getRecruitmentData([])
-        setRecruitmentData(result.sort((a,b) => Number(b.id.slice(0,12)) - Number(a.id.slice(0,12))))
-      })
+      // .then( async() => {
+      //   const result = await getRecruitmentData([])
+      //   setRecruitmentData(result.sort((a,b) => Number(b.id.slice(0,12)) - Number(a.id.slice(0,12))))
+      // })
     } catch(e) {
       console.log(e)
     }

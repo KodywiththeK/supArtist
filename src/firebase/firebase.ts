@@ -1,10 +1,13 @@
 import { initializeApp } from "firebase/app";
+import { getDatabase } from 'firebase/database';
 import { getAuth } from 'firebase/auth'
 import { doc, getFirestore, updateDoc, deleteDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { collection, getDocs } from "firebase/firestore";
-import { ProjectType } from "../recoil/recruitment";
-import { UserDataType } from "../recoil/user";
+import { ProjectType } from "../reactQuery/RecruitmentQuery";
+import { UserDataType } from "../reactQuery/userQuery";
+// import { ProjectType } from "../recoil/recruitment";
+// import { UserDataType } from "../recoil/user";
 
 
 
@@ -22,6 +25,7 @@ export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app)
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const database = getDatabase(app);
 
 export const updateDocData = async(key:string, id:string, obj:Partial<ProjectType | UserDataType>) => {
   const docData = doc(db, key, id)

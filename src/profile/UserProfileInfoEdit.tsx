@@ -3,12 +3,15 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from 'react-responsive';
 import DefaultImage from '../images/DefaultProfile.jpeg'
 import { doc, setDoc, updateDoc } from "firebase/firestore";
-import { db, storage } from '../firebase/firebase';
+import { auth, db, deleteDocData, storage, updateDocData } from '../firebase/firebase';
 import { AuthContext } from '../store/AuthContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { getUserData, user } from '../recoil/user';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import useUserQuery from '../reactQuery/userQuery';
+import { EmailAuthProvider, reauthenticateWithCredential, User } from 'firebase/auth';
+import useRecruitmentQuery from '../reactQuery/RecruitmentQuery';
+// import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 
 interface InfoType {
@@ -25,26 +28,97 @@ interface InfoType {
 
 export default function UserProfileInfoEdit() {
 
+  const navigate = useNavigate()
+
+  //auth
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
-  const userData = useRecoilValue(user)
-  const data = userData.find(i => i.id === userId)
-  const setData = useSetRecoilState(user)
+
+  //recoil
+  // const userData = useRecoilValue(user)
+  // const data = userData.find(i => i.id === userId)
+  
+  //react-query
+  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const {isLoading:recruitmentLoading, data:recruitmentData} = useRecruitmentQuery()
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === userId)
+
+  //useStates
   const [info, setInfo] = useState<InfoType>({
-    pic: data?.pic,
-    intro: data?.intro as string,
-    gender: data?.gender as string,
-    bday: data?.bday ? data?.bday as string : `${new Date().getFullYear()-19}-${(new Date().getMonth()+1).toString().padStart(2,'0')}-${new Date().getDate().toString().padStart(2,'0')}`,
-    interest: data?.interest as [],
-    team: data?.team as [],
-    experience: data?.experience as [],
-    heart: data?.heart as [],
-    apply: data?.apply as []
+    pic: curUser?.pic as string,
+    intro: curUser?.intro as string,
+    gender: curUser?.gender as string,
+    bday: curUser?.bday ? curUser?.bday as string : `${new Date().getFullYear()-19}-${(new Date().getMonth()+1).toString().padStart(2,'0')}-${new Date().getDate().toString().padStart(2,'0')}`,
+    interest: curUser?.interest as [],
+    team: curUser?.team as [],
+    experience: curUser?.experience as [],
+    heart: curUser?.heart as [],
+    apply: curUser?.apply as []
   })
   const [experience, setExperience] = useState('')
   const [percent, setPercent] = useState<number | null>(null)
   const [file, setFile] = useState<File>()
 
+  //회원 탈퇴
+  const [pwd, setPwd] = useState('')
+  const user = auth.currentUser;
+  const credential = EmailAuthProvider.credential(
+    user?.email as string, pwd
+  )
+  const onChangeHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setPwd(e.target.value)
+  } 
+  const handleSignOut = async() => {
+    if (user != null) {
+      await deleteDocData('userInfo', userId as string)
+      .then(() => {
+        recruitmentData?.map((post) => {
+          if(post.writer === userId) {
+            deleteDocData('recruitment', post.id)
+          }
+        })
+      })
+      .then(() => {
+        recruitmentData?.map(async(post) => {
+          if(post.applicant.includes(userId as string)) {
+            let applicantArr = post.applicant.filter(i => i !== userId)
+            await updateDocData('recruitment', post.id, {applicant: applicantArr})
+          }
+          if(post.confirmed.includes(userId as string)) {
+            let confirmedArr = post.confirmed.filter(i => i !== userId)
+            await updateDocData('recruitment', post.id, {confirmed: confirmedArr})
+          }
+        })
+      })
+      .then(() => {
+        user?.delete().then(() => {
+          alert('계정이 삭제되었습니다.')
+          navigate('/login')
+        })
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    }
+  }
+
+  const checkOldPwd = () => {
+    reauthenticateWithCredential(user as User, credential)
+      .then(result => {
+        console.log(result)
+        confirm('정말 탈퇴하시겠습니까?')
+        && handleSignOut()
+      }).then(() => {
+
+      })
+      .catch((e) => {
+        console.log(e)
+        alert('잘못된 비밀번호입니다.')
+      })
+  }
+  
+
+  //upload picture file
   useEffect(() => {
     const uploadFile = () => {
       const name = Date.now() + file!.name
@@ -81,7 +155,7 @@ export default function UserProfileInfoEdit() {
     file && uploadFile();
   },[file])
   
-
+  // setInfo
   const onCheckedItem = (checked:boolean, name:string, value:string) => {
     if(checked) {
       if(name==='gender') setInfo({...info, gender: value})
@@ -92,17 +166,23 @@ export default function UserProfileInfoEdit() {
       if(name==='team') setInfo({ ...info, team: info.team.filter(i => i !== value)})
     }
   }
+
   const confirmHandler = async() => {
     try {
       const docInfo = doc(db, 'userInfo', String(userId))
       await updateDoc(docInfo, {...info})
-      const result = await getUserData();
-      setData(result)
-      console.log(result)
+      // const result = await getUserData();
+      // setData(result)
+      // console.log(result)
     } catch(e) {
       console.log(e)
     }
   }
+
+  // media-query
+  const isDefault: boolean = useMediaQuery({
+    query: "(min-width:768px)",
+  });
 
   return (<>
     <h2 className='mt-10 text-2xl font-bold'>프로필 정보</h2>
@@ -114,7 +194,7 @@ export default function UserProfileInfoEdit() {
       className='w-full flex flex-col mt-5'>
       <label className='text-black mt-10 mb-2 text-lg font-semibold'>프로필 사진</label>
       <div className={`flex items-end w-full max-w-[500px] h-44`}>
-        <img src={info.pic ? info.pic : DefaultImage} alt='My picture' className='w-40 h-40 shrink-0 object-cover mr-5 border border-[#9ec08c] rounded-[100%]'/>
+        <img src={info.pic} alt='My picture' className='w-40 h-40 shrink-0 object-cover mr-5 border border-[#9ec08c] rounded-[100%]'/>
         <input onChange={(e) => setFile(((e.target as HTMLInputElement).files as FileList)[0])}
           type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" 
           className='block w-full text-sm text-slate-500
@@ -296,6 +376,15 @@ export default function UserProfileInfoEdit() {
         disabled={percent !== null && percent! < 100}
         type='submit' className='btn btn--reverse border border-black mt-10 w-full max-w-[500px] disabled:bg-zinc-500' value='프로필정보 수정 완료' />
     </form>
+    <div className='w-full max-w-[750px] border border-transparent border-b-gray-400 mt-20'></div>
+    <h2 className='mt-16 text-2xl font-bold'>회원 탈퇴</h2>
+    <div className='flex w-full mt-6'>
+      <input className={`${isDefault ? 'w-[70%]' : 'w-full'} max-w-[400px] text-black py-2 px-4 bg-gray-100 border rounded-md border-black outline-none focus:outline-none`}
+        placeholder='비밀번호를 입력해주세요'
+        type='password' onChange={onChangeHandler} value={pwd} />
+      <button className='btn border border-black ml-5 text-sm'
+        onClick={checkOldPwd}>계정 삭제</button>
+    </div>
   </>
   )
 }

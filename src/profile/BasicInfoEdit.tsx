@@ -4,9 +4,9 @@ import { useMediaQuery } from 'react-responsive'
 import ChangePwd from './ChangePwd'
 import { AuthContext } from '../store/AuthContext'
 import { useRecoilState } from 'recoil'
-import { getUserData, user } from '../recoil/user'
 import { updateProfile, User } from 'firebase/auth'
 import { auth, updateDocData } from '../firebase/firebase'
+import useUserQuery, { UserDataType } from '../reactQuery/userQuery'
 
 
 interface dataType {
@@ -22,13 +22,17 @@ export default function BasicInfoEdit() {
   const userInfo = useContext(AuthContext)
   const isGoogle = userInfo?.providerData[0].providerId === 'google.com' ? false : true;
   const { register, formState: { errors }, handleSubmit, resetField } = useForm();
-  const [emailChange, setEmailChange] = useState(false)
+  // const [emailChange, setEmailChange] = useState(false)
+  // const [phoneChange, setPhoneChange] = useState(false)
   const [userNameChange, setUserNameChange] = useState(false)
-  const [phoneChange, setPhoneChange] = useState(false)
 
-  const [userData, setUserData] = useRecoilState(user)
-  const curUser = userData.find(i => i.id === userInfo?.uid)
-  console.log(curUser)
+  // 리코일
+  // const [_, setUserData] = useRecoilState(user)
+  
+  // react-query
+  const {data, isLoading} = useUserQuery()
+  const userData = data?.map((i) => ({...i})) as UserDataType[]
+  const curUser = userData?.find(i => i.id === userInfo?.uid)
 
   const nameSubmit: SubmitHandler<Partial<dataType>> = (data) => {
     if(userData.find(i => i.name === data.name)===undefined) {
@@ -38,9 +42,9 @@ export default function BasicInfoEdit() {
       }).then(() => {
         console.log('profile updated')
         updateDocData('userInfo', userInfo?.uid as string, {name: data.name})
-      }).then(async () => {
-        const userResult = await getUserData();
-        setUserData(userResult)
+      }).then(() => {
+        // const userResult = await getUserData();
+        // setUserData(userResult)
         alert('사용자 이름이 변경 완료되었습니다.')
         resetField('name')
         setUserNameChange(false)

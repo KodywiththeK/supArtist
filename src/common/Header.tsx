@@ -10,7 +10,8 @@ import { Default, Mobile } from '../mediaQuery'
 import { useMediaQuery } from 'react-responsive'
 import { useRecoilState } from 'recoil'
 import { sorting, sortingDefaultValue } from '../recoil/sorting'
-import { recruitment } from '../recoil/recruitment'
+import useUserQuery from '../reactQuery/userQuery'
+import useRecruitmentQuery, { ProjectType } from '../reactQuery/RecruitmentQuery'
 
 
 // #41523c
@@ -28,7 +29,10 @@ export default function Header() {
 
   //recoil
   const [sortData, setSortData] = useRecoilState(sorting)
-  const [recruitmentData, setRecruitmentData] = useRecoilState(recruitment)
+
+  //react-query
+  const { isLoading, data, isError, error, refetch } = useRecruitmentQuery()
+  const resultData = data?.map((i) => ({...i})) as ProjectType[]
   
   //profile 창
   const [profile, setProfile] = useState(false)
@@ -47,7 +51,7 @@ export default function Header() {
   }
 
   // 검색 자동완성 data
-  const sortedData = recruitmentData.filter(i => i.title.split(' ').join('').includes(inputValue))
+  const sortedData = resultData?.filter(i => i.title?.split(' ').join('').includes(inputValue))
 
   //로그아웃
   const handleLogout = () => {
@@ -130,8 +134,8 @@ export default function Header() {
                   <div className='w-full max-h-[230px] pr-5 pl-4 overflow-y-scroll'>
                     {sortedData.length > 0 ? 
                       <>
-                      {sortedData.map(data => (
-                      <button onClick={() => {
+                      {sortedData.map((data, index) => (
+                      <button key={index} onClick={() => {
                         setInput(false) 
                         navigate(`/recruitmentDetail/${data.id}`)
                       }}
@@ -185,10 +189,10 @@ export default function Header() {
         {(inputValue && input) && 
         <div className='absolute w-[78%] max-h-[250px] bg-white top-[70px] left-[5%] py-2 rounded'>
           <div className='w-full max-h-[230px] pr-5 pl-4 overflow-y-scroll'>
-            {sortedData.length > 0 ? 
+            {sortedData?.length > 0 ? 
               <>
-              {sortedData.map(data => (
-              <button onClick={() => {
+              {sortedData.map((data, index) => (
+              <button key={index} onClick={() => {
                 setInput(false) 
                 navigate(`/recruitmentDetail/${data.id}`)
               }}

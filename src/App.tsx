@@ -11,16 +11,14 @@ import MyApplication from "./profile/MyApplication";
 import MyWork from "./profile/MyWork";
 import MyProfile from "./profile/MyProfile";
 import ProfileEdit from "./profile/ProfileEdit";
-import { useRecoilState } from "recoil";
-import { getUserData, user, UserDataType } from "./recoil/user";
 import { db } from "./firebase/firebase";
 import Recruitment from "./Recruitment/Recruitment";
 import RecruitmentDetail from './Recruitment/RecruitmentDetail'
 import NewProject from "./Recruitment/NewProject";
-import { getRecruitmentData, recruitment } from "./recoil/recruitment";
 import OtherProfile from "./profile/OtherProfile";
 import ProjectEdit from "./Recruitment/ProjectEdit";
 import SearchResult from "./Recruitment/SearchResult";
+
 
 
 export default function App() {
@@ -28,22 +26,23 @@ export default function App() {
   const userInfo = useContext(AuthContext)
   console.log(userInfo)
 
-  const [userData, setUserData] = useRecoilState(user)
-  const [recruitmentData, setRecruitmentData] = useRecoilState(recruitment)
+  // const [userData, setUserData] = useRecoilState(user)
+  // const [recruitmentData, setRecruitmentData] = useRecoilState(recruitment)
 
-  useEffect(() => {
-    const getData = async() => {
-      const userResult = await getUserData();
-      const recruitmentResult = await getRecruitmentData([]);
-      setUserData(userResult)
-      setRecruitmentData(recruitmentResult)
-    }
-    getData()
-    .then(() => {
-      console.log(userData)
-      console.log(recruitmentData)
-    })
-  },[db.app])
+
+  // useEffect(() => {
+  //   const getData = async() => {
+  //     const userResult = await getUserData();
+  //     const recruitmentResult = await getRecruitmentData([]);
+  //     setUserData(userResult)
+  //     setRecruitmentData(recruitmentResult)
+  //   }
+  //   getData()
+  //   .then(() => {
+  //     console.log(userData)
+  //     console.log(recruitmentData)
+  //   })
+  // },[db.app])
 
   return (
     <>
