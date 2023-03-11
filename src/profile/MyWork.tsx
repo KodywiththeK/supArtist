@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
 import useRecruitmentQuery from '../reactQuery/RecruitmentQuery'
 import useUserQuery from '../reactQuery/userQuery'
@@ -7,6 +7,7 @@ import useUserQuery from '../reactQuery/userQuery'
 export default function MyWork() {
 
   const { profile } = useParams()
+  const navigate = useNavigate()
 
   // recoil
   // const recruitmentData = useRecoilValue(recruitment)
@@ -18,8 +19,13 @@ export default function MyWork() {
 
   return (<>
   <div className='flex flex-col w-full max-w-[700px] pr-10'>
-    <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>내 프로젝트</label>
+    <div className='flex justify-between items-center'>
+      <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>내 프로젝트</label>
+      <button onClick={() => navigate('/newProject')}
+        className='btn border border-black mb-6 mr-10'>프로젝트 생성</button>
+    </div>
     <div className='flex flex-wrap justify-around'>
+    {project?.length !== 0 ? <>
       {project?.map((data, index) => (
         <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
           <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
@@ -35,6 +41,10 @@ export default function MyWork() {
           </div>
         </Link>
       ))}
+      </>
+      :
+      <div className='flex w-full ml-10'>내 프로젝트를 시작해보세요!</div>
+    }
     </div>
   </div>
       </>

@@ -34,21 +34,26 @@ export default function MyProfile() {
       </ul>
       <label className='text-black ml-6 mt-12 mb-10 text-xl font-semibold'>내가 찜한 프로젝트</label>
       <div className='flex flex-wrap justify-around'>
-      {project?.map((data, index) => (
-        <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
-          <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
-            <img
-              src={data.pic}
-              alt='작품 이미지'
-              className="h-[250px] w-[290px] object-cover object-center object-contain group-hover:opacity-75"
-            />
-          </div>
-          <h3 className="mt-4 text-base text-black">{data.title}</h3>
-          <div className="flex justify-between items-center">
-            <p className="mt-1 text-lg font-medium text-gray-900">{`${data.team} ${data.teamNum}명 모집`}</p>
-          </div>
-        </Link>
-      ))}
+      {project?.length!==0 ? <>
+        {project?.map((data, index) => (
+          <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
+            <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
+              <img
+                src={data.pic}
+                alt='작품 이미지'
+                className="h-[250px] w-[290px] object-cover object-center object-contain group-hover:opacity-75"
+              />
+            </div>
+            <h3 className="mt-4 text-base text-black">{data.title}</h3>
+            <div className="flex justify-between items-center">
+              <p className="mt-1 text-lg font-medium text-gray-900">{`${data.team} ${data.teamNum}명 모집`}</p>
+            </div>
+          </Link>
+        ))} 
+        </>
+        :
+        <div className='flex w-full ml-10'>현재 찜한 프로젝트가 없습니다. 관심있는 프로젝트에 하트를 눌러보세요!</div>
+      }
       </div>
     </div>
     </>

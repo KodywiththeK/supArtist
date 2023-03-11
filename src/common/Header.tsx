@@ -173,7 +173,7 @@ export default function Header() {
         </div>
       </div> 
     </div> 
-    <div className={`w-full bg-white ${profile && isDefault ? 'h-[150px]' : 'h-[80px]'} ` }></div>
+    <div className={`w-full bg-white ${(profile && isDefault) ? 'h-[150px]' : 'h-[80px]'} ` }></div>
     <Mobile><>
       <div className={`fixed z-40 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-[-80px] visible' : 'mt-[-160px] invisible'} transition-all`}>
         <input placeholder='모집 공고의 제목을 검색해보세요' 
@@ -220,15 +220,15 @@ export default function Header() {
           onClick={() => {
             navigate(`/${userId}`)
             setProfile(false)
-          }}>내프로필</p>
+          }}>마이페이지</p>
         <p className='btn btn--white w-full py-4 cursor-pointer hover:text-lg' onClick={() => {
           navigate(`/${userId}/myApplication`)
           setProfile(false)
-        }}>지원내역</p>
+        }}>지원 내역</p>
         <p className='btn btn--white w-full py-4 cursor-pointer hover:text-lg' onClick={() => {
           navigate(`/${userId}/myWork`)
           setProfile(false)
-        }}>작품관리</p>
+        }}>프로젝트 관리</p>
         <p className='btn btn--white w-full py-4 cursor-pointer hover:text-lg' onClick={() => {
           handleLogout()
           setProfile(false)

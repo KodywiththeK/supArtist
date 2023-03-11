@@ -57,7 +57,7 @@ export default function Profile() {
       <Default><>
       <div className='fixed w-[40vw] h-screen bg-zinc-800 text-white flex flex-col '>
         <div className='flex items-center justify-center w-[100%] mt-32'>
-          <div className='text-2xl font-bold mb-12'>{`내 프로필`}</div>
+          <div className='text-2xl font-bold mb-12'>{`마이페이지`}</div>
         </div>
         <div className='flex flex-col items-end mr-10'>
           <button onClick={() => navigate(`/${userId}/profileEdit`)}
@@ -72,12 +72,12 @@ export default function Profile() {
           </button>
           <button onClick={() => navigate(`/${userId}/myApplication`)}
             className={`flex items-center justify-between w-[62%] border border-white rounded-xl text-lg btn btn--white ml-[15%] py-4 mb-5 ${location.includes('myApplication') ? 'selected': ''}`}>
-            <div className='flex items-center'><AiFillCheckCircle className='mx-2' />지원내역</div>
+            <div className='flex items-center'><AiFillCheckCircle className='mx-2' />지원 내역</div>
             <div><AiOutlineRight /></div>
           </button>
           <button onClick={() => navigate(`/${userId}/myWork`)}
             className={`flex items-center justify-between w-[62%] border border-white rounded-xl text-lg btn btn--white ml-[15%] py-4 mb-5 ${location.includes('myWork') ? 'selected': ''}`}>
-            <div className='flex items-center'><BsFilm className='mx-2' />작품관리</div>
+            <div className='flex items-center'><BsFilm className='mx-2' />프로젝트 관리</div>
             <div><AiOutlineRight /></div>
           </button>
           <button onClick={handleLogout}

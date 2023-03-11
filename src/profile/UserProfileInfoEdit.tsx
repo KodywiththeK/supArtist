@@ -106,7 +106,7 @@ export default function UserProfileInfoEdit() {
     reauthenticateWithCredential(user as User, credential)
       .then(result => {
         console.log(result)
-        confirm('정말 탈퇴하시겠습니까?')
+        confirm('작성한 모든글과 정보가 삭제됩니다. 정말 탈퇴하시겠습니까?')
         && handleSignOut()
       }).then(() => {
 
