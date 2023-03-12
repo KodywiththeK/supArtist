@@ -17,7 +17,7 @@ export default function ProjectEdit() {
   const userId = userInfo?.uid
 
   const params = useParams()
-  
+
   //recoil
   // const [recruitmentData, setRecruitmentData] = useRecoilState(recruitment)
   // const thisData = recruitmentData.find(i=> i.id === params.id)
@@ -107,7 +107,7 @@ export default function ProjectEdit() {
   }
   return (<>
     <div className='w-full flex flex-col items-center bg-zinc-200'>
-      <h2 className='mt-10 text-2xl font-bold'>프로젝트 수정</h2>
+      <h2 className='mt-180 text-3xl font-bold'>프로젝트 수정</h2>
       <form onSubmit={(e) => {
         e.preventDefault();
         confirmHandler()

@@ -11,12 +11,12 @@ export default function HomeVisual() {
   const userInfo = useContext(AuthContext)
 
   return (
-    <div className={`w-full h-[910px] top-0 transition-all overflow-hidden flex items-end bg-white relative`}>
+    <div className={`w-full h-screen top-0 transition-all overflow-hidden flex items-end bg-white relative`}>
       <video muted autoPlay loop className="w-full h-screen object-cover absolute">
         <source src={homeVideo} type="video/mp4" />
       </video>
       <img src={cover} className='w-full h-[860px] mb-[55px] bg-[#41523c] opacity-40' />
-      <div className='absolute top-[15%] left-[10%] mr-[5%] flex flex-col'>
+      <div className='absolute top-[25%] left-[10%] mr-[5%] flex flex-col'>
         <h1 style={{textShadow: '1px 1px 2px gray'}} 
           className='text-shadow text-6xl text-white font-bold my-8 border-none'>
           영상 스태프는 <br /> Sup-Artist

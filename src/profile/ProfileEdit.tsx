@@ -42,7 +42,7 @@ export default function ProfileEdit() {
     <div className='flex min-h-screen justify-between'>
       <Default><>
       <div className='fixed w-[40vw] min-h-screen bg-zinc-800 text-white flex flex-col '>
-        <div className='flex items-center justify-center w-[100%] mt-32'>
+        <div className='flex items-center justify-center w-[100%] mt-[200px]'>
           <div className='text-2xl font-bold mb-12'>{`마이페이지`}</div>
         </div>
         <div className='flex flex-col items-end mr-10'>
@@ -75,7 +75,7 @@ export default function ProfileEdit() {
       <div className='w-[40vw] min-h-screen'></div></>
       </Default>
       <div className={`${isDefault ? 'w-[60vw]' : 'w-full'} min-h-screen p-16 relative flex flex-col bg-zinc-200`}>
-        <h1 className='mt-5 text-2xl font-extrabold w-full max-w-[740px] pb-6 border border-transparent border-b-zinc-700 '>회원정보 수정</h1>
+        <h1 className='mt-[150px] text-2xl font-extrabold w-full max-w-[740px] pb-6 border border-transparent border-b-zinc-700 '>회원정보 수정</h1>
         <BasicInfoEdit />
         <UserProfileInfoEdit />
       </div>

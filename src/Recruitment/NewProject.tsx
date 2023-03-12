@@ -99,7 +99,7 @@ export default function NewProject() {
   }
   return (<>
     <div className='w-full flex flex-col items-center bg-zinc-200'>
-      <h2 className='mt-10 text-2xl font-bold'>내 프로젝트 생성</h2>
+      <h2 className='mt-[190px] text-3xl font-bold'>내 프로젝트 생성</h2>
       <form onSubmit={(e) => {
         e.preventDefault();
         confirm('프로젝트를 등록하시겠습니까?') &&

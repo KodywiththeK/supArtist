@@ -56,7 +56,7 @@ export default function Profile() {
     <div className='flex min-h-screen justify-between'>
       <Default><>
       <div className='fixed w-[40vw] h-screen bg-zinc-800 text-white flex flex-col '>
-        <div className='flex items-center justify-center w-[100%] mt-32'>
+        <div className='flex items-center justify-center w-[100%] mt-[200px]'>
           <div className='text-2xl font-bold mb-12'>{`마이페이지`}</div>
         </div>
         <div className='flex flex-col items-end mr-10'>
@@ -89,7 +89,7 @@ export default function Profile() {
       <div className='w-[40vw] min-h-screen'></div></>
       </Default>
       <div className={`${isDefault ? 'w-[60vw] pl-[10%] items-start' : 'w-full items-center'} min-h-screen relative flex flex-col bg-zinc-200`}>
-        <div className={`flex ${isDefault ? 'justify-start' : 'justify-center'}  items-center w-full h-52 mt-20 mr-5`}>
+        <div className={`flex ${isDefault ? 'justify-start' : 'justify-center'}  items-center w-full h-52 mt-[170px] mr-5`}>
           <div className={`flex justify-center items-center ${isDefault? 'w-60 mr-10' : 'w-40 mx-10'} h-52 `}>
             <img src={curUser?.pic} alt='My picture' className='w-40 h-40 object-cover border border-[#9ec08c] rounded-[100%]'/>
           </div>

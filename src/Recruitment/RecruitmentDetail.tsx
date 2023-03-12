@@ -119,13 +119,13 @@ export default function RecruitmentDetail() {
         navigate('/recruitment')
         setSortData(sortingDefaultValue)
       }}
-        className="absolute flex items-center justify-center right-[5%] top-10 text-lg font-bold cursor-pointer">
+        className="absolute flex items-center justify-center right-[5%] top-[180px] text-lg font-bold cursor-pointer">
         <span className="mr-2">목륵으로 돌아가기</span>
         <RiArrowGoBackFill />
       </div>
       <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-10 gap-x-8 py-24 px-4 sm:px-6 sm:py-32 lg:max-w-7xl lg:grid-cols-2 lg:px-8">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{thisData?.title}</h2>
+        <div className="mt-[150px]">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl ">{thisData?.title}</h2>
           <p className="mt-4 text-gray-500">{thisData?.intro}</p>
           <dl className="mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
             <div className="border-t border-gray-300 pt-4">
@@ -171,7 +171,7 @@ export default function RecruitmentDetail() {
           <img
             src={thisData?.pic}
             alt="작품 소개 이미지"
-            className="rounded-lg bg-gray-100 drop-shadow-2xl mb-5 w-[550px]"
+            className="rounded-lg bg-gray-100 drop-shadow-2xl mb-5 w-[550px] max-h-[600px] object-cover"
           />
           <div className="flex justify-between max-w-[550px]">
             {curUser?.id !== thisData?.writer ?
