@@ -60,14 +60,14 @@ export default function MyApplication() {
 
   return (<>
   <div className='flex flex-col w-full max-w-[700px]'>
-    <div className='flex justify-between items-center mt-10 sm:mt-0'>
-      <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>지원 내역</label>
+    <div className='flex justify-between items-center mb-4 mt-10 sm:mt-0'>
+      <label className='text-black ml-6 mt-2 text-xl font-semibold'>지원 내역</label>
       <button onClick={() => navigate('/recruitment')}
-        className='btn border border-black mb-6 mr-10'>지원하러 가기</button>
+        className='btn border border-black mr-10'>지원하러 가기</button>
     </div>
-    <div className='flex justify-around items-center w-full max-w-[680px] h-[100px] mb-10 '>
+    <div className='flex justify-around items-center w-full max-w-[680px] mb-10 '>
       <div className='flex justify-around items-center w-full'>
-        <div className='text-lg font-semibold'>필터 :</div>
+        <div className='text-lg'>필터 :</div>
         <label className={`flex flex-col items-center my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition`}>
           <input 
             onChange={(e) => filterHandler(e.target.value)}
@@ -106,7 +106,7 @@ export default function MyApplication() {
                 e.preventDefault();
                 removeHandler(data.id);
               }}
-                className='absolute z-10 top-0 right-0 m-1 p-2 rounded bg-transparent text-white text-xl '>
+                className='absolute z-10 top-0 right-0 m-1 p-2 rounded-[100%] bg-transparent text-white text-xl border border-white '>
                   <BsFillTrashFill />
               </button>}
             </div>

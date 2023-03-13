@@ -54,7 +54,6 @@ export default function RecruitmentDetail() {
     })
     userRefetch()
   }
-  console.log(curUser?.id)
 
   // confirm modal control
   const [confirmModal, setConfirmModal] = useState(false)
@@ -131,19 +130,52 @@ export default function RecruitmentDetail() {
 
   const [showApplicant, setShowApplicant] = useState(false)
 
+  // 댓글달기
+  const [comment, setComment] = useState({
+    id: '',
+    writer: curUser?.id as string,
+    text: '' as string,
+    created: Date.now()
+  })
+  const setCommentHandler = async() => {
+    console.log(comment)
+    await updateDocData('recruitment', thisData?.id as string, {
+      comments: [...thisData.comments, comment].sort((a,b) => b.created - a.created) as {
+        id: string,
+        writer: string,
+        text: string,
+        created: number
+      }[]
+    })
+    recruitmentRefetch();
+  }
+
+  const commentRemoveHandler = async(id: string) => {
+    await updateDocData('recruitment', thisData?.id as string, {
+      comments: thisData.comments.filter(i => i.id !== id).sort((a,b) => b.created - a.created) as {
+        id: string,
+        writer: string,
+        text: string,
+        created: number
+      }[]
+    })
+    recruitmentRefetch();
+  }
+
+
   return (<>
     <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} title={alertTitle} des={alertDes}/>
     <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={confirmBtn}/>
     <div className="bg-zinc-100 relative">
-      <div onClick={() => {
-        navigate('/recruitment')
-        setSortData(sortingDefaultValue)
-      }}
-        className="absolute flex items-center justify-center right-[5%] top-[180px] text-lg font-bold cursor-pointer">
-        <span className="mr-2">목륵으로 돌아가기</span>
-        <RiArrowGoBackFill />
-      </div>
-      <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-10 gap-x-8 py-24 px-4 sm:px-6 sm:py-32 lg:max-w-7xl lg:grid-cols-2 lg:px-8">
+      <div className="relative mx-auto grid max-w-2xl grid-cols-1 items-center gap-y-10 gap-x-8 pt-24 px-4 sm:px-6 sm:pt-32 lg:max-w-7xl lg:px-8 lg:grid-cols-2 ">
+        <div onClick={() => {
+          navigate('/recruitment')
+          setSortData(sortingDefaultValue)
+          }}
+          className="absolute flex items-center justify-center right-[5%] top-[180px] text-lg font-bold cursor-pointer">
+          <span className="mr-2">목륵으로 돌아가기</span>
+          <RiArrowGoBackFill />
+        </div>
         <div className="mt-[150px]">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl ">{thisData?.title}</h2>
           <p className="mt-4 text-gray-500">{thisData?.intro}</p>
@@ -193,7 +225,7 @@ export default function RecruitmentDetail() {
             alt="작품 소개 이미지"
             className="rounded-lg bg-gray-100 drop-shadow-2xl mb-5 w-[550px] max-h-[600px] object-cover"
           />
-          <div className="flex justify-between max-w-[550px]">
+          <div className="flex justify-between max-w-[550px] relative">
             {curUser?.id !== thisData?.writer ?
               <>
               {thisData?.state ? 
@@ -263,6 +295,52 @@ export default function RecruitmentDetail() {
               </>
             } 
           </div>
+        </div>
+      </div>
+      <div className="flex flex-col items-start mx-auto mt-10 max-w-2xl pb-24 px-4 sm:px-6 sm:pb-32 lg:max-w-7xl lg:px-8 ">
+        <div className="w-full max-w-[1200px] h-[1px] border-[0.6px] border-transparent border-b-black mt-10 mb-5"></div>
+        <div className="w-full max-w-[1200px] text-xl font-semibold">댓글</div>
+        <div className="w-full max-w-[1200px] py-5 pr-2">
+          <ul className="pl-5 py-5 rounded-xl bg-white space-y-3 text-slate-500">
+            {thisData?.comments?.map((item, index) => (
+            <div key={index} className='flex justify-between items-center w-full'>
+              <div className="flex items-center">
+                <img onClick={() => item?.writer !== curUser?.id ? navigate(`/other/${item?.writer}`) : navigate(`/${item?.writer}`)}
+                  src={userData?.find(i => i?.id === item?.writer)?.pic} alt='profile' className="w-[45px] h-[45px] object-cover rounded-[50%] mr-4 shrink-0 cursor-pointer hover:scale-[1.1]" />
+                <li className='w-full max-w-[370px]'>{item.text}</li>
+              </div>
+              {item?.writer === curUser.id && <button onClick={(e) => {
+                e.preventDefault();
+                commentRemoveHandler(item?.id)
+                }}
+                className='underline px-2 mr-2'>X</button>}
+            </div>
+            ))}
+          </ul>
+          {thisData.state &&
+          <div className='w-full max-w-full mt-4 h-20 flex items-center justify-end'>
+            <input className="placeholder:italic placeholder:text-slate-400 bg-white w-full max-w-[600px] border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" 
+              onChange={(e) => setComment({
+                ...comment, 
+                id: curUser?.id as string + String(Math.random()),
+                text: e.target.value})}
+              onKeyDown={(e) => {
+                if(e.nativeEvent.isComposing) return;
+                if(e.key==="Enter") {
+                  e.preventDefault();
+                  setCommentHandler();
+                  setComment({...comment, text: ''})
+                }
+              }}
+              value={comment.text} 
+              placeholder='더 궁금한 점들을 댓글로 남겨보세요!' type="text" />
+            <button onClick={(e) => {
+              e.preventDefault();
+              setComment({...comment, text: ''})
+              setCommentHandler();
+            }}
+              className='btn btn--green rounded-lg h-10 w-16 ml-2 p-1'>Post</button>
+          </div>}
         </div>
       </div>
       <Applicants thisData={thisData} showApplicant={showApplicant} setShowApplicant={setShowApplicant} /> 

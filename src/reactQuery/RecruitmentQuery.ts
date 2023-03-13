@@ -20,8 +20,10 @@ export interface ProjectType {
   confirmed: string[],
   comments: {
     id: string,
-    text: string
-  } | null
+    writer: string,
+    text: string,
+    created: number,
+  }[]
 }
 
 

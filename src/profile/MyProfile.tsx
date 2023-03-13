@@ -1,6 +1,8 @@
 import React, { useContext } from 'react'
+import { BsFillTrashFill } from 'react-icons/bs'
 import { Link, useParams } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
+import { updateDocData } from '../firebase/firebase'
 import useRecruitmentQuery from '../reactQuery/RecruitmentQuery'
 import useUserQuery from '../reactQuery/userQuery'
 import { AuthContext } from '../store/AuthContext'
@@ -16,10 +18,19 @@ export default function MyProfile() {
   // const project = recruitmentData.filter(item => heart?.includes(item.id))
 
   //react-query
-  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const {isLoading:userLoading, data:userData, refetch} = useUserQuery()
   const curUser = userData?.map(i => ({...i})).find(i => i.id === userId)
   const {isLoading:recruitmentLoading, data:recruitmentData} = useRecruitmentQuery()
   const project = recruitmentData?.map(i => ({...i})).filter(item => curUser?.heart?.includes(item.id))
+
+  //찜한 아이템 삭제
+  const removeHandler = async(id:string) => {
+    const Arr = curUser?.heart.filter(i => i !== id)
+    await updateDocData('userInfo', curUser?.id as string, {
+      heart: Arr
+    })
+    refetch();
+  }
 
   return (
     <>
@@ -44,6 +55,13 @@ export default function MyProfile() {
                 className="h-[250px] w-[290px] object-cover object-center object-contain group-hover:opacity-75"
               />
               {!data.state && <div className="absolute flex justify-center items-center top-0 h-[250px] w-[290px] rounded-xl bg-black opacity-70 text-white text-3xl font-bold">모집 마감</div>}
+              <button onClick={(e) => {
+                e.preventDefault();
+                removeHandler(data.id);
+              }}
+                className='absolute z-10 top-0 right-0 m-1 p-2 rounded-[100%] bg-transparent text-white text-xl border border-white '>
+                  <BsFillTrashFill />
+              </button>
             </div>
             <h3 className="mt-4 text-base text-black">{data.title}</h3>
             <div className="flex justify-between items-center">

@@ -342,16 +342,16 @@ export default function UserProfileInfoEdit() {
       </div>
       <label className='text-black mt-10 mb-2 text-lg font-semibold'>경력사항</label>
         <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 ">
-        {info.experience?.map((text, index) => (
+          {info.experience?.map((text, index) => (
           <div key={index} className='flex justify-between w-full max-w-[430px]'>
             <li className='w-full max-w-[370px]'>{text}</li>
             <button onClick={(e) => {
               e.preventDefault();
               setInfo({...info, experience:info.experience.filter((_,i) => i !== index)})
               }}
-              className='underline px-2'>삭제</button>
+              className='underline px-2'>X</button>
           </div>
-        ))}
+          ))}
         </ul>
         <div className='w-full max-w-[520px] h-20 flex items-center justify-between'>
           <input className="placeholder:italic placeholder:text-slate-400 bg-zinc-100 w-full max-w-[500px] border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" 

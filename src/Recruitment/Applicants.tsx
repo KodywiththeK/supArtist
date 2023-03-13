@@ -28,7 +28,7 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
   const { refetch } = useRecruitmentQuery()
   const applicantData = userData?.map(i => ({...i})).filter(i => thisData?.applicant.includes(i.id))
   // const project = recruitmentData?.map(i => ({...i})).filter(item => curUser?.heart?.includes(item.id))
-  console.log(applicantData)
+  // console.log(applicantData)
 
 
   const navigate = useNavigate()
