@@ -12,6 +12,7 @@ import { useRecoilState } from 'recoil'
 import { sorting, sortingDefaultValue } from '../recoil/sorting'
 import useUserQuery from '../reactQuery/userQuery'
 import useRecruitmentQuery, { ProjectType } from '../reactQuery/RecruitmentQuery'
+import ConfirmModal from './ConfirmModal'
 
 
 // #41523c
@@ -53,12 +54,23 @@ export default function Header() {
   // 검색 자동완성 data
   const sortedData = resultData?.filter(i => i.title?.split(' ').join('').includes(inputValue))
 
+  //Confirm Modal Control
+  const [title, setTitle] = useState('비회원 제한')
+  const [des, setDes] = useState('먼저 로그인하셔야 합니다. 로그인하시겠습니까?')
+  const [btn, setBtn] = useState('로그인 페이지로 이동')
+  const [confirmModal, setConfirmModal] = useState(false)
+  const getModalAnswer = (answer:boolean) => {
+    if(answer) {
+      title==='Access control' ? navigate('/login') : signOut(auth).then(() => navigate('/login'))
+    }
+  }
+
   //로그아웃
   const handleLogout = () => {
-    if(confirm('로그아웃 하시겠습니까?') ) {
-      signOut(auth)
-      .then(() => navigate('/login'))
-    }
+    setTitle('로그아웃 알림')
+    setDes('로그아웃 하시겠습니까?')
+    setBtn('로그아웃')
+    setConfirmModal(true)
   }
 
   //media Query
@@ -67,6 +79,7 @@ export default function Header() {
   });
 
   return (<>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={btn}/>
     <div className={`fixed z-30 w-full h-[80px] bg-black  flex justify-center`}> {/* bg-[#f6f5f0] */}
       <div className='w-full max-w-screen-xl h-full px-2 flex justify-between items-center'>
         <div className='flex items-center w-[70%] h-full'>
@@ -78,7 +91,7 @@ export default function Header() {
             </button>
             <button onClick={() => {
               if(userInfo === null) {
-                confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+                setConfirmModal(true)
               } else {
               setSortData(sortingDefaultValue)
               setInputValue('')
@@ -111,18 +124,18 @@ export default function Header() {
               <BiSearch tabIndex={1}
                 onClick={() => {
                 if(userInfo === null) {
-                  confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+                  setConfirmModal(true)
                 } else {
                   inputRef.current?.focus()
                   inputHandler()
                 }
               }}
-                className='mr-3 ml-[-40px] box-content rounded-3xl p-2 cursor-pointer'/>
+                className='mr-3 ml-[-40px] box-content rounded-3xl p-2 cursor-pointer focus:outline-none'/>
               </></Default>
               <Mobile>
               <BiSearch onClick={() => {
                 if(userInfo === null) {
-                  confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+                  setConfirmModal(true)
                 } else inputHandler()
               }}
                 className='mr-3 bg-white box-content rounded-xl p-2 cursor-pointer'/>
@@ -160,7 +173,7 @@ export default function Header() {
           <div className='w-24 flex justify-start mt-[-5px] text-2xl rounded-2xl btn btn--white border-white'
             onClick={() => {
               if(userInfo === null) {
-                confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+                setConfirmModal(true)
               } else setProfile(!profile)
             }}
           >

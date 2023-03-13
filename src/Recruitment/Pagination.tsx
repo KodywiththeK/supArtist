@@ -25,7 +25,7 @@ export default function Pagination({resultData, postsPerPage, curPage, setCurPag
 
   return (
     <div className="w-full flex items-center justify-center border-t border-gray-200 bg-zinc-200 px-4 py-3 mt-10 sm:px-6">
-      <div className="flex w-full justify-between items-center sm:flex sm:flex-1 sm:items-center sm:justify-between">
+      <div className="flex w-full justify-between items-center flex-col sm:flex-row sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
           <p className="text-base text-gray-700">
             {'총 '}<span className="font-medium">{resultData?.length}</span>{' 개의 결과 중, '}

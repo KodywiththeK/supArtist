@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil'
 import { updateProfile, User } from 'firebase/auth'
 import { auth, updateDocData } from '../firebase/firebase'
 import useUserQuery, { UserDataType } from '../reactQuery/userQuery'
+import ConfirmModal from '../common/ConfirmModal'
+import AlertModal from '../common/AlertModal'
 
 
 interface dataType {
@@ -34,32 +36,57 @@ export default function BasicInfoEdit() {
   const userData = data?.map((i) => ({...i})) as UserDataType[]
   const curUser = userData?.find(i => i.id === userInfo?.uid)
 
+  // confirm modal control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const [nameData, setNameData] = useState<Partial<dataType> | null>(null)
+  const getModalAnswer = (answer:boolean) => {
+    console.log(nameData)
+    answer && nameDataHandler(nameData as Partial<dataType>)
+  }
+  const confirmTitle = '사용자 이름 변경'
+  const confirmDes = '사용 가능한 이름입니다. 변경하시겠습니까?'
+  const confirmBtn = '변경하기'
+
+  // Alert modal control
+  const [alertModal, setAlertModal] = useState(false)
+  const alertTitle = '사용자 이름 변경'
+  const [alertDes, setAlertDes] = useState('')
+
+  // nameSubmit
   const nameSubmit: SubmitHandler<Partial<dataType>> = (data) => {
     if(userData.find(i => i.name === data.name)===undefined) {
-      confirm('사용 가능한 이름입니다. 변경하시겠습니까?') &&
-      updateProfile(auth.currentUser as User, {
-        displayName: data.name
-      }).then(() => {
-        console.log('profile updated')
-        updateDocData('userInfo', userInfo?.uid as string, {name: data.name})
-      }).then(() => {
-        // const userResult = await getUserData();
-        // setUserData(userResult)
-        alert('사용자 이름이 변경 완료되었습니다.')
-        resetField('name')
-        setUserNameChange(false)
-      })
-      .catch((e) => {
-        console.log(e)
-      })
+      //모달창 열기
+      setConfirmModal(true)
+      setNameData(data)
     } else {
-      alert('이미 사용중인 사용자가 있습니다. 다른 이름을 사용해주세요.')
+      setAlertDes('이미 사용중인 사용자가 있습니다. 다른 이름을 사용해주세요.')
+      setAlertModal(true)
       resetField('name')
     }
   } 
+  const nameDataHandler = (data:Partial<dataType>) => {
+    updateProfile(auth.currentUser as User, {
+      displayName: data?.name
+    }).then(() => {
+      console.log('profile updated')
+      updateDocData('userInfo', userInfo?.uid as string, {name: data?.name})
+    }).then(() => {
+      // const userResult = await getUserData();
+      // setUserData(userResult)
+      setAlertDes('사용자 이름이 변경 완료되었습니다.')
+      setAlertModal(true)
+      resetField('name')
+      setUserNameChange(false)
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+  }
 
 
   return (<>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={confirmTitle} des={confirmDes} confirmBtn={confirmBtn}/>
+    <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} title={alertTitle} des={alertDes}/>
     <h2 className='mt-10 text-2xl font-bold'>기본 정보</h2>
     <div className='w-full flex flex-col mt-5'>
         <label className='text-black mt-6 mb-2 text-lg font-semibold'>이메일</label>

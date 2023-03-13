@@ -6,6 +6,8 @@ import { BsFileCheck } from "react-icons/bs"
 import { RiArrowGoBackFill } from "react-icons/ri"
 import { useNavigate, useParams } from "react-router-dom"
 import { useRecoilState, useRecoilValue } from "recoil"
+import AlertModal from "../common/AlertModal"
+import ConfirmModal from "../common/ConfirmModal"
 import { db, deleteDocData, updateDocData } from "../firebase/firebase"
 import useRecruitmentQuery, { ProjectType } from "../reactQuery/RecruitmentQuery"
 import useUserQuery, { UserDataType } from "../reactQuery/userQuery"
@@ -53,59 +55,75 @@ export default function RecruitmentDetail() {
     userRefetch()
   }
   console.log(curUser?.id)
-  const applyHandler = async(e:React.MouseEvent) => {
-    e.preventDefault();
-    if(thisData?.applicant.includes(curUser?.id)) {
-      alert('이미 지원하신 공고입니다.')
-    } else {
-      if(confirm(`${thisData?.schedule}에 촬영하는 작품 (${thisData?.title})에 (${thisData?.team})으로 지원합니다. 확인을 누르시면 취소하실 수 없으며, 작성자가 심사 후 결과를 알려드립니다.`)) {
-        let userApplyArr = [...curUser?.apply, {id: thisData?.id, state : null}]as {id:string, state:null|boolean}[]
-        let recruitmentApplicantArr = [...thisData?.applicant, curUser?.id]as string[]
-        await updateDocData('userInfo', curUser?.id as string, {apply: userApplyArr})
-        userRefetch();
-        // .then(async() => {
-        //   const userResult = await getUserData();
-        //   setUserData(userResult)
-        // })
-        await updateDocData('recruitment', thisData.id as string, {applicant: recruitmentApplicantArr})
-        recruitmentRefetch();
-        // .then(async() => {
-        //   const recruitmentResult = await getRecruitmentData([]);
-        //   setRecruitmentData(recruitmentResult)
-        // })
-      }
+
+  // confirm modal control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const title = curUser?.id === thisData?.writer ? '프로젝트 삭제' : '프로젝트 지원'
+  const des = curUser?.id === thisData?.writer ? '정말 삭제하시겠습니까?' : `${thisData?.schedule}에 촬영하는 작품 (${thisData?.title})에 (${thisData?.team})으로 지원합니다. 지원하시면 다시 취소하실 수 없으며, 프로젝트의 작성자가 심사 후 결과를 알려드립니다.`
+  const confirmBtn = curUser?.id === thisData?.writer ? '삭제' : '지원하기'
+  const getModalAnswer = (answer:boolean) => {
+    if(answer) {
+      title === '프로젝트 삭제' ? handleProjectRemove() : applyHandler()
     }
   }
+
+  // Alert modal control
+  const [alertModal, setAlertModal] = useState(false)
+  const alertTitle = '지원 완료'
+  const alertDes = '이미 지원하신 공고입니다.'
+
+
+  // 프로젝트 지원
+  const applyHandler = async() => {
+    if(thisData?.applicant.includes(curUser?.id)) {
+      setAlertModal(true)
+    } else {
+      let userApplyArr = [...curUser?.apply, {id: thisData?.id, state : null}]as {id:string, state:null|boolean}[]
+      let recruitmentApplicantArr = [...thisData?.applicant, curUser?.id]as string[]
+      await updateDocData('userInfo', curUser?.id as string, {apply: userApplyArr})
+      userRefetch();
+      // .then(async() => {
+      //   const userResult = await getUserData();
+      //   setUserData(userResult)
+      // })
+      await updateDocData('recruitment', thisData.id as string, {applicant: recruitmentApplicantArr})
+      recruitmentRefetch();
+      // .then(async() => {
+      //   const recruitmentResult = await getRecruitmentData([]);
+      //   setRecruitmentData(recruitmentResult)
+      // })
+    }
+  }
+
+  //프로젝트 삭제
   const handleProjectRemove = async() => {
     try {
-      if(confirm('정말 삭제하시겠습니까?')) {
-        await deleteDocData('recruitment', thisData?.id as string)
-        .then(() => {
-          userData?.map(i => (
-            i.apply.filter(j => j.id !== thisData?.id as string)
-          ))
-          userData?.map(i => (
-            i.heart.filter(j => j !== thisData?.id as string)
-          ))
-        })
-        .then(() => {
-          userData?.map( async i => (
-            await updateDocData('userInfo', i.id as string, {
-              apply: i.apply,
-              heart: i.heart
-            })
-          ))
-        })
-        .then(async() => {
-          // const userResult = await getUserData();
-          // const recruitmentResult = await getRecruitmentData([]);
-          // setUserData(userResult)
-          // setRecruitmentData(recruitmentResult)
-          userRefetch();
-          alert('삭제 완료되었습니다.')
-          navigate('/recruitment')
-        })
-      } else return;
+      await deleteDocData('recruitment', thisData?.id as string)
+      .then(() => {
+        userData?.map(i => (
+          i.apply.filter(j => j.id !== thisData?.id as string)
+        ))
+        userData?.map(i => (
+          i.heart.filter(j => j !== thisData?.id as string)
+        ))
+      })
+      .then(() => {
+        userData?.map( async i => (
+          await updateDocData('userInfo', i.id as string, {
+            apply: i.apply,
+            heart: i.heart
+          })
+        ))
+      })
+      .then(async() => {
+        // const userResult = await getUserData();
+        // const recruitmentResult = await getRecruitmentData([]);
+        // setUserData(userResult)
+        // setRecruitmentData(recruitmentResult)
+        userRefetch();
+        alert('삭제 완료되었습니다.')
+        navigate('/recruitment')
+      })
     } catch(error) {
       console.error(error)
     }
@@ -113,7 +131,9 @@ export default function RecruitmentDetail() {
 
   const [showApplicant, setShowApplicant] = useState(false)
 
-  return (
+  return (<>
+    <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} title={alertTitle} des={alertDes}/>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={confirmBtn}/>
     <div className="bg-zinc-100 relative">
       <div onClick={() => {
         navigate('/recruitment')
@@ -197,13 +217,19 @@ export default function RecruitmentDetail() {
                 }
                 
                 {thisData?.applicant.includes(curUser?.id) ? 
-                  <button onClick={applyHandler}
+                  <button onClick={(e) => {
+                    e.preventDefault()
+                    applyHandler()
+                  }}
                     className="btn btn--reverse flex justify-center items-center w-full border border-black ml-2">
                     <span>지원 완료</span>
                     <AiOutlineCheck className="ml-2 text-xl"/>
                   </button> 
                   : 
-                  <button onClick={applyHandler}
+                  <button onClick={(e) => {
+                    e.preventDefault();
+                    setConfirmModal(true)
+                  }}
                     className="btn flex justify-center items-center w-full border border-black ml-2">
                     <span>바로 지원하기</span>
                     <AiOutlineCheck className="ml-2 text-xl"/>
@@ -229,7 +255,7 @@ export default function RecruitmentDetail() {
                   className="btn flex justify-center items-center w-full h-[40px] border border-black ml-1 mb-1">
                   <span>프로젝트 수정</span>
                 </button>
-                <button onClick={() => handleProjectRemove()}
+                <button onClick={() => setConfirmModal(true)}
                   className="btn flex justify-center items-center w-full h-[40px] border border-black ml-1 mt-1">
                   <span>삭제</span>
                 </button>
@@ -241,5 +267,5 @@ export default function RecruitmentDetail() {
       </div>
       <Applicants thisData={thisData} showApplicant={showApplicant} setShowApplicant={setShowApplicant} /> 
     </div>
-  )
+  </>)
 }

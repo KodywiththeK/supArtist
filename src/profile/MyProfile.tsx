@@ -23,9 +23,9 @@ export default function MyProfile() {
 
   return (
     <>
-    <div className='flex flex-col w-full max-w-[700px] pr-10'>
+    <div className='flex flex-col w-full max-w-[700px]'>
       <label className='text-black ml-6 my-4 text-xl font-semibold'>경력사항</label>
-      <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 text-xl w-full max-w-[600px]">
+      <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 text-lg sm:text-xl w-full max-w-[600px]">
         {curUser?.experience.map((t,i) => (
           <div key={i} className='flex justify-between mx-10 my-2 w-full'>
             <li className='w-full'>{t}</li>
@@ -43,6 +43,7 @@ export default function MyProfile() {
                 alt='작품 이미지'
                 className="h-[250px] w-[290px] object-cover object-center object-contain group-hover:opacity-75"
               />
+              {!data.state && <div className="absolute flex justify-center items-center top-0 h-[250px] w-[290px] rounded-xl bg-black opacity-70 text-white text-3xl font-bold">모집 마감</div>}
             </div>
             <h3 className="mt-4 text-base text-black">{data.title}</h3>
             <div className="flex justify-between items-center">

@@ -12,6 +12,7 @@ import Pagination from "./Pagination"
 import useRecruitmentQuery, { ProjectType } from "../reactQuery/RecruitmentQuery"
 import useUserQuery, { UserDataType } from "../reactQuery/userQuery"
 import { useMutation } from "react-query"
+import { useMediaQuery } from "react-responsive"
 
 
 export interface sortDataType {
@@ -66,6 +67,11 @@ export default function Recruitment() {
   const lastPostIdx = curPage * postsPerPage
   const firstPostIdx = lastPostIdx - postsPerPage
 
+  // media-query
+  const isDefault: boolean = useMediaQuery({
+    query: "(min-width:768px)",
+  });
+
 
   return (
     <div className="relative bg-zinc-200 min-h-screen">
@@ -73,7 +79,7 @@ export default function Recruitment() {
       <div className="flex flex-col items-center mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-center text-[40px] font-bold mt-[85px] pb-4 px-10 border-[0.8px] border-transparent border-b-black">Recruitments</h2>
         <div onClick={() => setFilter(true)}
-          className="flex items-center justify-end w-full mb-5 text-2xl font-bold cursor-pointer">
+          className={`flex items-center justify-end w-full mb-5 text-2xl font-bold cursor-pointer ${!isDefault && 'mt-10'}`}>
           <span className="mr-2">Filter</span>
           <HiAdjustmentsHorizontal />
         </div>

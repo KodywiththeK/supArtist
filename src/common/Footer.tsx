@@ -78,9 +78,9 @@ export default function Footer() {
       <div className='mt-3 text-[#666666] font-bold text-sm mr-1'>{`© ${(new Date).getFullYear()} Sup-Artist Company. All Rights Reserved.`}</div>
     </div>
     <div className='z-50 fixed bottom-0 w-full '>
-      <div className='flex justify-between items-center w-full h-20 bg-[#f6f5f0] flex-1'>
+      <div className='flex justify-between items-center w-full h-[90px] bg-[#f6f5f0] flex-1'>
         <button onClick={() => navigate('/')}
-          className='flex flex-col w-full justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/3 transition'>
           <AiFillHome className='text-2xl mt-3'/>
           <span>홈</span>
         </button>
@@ -88,7 +88,7 @@ export default function Footer() {
           if(userInfo === null) {
             confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
           } else navigate('/recruitment')}}
-          className='flex flex-col w-full justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/3 transition'>
           <BsCardChecklist className='text-2xl mt-3'/>
           <span>모집공고</span>  
         </button>
@@ -97,7 +97,7 @@ export default function Footer() {
             confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
           } else navigate(`/${userId}`)
           }}
-          className='flex flex-col w-full justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/3 transition'>
           <BsFillPersonFill className='text-2xl mt-3'/>
           <span>프로필</span>
         </button>

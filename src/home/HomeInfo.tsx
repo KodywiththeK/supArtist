@@ -68,7 +68,7 @@ export default function HomeInfo() {
   });
 
   return (<>
-    <div className={`${isDefault ? '' : 'items-center flex-col py-5' }w-full h-screen relative flex items-center bg-[#edf1d6] justify-around`}> 
+    <div className={`${isDefault ? '' : 'items-center flex-col py-5' }w-[100vw] h-screen relative flex items-center bg-[#edf1d6] justify-around`}> 
       <img ref={boxRef[0]} src={subject} alt='subject' className={`${isDefault ? 'h-[70vh]' : 'h-[50vh] mt-20' } ml-10 drop-shadow-[0_25px_25px_rgba(0,0,0,0.25)]`}/>
       <div ref={boxRef[2]} className={`${isDefault ? "ml-10 mr-[5%]" : 'mx-5 h-[50vh] w-[80vw]'} flex flex-col`}>
         <h1 style={{textShadow: '1px 1px 2px gray'}} 
@@ -84,7 +84,7 @@ export default function HomeInfo() {
         </div>
       </div>
     </div>
-    <div className={`${isDefault ? '' : 'items-center flex-col-reverse py-5' } w-full h-screen relative flex items-center bg-[#41523c] justify-around`}>
+    <div className={`${isDefault ? '' : 'items-center flex-col-reverse py-5' } w-[100vw] h-screen relative flex items-center bg-[#41523c] justify-around`}>
       <div ref={boxRef[3]} className={`${isDefault ? 'ml-10 mr-[5%]' : 'mx-5 h-[50vh] w-[80vw]'} flex flex-col`}>
         <h1 style={{textShadow: '1px 1px 2px gray'}} 
           className={`text-shadow ${isDefault? 'text-6xl' : 'text-4xl'} text-[#edf1d6] font-bold my-5 border-none break-keep`}>

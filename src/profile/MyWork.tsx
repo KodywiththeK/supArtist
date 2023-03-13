@@ -18,9 +18,9 @@ export default function MyWork() {
   const project = recruitmentData?.map(i => ({...i})).filter(item => item.writer === profile)
 
   return (<>
-  <div className='flex flex-col w-full max-w-[700px] pr-10'>
-    <div className='flex justify-between items-center'>
-      <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>내 프로젝트</label>
+  <div className='flex flex-col w-full max-w-[700px]'>
+    <div className='flex justify-between items-center mt-10 sm:mt-0'>
+      <label className='text-black ml-6 mt-2 mb-10 text-xl font-semibold'>프로젝트</label>
       <button onClick={() => navigate('/newProject')}
         className='btn border border-black mb-6 mr-10'>프로젝트 생성</button>
     </div>
@@ -34,6 +34,7 @@ export default function MyWork() {
               alt='작품 이미지'
               className="h-[250px] w-[290px] object-cover object-center object-contain group-hover:opacity-75"
               />
+            {!data.state && <div className="absolute flex justify-center items-center top-0 h-[250px] w-[290px] rounded-xl bg-black opacity-70 text-white text-3xl font-bold">모집 마감</div>}
           </div>
           <h3 className="mt-4 text-base text-black">{data.title}</h3>
           <div className="flex justify-between items-center">

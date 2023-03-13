@@ -4,6 +4,9 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
 import { signInWithGoogle } from './googleLogin';
+import ConfirmModal from '../common/ConfirmModal';
+import AlertModal from '../common/AlertModal';
+import { useState } from 'react';
 
 interface loginType {
   email: string,
@@ -24,47 +27,63 @@ const LoginForm = (props:LoginFormPropsType) => {
 
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm<loginType>();
+
+  // confirm modal control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const getModalAnswer = (answer:boolean) => {
+    console.log(answer)
+    answer && props.setForm
+  }
+  const confirmTitle = '로그인 오류'
+  const confirmDes = '로그인 정보가 없거나 올바르지 않습니다. 회원가입 하시겠습니까?'
+  const confirmBtn = '회원가입하기'
+
+  // Alert modal control
+  const [alertModal, setAlertModal] = useState(false)
+  const alertTitle = '알림'
+  const [alertDes, setAlertDes] = useState('')
+
   const onSubmit: SubmitHandler<loginType> = (data) => {
     signInWithEmailAndPassword(auth, data.email, data.password)
-      .then(() => {
-        alert('로그인 되었습니다.')
-      })
       .then(() => {
         navigate('/')
       })
       .catch(() => {
-        confirm('로그인 정보가 없거나 올바르지 않습니다. 회원가입 하시겠습니까?')
-          && props.setForm(false)
+        setConfirmModal(true)
       })
   }; 
   const resetPasswordRequest: SubmitHandler<setPwdType> = (data) => {
     sendPasswordResetEmail(auth, data.email)
       .then(() => {
-        alert('비밀번호 재설정 이메일이 발송되었습니다. 해당 메일함을 확인하세요.')
+        setAlertDes('비밀번호 재설정 이메일이 발송되었습니다. 해당 메일함을 확인하세요.')
+        setAlertModal(true)
         props.setForgotPwd(true)
       })
       .catch(e => {
         if (e.code === 'auth/user-not-found') {
-          alert('User not found');
+          setAlertDes('해당 이메일로 가입된 사용자를 찾을 수 없습니다.');
+          setAlertModal(true)
         } else {
-          alert('There was a problem with your request');
+          setAlertDes('요청에 문제가 생겼습니다. 잠시 후 다시 시도하세요.');
+          setAlertModal(true)
         }
       })
   }
 
   const handleGoogleLogin = async() => {
     await signInWithGoogle()
-    .then(() => alert('로그인 되었습니다.'))
     .then(() => navigate('/'))
   }
 
 
   return (
     <>
+      <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={confirmTitle} des={confirmDes} confirmBtn={confirmBtn}/>
+      <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} title={alertTitle} des={alertDes}/>
       <div className='w-full max-w-sm flex flex-col items-center'>
         <div className='w-full flex flex-col mb-10'>
-          <h3 className='text-3xl font-semibold mb-4'>{props.isForgotPwd ? 'Login' : 'Password Reset'}</h3>
-          <div className='text-base mb-2'>{props.isForgotPwd ? 'Welcome! Please enter your details.' : 'Write your Email to reset the password'}</div>
+          <h3 className='text-3xl font-semibold mb-4'>{props.isForgotPwd ? '로그인' : '비밀번호 재설정'}</h3>
+          <div className='text-base mb-2'>{props.isForgotPwd ? '회원정보를 입력해주세요.' : '비밀번호 재설정을 위해, 가입하셨던 이메일을 입력해주세요.'}</div>
         </div>
 
         <form className='w-full flex flex-col'

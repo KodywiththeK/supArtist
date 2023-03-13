@@ -1,10 +1,11 @@
 import { signOut } from 'firebase/auth'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { AiFillCheckCircle, AiFillSetting, AiOutlineLogout, AiOutlineOrderedList, AiOutlineRight } from 'react-icons/ai'
 import { BsFilm } from 'react-icons/bs'
 import { useMediaQuery } from 'react-responsive'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useRecoilValue } from 'recoil'
+import ConfirmModal from '../common/ConfirmModal'
 import { auth } from '../firebase/firebase'
 import { Default } from '../mediaQuery'
 import useUserQuery from '../reactQuery/userQuery'
@@ -13,13 +14,21 @@ import BasicInfoEdit from './BasicInfoEdit'
 import UserProfileInfoEdit from './UserProfileInfoEdit'
 
 export default function ProfileEdit() {
-
+  
   const navigate = useNavigate()
+  
+  //Confirm Modal Control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const getModalAnswer = (answer:boolean) => {
+    console.log(answer)
+    answer && signOut(auth).then(() => navigate('/login'))
+  }
+  const loginTitle = '로그아웃 알림'
+  const loginDes = '로그아웃 하시겠습니까?'
+  const confirmBtn = '로그아웃'
+
   const handleLogout = () => {
-    if(confirm('로그아웃 하시겠습니까?') ) {
-      signOut(auth)
-      .then(() => navigate('/'))
-    }
+    setConfirmModal(true)
   }
 
   //auth
@@ -38,7 +47,8 @@ export default function ProfileEdit() {
     query: "(min-width:768px)",
   });
 
-  return (
+  return (<>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={loginTitle} des={loginDes} confirmBtn={confirmBtn}/>
     <div className='flex min-h-screen justify-between'>
       <Default><>
       <div className='fixed w-[40vw] min-h-screen bg-zinc-800 text-white flex flex-col '>
@@ -80,5 +90,5 @@ export default function ProfileEdit() {
         <UserProfileInfoEdit />
       </div>
     </div>
-  )
+  </>)
 }

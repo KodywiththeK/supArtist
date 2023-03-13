@@ -85,7 +85,7 @@ export default function Filter(props: FilterPropsType) {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <div className="absolute top-[85px] left-0 ml-8 flex pt-4 pr-2 sm:-ml-10 sm:pr-4">
+                    <div className="fixed top-[85px] left-0 -ml-8 flex pt-4 pr-2 sm:-ml-10 sm:pr-4">
                       <button
                         type="button"
                         className="rounded-md text-white font-extrabold ring-2 ring-white"
@@ -143,49 +143,49 @@ export default function Filter(props: FilterPropsType) {
                       </div>
                       <div className='flex flex-col mb-5'>
                         <label className='text-xl font-semibold mb-2'>장르별</label>
-                        <div className='flex justify-around'>
-                          <label className={`flex flex-col items-center mx-3 my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('영화') ? 'border border-zinc-500' : ''}`}>
+                        <div className='flex justify-around w-full'>
+                          <label className={`flex flex-col items-center my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('영화') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='genre' value='영화'/>
-                            <GiFilmSpool className='text-[40px]'/>
+                            <GiFilmSpool className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>영화</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-3 my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('드라마') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('드라마') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='genre' value='드라마'/>
-                            <FaTheaterMasks className='text-[40px]'/>
+                            <FaTheaterMasks className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>드라마</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-3 my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('광고') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('광고') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='genre' value='광고'/>
-                            <RiAdvertisementFill className='text-[40px]'/>
+                            <RiAdvertisementFill className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>광고</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-3 my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('방송') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('방송') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='genre' value='방송'/>
-                            <BsBroadcast className='text-[40px]'/>
+                            <BsBroadcast className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>방송</span>
                           </label>
                         </div>
                         <div className='flex justify-around'>
-                          <label className={`flex flex-col items-center mx-3 my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('뮤직비디오') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('뮤직비디오') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='genre' value='뮤직비디오'/>
-                            <SiApplemusic className='text-[40px]'/>
+                            <SiApplemusic className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>뮤직비디오</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-3 my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('유튜브') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('유튜브') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='genre' value='유튜브'/>
-                            <TfiYoutube className='text-[40px]'/>
+                            <TfiYoutube className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>유튜브</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-3 my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('웹드라마') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-3 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.genre.includes('웹드라마') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='genre' value='웹드라마'/>
-                            <SiWebtoon className='text-[40px]'/>
+                            <SiWebtoon className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>웹드라마</span>
                           </label>
                         </div>
@@ -193,34 +193,34 @@ export default function Filter(props: FilterPropsType) {
                       <div className='flex flex-col mb-5'>
                         <label className='text-xl font-semibold mb-2'>모집 파트</label>
                         <div className='flex justify-around'>
-                          <label className={`flex flex-col items-center mx-1 my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('연출팀') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('연출팀') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='team' value='연출팀'/>
-                            <BiSupport className='text-[35px]'/>
+                            <BiSupport className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>연출팀</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-1 my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('아트팀') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('아트팀') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='team' value='아트팀'/>
-                            <GiPalette className='text-[35px]'/>
+                            <GiPalette className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>아트팀</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-1 my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('조명팀') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('조명팀') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='team' value='조명팀'/>
-                            <IoMdFlashlight className='text-[35px]'/>
+                            <IoMdFlashlight className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>조명팀</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-1 my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('의상팀') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('의상팀') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='team' value='의상팀'/>
-                            <GiLargeDress className='text-[35px]'/>
+                            <GiLargeDress className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>의상팀</span>
                           </label>
-                          <label className={`flex flex-col items-center mx-1 my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('보조출연') ? 'border border-zinc-500' : ''}`}>
+                          <label className={`flex flex-col items-center my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition ${sortData.team.includes('보조출연') ? 'border border-zinc-500' : ''}`}>
                             <input onChange={(e) => onChangeHandler(e, e.target.name, e.target.value)}
                               className='hidden' type='checkbox' name='team' value='보조출연'/>
-                            <BsPeopleFill className='text-[35px]'/>
+                            <BsPeopleFill className='sm:text-[35px] text-[30px]'/>
                             <span className='text-sm'>보조출연</span>
                           </label>
                         </div>

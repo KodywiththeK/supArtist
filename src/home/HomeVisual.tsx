@@ -3,6 +3,7 @@ import homeVideo from '../images/filmVideo.mp4'
 import cover from '../images/videoCover.png'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../store/AuthContext'
+import ConfirmModal from '../common/ConfirmModal'
 
 
 export default function HomeVisual() {
@@ -10,10 +11,20 @@ export default function HomeVisual() {
   const navigate = useNavigate()
   const userInfo = useContext(AuthContext)
 
-  return (
-    <div className={`w-full h-screen top-0 transition-all overflow-hidden flex items-end bg-white relative`}>
-      <video muted autoPlay loop className="w-full h-screen object-cover absolute">
-        <source src={homeVideo} type="video/mp4" />
+  //Confirm Modal Control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const getModalAnswer = (answer:boolean) => {
+    console.log(answer)
+    answer && navigate('/login')
+  }
+  const loginTitle = 'Access control'
+  const loginDes = '먼저 로그인하셔야 합니다. 로그인하시겠습니까?'
+  const confirmBtn = '로그인 페이지로 이동'
+
+  return (<>
+    <div className={`w-[100vw] min-h-screen top-0 transition-all overflow-hidden flex items-end bg-white relative`}>
+      <video muted autoPlay loop className="w-[100vw] h-screen object-cover absolute">
+        <source src={homeVideo} type="video/mp4" className='w-full'/>
       </video>
       <img src={cover} className='w-full h-[860px] mb-[55px] bg-[#41523c] opacity-40' />
       <div className='absolute top-[25%] left-[10%] mr-[5%] flex flex-col'>
@@ -28,11 +39,13 @@ export default function HomeVisual() {
         </div>
         <button onClick={() => {
           if(userInfo === null) {
-            confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+            setConfirmModal(true)
           } else navigate('/recruitment')
         }}
           className='btn btn--white border-white text-2xl w-[250px] mt-5' tabIndex={0}>스태프 지원하러 가기</button>
       </div>
     </div>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={loginTitle} des={loginDes} confirmBtn={confirmBtn}/>
+    </>
   )
 }

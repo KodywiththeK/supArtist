@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { updateDocData } from '../firebase/firebase'
 import useUserQuery from '../reactQuery/userQuery'
 import useRecruitmentQuery, { ProjectType } from '../reactQuery/RecruitmentQuery'
+import ConfirmModal from '../common/ConfirmModal'
 
 
 interface ApplicantsPropsType {
@@ -32,6 +33,7 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
 
   const navigate = useNavigate()
 
+  // 지원자 수락
   const acceptHandler = async(e:React.MouseEvent, userId:string) => {
     e.preventDefault();
     if(thisData?.confirmed.includes(userId)){
@@ -44,6 +46,8 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
     // const recruitmentResult = await getRecruitmentData([]);
     // setRecruitmentData(recruitmentResult)
   }
+
+  //지원자 삭제
   const removeHandler = async(e:React.MouseEvent, userId: string) => {
     e.preventDefault();
     await updateDocData('recruitment', thisData?.id, {applicant: thisData?.applicant.filter(i => i !== userId)})
@@ -51,30 +55,40 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
     // const recruitmentResult = await getRecruitmentData([]);
     // setRecruitmentData(recruitmentResult)
   } 
-  const doneHandler = async(e:React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if(confirm('모집을 마감하시겠습니까?')) {
-      await updateDocData('recruitment', thisData?.id, {state: false, applicant: [...thisData.confirmed]})
-      refetch();
-      applicantData?.map(async (user) => {
-        await updateDocData('userInfo', user.id, 
-          { apply: user.apply.map((i) => (
-            thisData.confirmed.includes(user.id) ?
-              i.id === thisData.id ? {...i, state: true} : {...i} 
-              :
-              i.id === thisData.id ? {...i, state: false} : {...i}
-        ))})
-      })
-      userRefetch()
-      // const userResult = await getUserData();
-      // const recruitmentResult = await getRecruitmentData([]);
-      // setUserData(userResult)
-      // setRecruitmentData(recruitmentResult)
-      setShowApplicant(false)
-    }
+
+  // 모집 마감
+  const doneHandler = async() => {
+    await updateDocData('recruitment', thisData?.id, {state: false, applicant: [...thisData.confirmed]})
+    refetch();
+    applicantData?.map(async (user) => {
+      await updateDocData('userInfo', user.id, 
+        { apply: user.apply.map((i) => (
+          thisData.confirmed.includes(user.id) ?
+            i.id === thisData.id ? {...i, state: true} : {...i} 
+            :
+            i.id === thisData.id ? {...i, state: false} : {...i}
+      ))})
+    })
+    userRefetch()
+    // const userResult = await getUserData();
+    // const recruitmentResult = await getRecruitmentData([]);
+    // setUserData(userResult)
+    // setRecruitmentData(recruitmentResult)
+    setShowApplicant(false)
   }
 
-  return (
+  // confirm modal control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const getModalAnswer = (answer:boolean) => {
+    console.log(answer)
+    answer && doneHandler()
+  }
+  const title = '모집 마감하기'
+  const des = '모집을 마감하시겠습니까?'
+  const confirmBtn = '모집 마감'
+
+  return (<>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={confirmBtn}/>
     <Transition.Root show={showApplicant} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setShowApplicant}>
         <Transition.Child
@@ -169,8 +183,11 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
                         <p>{thisData?.confirmed ? String(Math.floor(thisData?.confirmed.length / Number(thisData?.teamNum) * 100)) + ' %' : '0 %'}</p>
                       </div>
                       <div className="mt-6">
-                        <button onClick={(e) => doneHandler(e)}
-                          className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 disabled:bg-zinc-300"
+                        <button onClick={(e) => {
+                          e.preventDefault();
+                          setConfirmModal(true)
+                        }}
+                          className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 mb-24 sm:mb-0 text-base font-medium text-white shadow-sm hover:bg-indigo-700 disabled:bg-zinc-300"
                           disabled={(thisData?.confirmed.length !== Number(thisData?.teamNum)) || !thisData?.state}
                         >
                           {thisData?.state ? '모집 마감하기' : '모집이 마감되었습니다.'}
@@ -185,5 +202,5 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
         </div>
       </Dialog>
     </Transition.Root>
-  )
+  </>)
 }

@@ -4,6 +4,7 @@ import React, { FC, useRef, useState } from 'react';
 import { reauthenticateWithCredential, EmailAuthProvider, User, updatePassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { useMediaQuery } from 'react-responsive';
+import AlertModal from '../common/AlertModal';
 
 interface dataType {
   email: string,
@@ -18,11 +19,17 @@ const ChangePwd = () => {
   
   const user = auth.currentUser;
 
+  // Alert modal control
+  const [alertModal, setAlertModal] = useState(false)
+  const alertTitle = '비밀번호 변경'
+  const [alertDes, setAlertDes] = useState('')
+
   const onSubmit: SubmitHandler<dataType> = (data) => {
     console.log(data)
     updatePassword(user as User, data.password)
       .then(() => {
-        alert('비밀번호가 변경되었습니다')
+        setAlertDes('비밀번호가 변경되었습니다')
+        setAlertModal(true)
         setPwd('')
         setInputState(true)
         setValue('password_confirm', '')
@@ -45,13 +52,16 @@ const ChangePwd = () => {
     reauthenticateWithCredential(user as User, credential)
       .then(result => {
         console.log(result)
-        alert('새로운 비밀번호를 설정해주세요.')
+        setAlertDes('비밀번호가 확인되었습니다. 변경하실 새로운 비밀번호를 입력해주세요.')
+        setAlertModal(true)
         setInputState(false)
       })
       .catch((e) => {
         console.log(e)
         setInputState(true)
-        alert('Wrong password')
+        setAlertDes('잘못된 비밀번호입니다. 다시 입력해주세요.')
+        setAlertModal(true)
+        setPwd('')
       })
   }
   
@@ -63,6 +73,7 @@ const ChangePwd = () => {
   });
 
   return (<>
+    <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} title={alertTitle} des={alertDes}/>
     <label className='text-black mt-6 mb-2 text-lg font-semibold'>비밀번호 변경</label>
     <div className='flex w-full'>
       <input className={`${isDefault ? 'w-[70%]' : 'w-full'} max-w-[400px] text-black py-2 px-4 bg-gray-100 border rounded-md border-black outline-none focus:outline-none`}
