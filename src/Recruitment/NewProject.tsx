@@ -8,6 +8,7 @@ import { AuthContext } from '../store/AuthContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Navigate, useNavigate } from 'react-router-dom';
 import { ProjectType } from '../reactQuery/RecruitmentQuery';
+import ConfirmModal from '../common/ConfirmModal';
 
 
 export default function NewProject() {
@@ -36,7 +37,7 @@ export default function NewProject() {
     note: [],
     applicant: [],
     confirmed: [],
-    comments: null
+    comments: []
   })
   const [note, setNote] = useState('')
   const [percent, setPercent] = useState<number | null>(null)
@@ -97,14 +98,25 @@ export default function NewProject() {
       console.log(e)
     }
   }
+
+  //Confirm Modal Control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const title = '프로젝트 업로드'
+  const des = '프로젝트를 등록하시겠습니까?'
+  const confirmBtn = '업로드'
+  const getModalAnswer = (answer:boolean) => {
+    console.log(answer)
+    answer && confirmHandler()
+    .then(() => navigate('/recruitment'))
+  }
+
   return (<>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={confirmBtn}/>
     <div className='w-full flex flex-col items-center bg-zinc-200'>
       <h2 className='mt-[190px] text-3xl font-bold'>내 프로젝트 생성</h2>
       <form onSubmit={(e) => {
         e.preventDefault();
-        confirm('프로젝트를 등록하시겠습니까?') &&
-        confirmHandler()
-        .then(() => navigate('/recruitment'))
+        setConfirmModal(true)
         }}
         className='w-full max-w-[550px] flex flex-col pl-5 mt-5'>
         <label className='text-black mt-10 mb-2 text-lg font-semibold'>제작사 및 작품 소개 사진</label>

@@ -14,7 +14,7 @@ export default function Home() {
 
   //react-query
   const {isLoading:userLoading, data:userData, refetch} = useUserQuery()
-
+  console.log(userData?.find((user) => user.id === userInfo?.uid))
   useEffect(() => {
     const setGoogleUser = async() => {
       if(userData?.find((user) => user.id === userInfo?.uid) === undefined) {

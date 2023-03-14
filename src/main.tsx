@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import ScrollToTop from './common/ScrollToTop'
 
 
 console.log(auth)
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <AuthProvider>
       <BrowserRouter> 
         <QueryClientProvider client={queryClient}>
+          <ScrollToTop />
           <App />
           <ReactQueryDevtools />
         </QueryClientProvider>

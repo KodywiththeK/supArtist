@@ -1,16 +1,15 @@
-import { values } from 'lodash';
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from 'react-responsive';
-import DefaultImage from '../images/DefaultProfile.jpeg'
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db, deleteDocData, storage, updateDocData } from '../firebase/firebase';
 import { AuthContext } from '../store/AuthContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useUserQuery from '../reactQuery/userQuery';
 import { EmailAuthProvider, reauthenticateWithCredential, User } from 'firebase/auth';
 import useRecruitmentQuery from '../reactQuery/RecruitmentQuery';
+import ConfirmModal from '../common/ConfirmModal';
+import AlertModal from '../common/AlertModal';
 // import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 
@@ -59,6 +58,25 @@ export default function UserProfileInfoEdit() {
   const [percent, setPercent] = useState<number | null>(null)
   const [file, setFile] = useState<File>()
 
+  //Confirm Modal Control
+  const [confirmModal, setConfirmModal] = useState(false)
+  const [title, setTitle] = useState('')
+  const [des, setDes] = useState('')
+  const [confirmBtn, setConfirmBtn] = useState('')
+  const getModalAnswer = (answer:boolean) => {
+    if(answer) {
+      if(title === '회원탈퇴') handleSignOut();
+      if(title === '프로필 수정') confirmHandler();
+    }
+    // answer && signOut(auth).then(() => navigate('/login'))
+  }
+
+  // Alert modal control
+  const [alertModal, setAlertModal] = useState(false)
+  const [alertTitle, setAlertTitle] = useState('')
+  const [alertDes, setAlertDes] = useState('')
+
+
   //회원 탈퇴
   const [pwd, setPwd] = useState('')
   const user = auth.currentUser;
@@ -92,7 +110,9 @@ export default function UserProfileInfoEdit() {
       })
       .then(() => {
         user?.delete().then(() => {
-          alert('계정이 삭제되었습니다.')
+          setAlertTitle('탈퇴 완료')
+          setAlertDes('계정이 삭제되었습니다.')
+          setAlertModal(true)
           navigate('/login')
         })
       })
@@ -106,14 +126,16 @@ export default function UserProfileInfoEdit() {
     reauthenticateWithCredential(user as User, credential)
       .then(result => {
         console.log(result)
-        confirm('작성한 모든글과 정보가 삭제됩니다. 정말 탈퇴하시겠습니까?')
-        && handleSignOut()
-      }).then(() => {
-
+        setTitle('회원탈퇴')
+        setDes('작성한 모든글과 정보가 삭제됩니다. 정말 탈퇴하시겠습니까?')
+        setConfirmBtn('탈퇴하기')
+        setConfirmModal(true)
       })
       .catch((e) => {
         console.log(e)
-        alert('잘못된 비밀번호입니다.')
+        setAlertTitle('비밀번호 오류')
+        setAlertDes('잘못된 비밀번호입니다.')
+        setAlertModal(true)
       })
   }
   
@@ -170,7 +192,7 @@ export default function UserProfileInfoEdit() {
   const confirmHandler = async() => {
     try {
       const docInfo = doc(db, 'userInfo', String(userId))
-      await updateDoc(docInfo, {...info})
+      await updateDoc(docInfo, {...info}).then(() => navigate(`/${curUser?.id}`))
       // const result = await getUserData();
       // setData(result)
       // console.log(result)
@@ -185,11 +207,15 @@ export default function UserProfileInfoEdit() {
   });
 
   return (<>
+    <AlertModal alertModal={alertModal} setAlertModal={setAlertModal} title={alertTitle} des={alertDes}/>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={confirmBtn}/>
     <h2 className='mt-10 text-2xl font-bold'>프로필 정보</h2>
     <form onSubmit={(e) => {
       e.preventDefault();
-      confirm('프로필 정보를 수정하시겠습니까?') &&
-      confirmHandler()
+      setTitle('프로필 수정')
+      setDes('수정된 프로필 정보를 적용하시겠습니까?')
+      setConfirmBtn('적용하기')
+      setConfirmModal(true)
     }}
       className='w-full flex flex-col mt-5'>
       <label className='text-black mt-10 mb-2 text-lg font-semibold'>프로필 사진</label>

@@ -120,8 +120,8 @@ export default function RecruitmentDetail() {
         // setUserData(userResult)
         // setRecruitmentData(recruitmentResult)
         userRefetch();
-        alert('삭제 완료되었습니다.')
-        navigate('/recruitment')
+        recruitmentRefetch();
+        navigate(-1)
       })
     } catch(error) {
       console.error(error)
@@ -299,7 +299,7 @@ export default function RecruitmentDetail() {
       </div>
       <div className="flex flex-col items-start mx-auto mt-10 max-w-2xl pb-24 px-4 sm:px-6 sm:pb-32 lg:max-w-7xl lg:px-8 ">
         <div className="w-full max-w-[1200px] h-[1px] border-[0.6px] border-transparent border-b-black mt-10 mb-5"></div>
-        <div className="w-full max-w-[1200px] text-xl font-semibold">{`댓글 ${thisData.comments.length}개`}</div>
+        <div className="w-full max-w-[1200px] text-xl font-semibold">{`댓글 ${thisData?.comments?.length}개`}</div>
         <div className="w-full max-w-[1200px] py-5 pr-2">
           <ul className="pl-5 py-5 rounded-xl bg-white space-y-3 text-slate-500">
             {thisData?.comments?.map((item, index) => (
@@ -317,7 +317,7 @@ export default function RecruitmentDetail() {
             </div>
             ))}
           </ul>
-          {thisData.state &&
+          {thisData?.state &&
           <div className='w-full max-w-full mt-4 h-20 flex items-center justify-end'>
             <input className="placeholder:italic placeholder:text-slate-400 bg-white w-full max-w-[600px] border border-slate-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" 
               onChange={(e) => setComment({
@@ -332,7 +332,7 @@ export default function RecruitmentDetail() {
                   setComment({...comment, text: ''})
                 }
               }}
-              value={comment.text} 
+              value={comment?.text} 
               placeholder='더 궁금한 점들을 댓글로 남겨보세요!' type="text" />
             <button onClick={(e) => {
               e.preventDefault();
