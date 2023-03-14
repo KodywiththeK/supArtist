@@ -44,8 +44,10 @@ export default function ProjectEdit() {
     confirmed: thisData?.confirmed as [],
     comments: thisData?.comments as {
       id: string,
-      text: string
-    } | null
+      writer: string,
+      text: string,
+      created: number
+    }[]
   })
   const [note, setNote] = useState('')
   const [percent, setPercent] = useState<number | null>(null)
