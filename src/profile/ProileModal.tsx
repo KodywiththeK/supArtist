@@ -59,10 +59,10 @@ export default function ProfileModal({profileModal, setProfileModal, data}:Profi
                       <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900 mb-5">
                         {`${data.name} 님의 ${data.list} 리스트`}
                       </Dialog.Title>
-                      <div className="mt-2 w-full">
+                      <div className="my-2 w-full">
                         {listData?.map((item, index) => (
                           <div onClick={() => item?.id === curUser?.id ? navigate(`/${item.id}`) : navigate(`/other/${item.id}`)}
-                            key={index} className='flex items-center w-full ml-2 hover:underline cursor-pointer'>
+                            key={index} className='flex items-center w-full ml-2 my-3 hover:underline cursor-pointer'>
                             <img src={item?.pic} alt='profile' className='w-[50px] h-[50px] rounded-[50%] object-cover mr-5'/>
                             <div className="text-base text-gray-500">{item?.name}</div>
                           </div>
