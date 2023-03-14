@@ -140,7 +140,7 @@ export default function RecruitmentDetail() {
   const setCommentHandler = async() => {
     console.log(comment)
     await updateDocData('recruitment', thisData?.id as string, {
-      comments: [...thisData.comments, comment].sort((a,b) => b.created - a.created) as {
+      comments: [...thisData.comments, comment] as {
         id: string,
         writer: string,
         text: string,
