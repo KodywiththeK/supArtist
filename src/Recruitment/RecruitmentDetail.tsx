@@ -133,9 +133,9 @@ export default function RecruitmentDetail() {
   // 댓글달기
   const [comment, setComment] = useState({
     id: '',
-    writer: curUser?.id as string,
+    writer: userInfo?.uid,
     text: '' as string,
-    created: Date.now()
+    created: 0
   })
   const setCommentHandler = async() => {
     console.log(comment)
@@ -149,7 +149,7 @@ export default function RecruitmentDetail() {
     })
     recruitmentRefetch();
   }
-
+  console.log(comment.text)
   const commentRemoveHandler = async(id: string) => {
     await updateDocData('recruitment', thisData?.id as string, {
       comments: thisData.comments.filter(i => i.id !== id).sort((a,b) => b.created - a.created) as {
@@ -323,7 +323,9 @@ export default function RecruitmentDetail() {
               onChange={(e) => setComment({
                 ...comment, 
                 id: curUser?.id as string + String(Math.random()),
-                text: e.target.value})}
+                text: e.target.value,
+                created: Date.now()
+              })}
               onKeyDown={(e) => {
                 if(e.nativeEvent.isComposing) return;
                 if(e.key==="Enter") {
