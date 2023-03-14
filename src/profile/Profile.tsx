@@ -11,6 +11,7 @@ import { signOut } from 'firebase/auth'
 import { auth } from '../firebase/firebase'
 import useUserQuery from '../reactQuery/userQuery'
 import ConfirmModal from '../common/ConfirmModal'
+import ProfileModal from './ProileModal'
 
 export const age = (bday:string) => {
   const today = new Date();
@@ -50,7 +51,6 @@ export default function Profile() {
   //react-query
   const {isLoading:userLoading, data:userData} = useUserQuery()
   const curUser = userData?.map(i => ({...i})).find(i => i.id === userId)
-  console.log(curUser)
 
   //media-query
   const isDefault: boolean = useMediaQuery({
@@ -59,10 +59,21 @@ export default function Profile() {
 
   const location = useLocation().pathname
 
-  
+  //profile Modal
+  const [profileModal, setProfileModal] = useState(false)
+  const [modalData, setModalData] = useState({
+    name: curUser?.name as string,
+    list: '' as string,
+    items: [] as string[]
+  })
+  const profileModalHandler = (list:string, items:string[]) => {
+    setModalData({...modalData, list:list, items:items})
+    setProfileModal(true)
+  }
 
   return (
     <>
+    <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal} data={modalData}/>
     <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={loginTitle} des={loginDes} confirmBtn={confirmBtn}/>
     <div className='flex min-h-screen justify-between'>
       <Default><>
@@ -107,8 +118,12 @@ export default function Profile() {
           <div>
             <div className='font-bold text-xl sm:text-2xl mb-3'>{`${curUser?.name}`}</div>
             <div className='flex justify-between w-44 text-base sm:text-lg font-semibold mb-3'>
-              <div>팔로우 <span className='font-normal'>56</span></div>
-              <div>팔로워 <span className='font-normal'>12</span></div>
+            <div onClick={() => profileModalHandler('팔로워', curUser?.followers as string[])}
+                className='cursor-pointer'
+                >팔로워 <span className='font-normal'>{curUser?.followers.length}</span></div>
+              <div onClick={() => profileModalHandler('팔로잉', curUser?.following as string[])}
+                className='cursor-pointer'
+                >팔로잉 <span className='font-normal'>{curUser?.following.length}</span></div>
             </div>
             <div className='min-w-40 h-14'>
               <div className='w-full max-w-[16rem] text-sm sm:text-base'>{curUser?.intro}</div>

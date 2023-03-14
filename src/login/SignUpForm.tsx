@@ -67,7 +67,9 @@ const SignUpForm = (props:SignUpFormPropsType) => {
         team: [],
         experience: ['완성도 높은 프로필을 작성할수록 합격률이 올라갑니다 :)'],
         heart: [],
-        apply: []
+        apply: [],
+        followers: [],
+        following: []
       })
     })
     .then(async() => {

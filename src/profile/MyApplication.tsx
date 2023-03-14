@@ -66,7 +66,7 @@ export default function MyApplication() {
         className='btn border border-black mr-10'>지원하러 가기</button>
     </div>
     <div className='flex justify-around items-center w-full max-w-[680px] mb-10 '>
-      <div className='flex justify-around items-center w-full'>
+      <div className='flex justify-around items-center w-full max-w-[600px] border-[0.5px] border-black rounded-lg'>
         <div className='text-lg'>필터 :</div>
         <label className={`flex flex-col items-center my-2 py-2 px-2 border border-transparent border-[2px] rounded-[30%] cursor-pointer hover:scale-[1.1] transition`}>
           <input 
@@ -93,7 +93,7 @@ export default function MyApplication() {
     <div className='flex flex-wrap justify-around'>
       {project?.length !== 0 ? <>
         {project?.map((data, index) => (
-          <Link to={`/recruitmentDetail/${data.id}`} key={index} className="relative group mb-10 mx-2">
+          <Link to={`/recruitmentDetail/${data.id}`} key={index} className="relative group mb-10 mx-2 border-[0.8px] bg-white rounded-xl">
             <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
               <img
                 src={data.pic}
@@ -110,10 +110,10 @@ export default function MyApplication() {
                   <BsFillTrashFill />
               </button>}
             </div>
-            <h3 className="mt-4 text-base text-black">{data.title}</h3>
+            <h3 className="mt-4 ml-2 text-base text-black">{data.title}</h3>
             <div className="flex justify-between items-center">
-              <p className="mt-1 text-lg font-medium text-gray-900">{`${data.team} ${data.teamNum}명 모집`}</p>
-              <div className={`mt-1 text-lg font-medium text-gray-900 px-3 py-2 mr-1 rounded-lg ${defineState(data.id)==='심사중' && 'bg-zinc-100'} ${defineState(data.id)==='합격' && 'bg-[#d2df80]'} ${defineState(data.id)==='불합격' && 'bg-[#ff8761]'}`}>
+              <p className="mt-1 ml-2 text-lg font-medium text-gray-900">{`${data.team} ${data.teamNum}명 모집`}</p>
+              <div className={`mt-1 text-lg font-medium text-gray-900 px-3 py-2 rounded-lg ${defineState(data.id)==='심사중' && 'bg-zinc-100'} ${defineState(data.id)==='합격' && 'bg-[#d2df80]'} ${defineState(data.id)==='불합격' && 'bg-[#ff8761]'}`}>
                 {defineState(data.id)}
               </div>
             </div>

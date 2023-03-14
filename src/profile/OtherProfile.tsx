@@ -5,10 +5,11 @@ import { BsGenderAmbiguous, BsFilm, BsFillBellFill } from 'react-icons/bs'
 import { RiCake2Line, RiTeamLine, RiUserFollowFill } from 'react-icons/ri'
 import { useMediaQuery } from 'react-responsive'
 import { signOut } from 'firebase/auth'
-import { auth } from '../firebase/firebase'
+import { auth, updateDocData } from '../firebase/firebase'
 import { useRecoilValue } from 'recoil'
 import useUserQuery from '../reactQuery/userQuery'
 import useRecruitmentQuery from '../reactQuery/RecruitmentQuery'
+import ProfileModal from './ProileModal'
 
 
 export default function OtherProfile() {
@@ -16,7 +17,8 @@ export default function OtherProfile() {
   const isDefault: boolean = useMediaQuery({
     query: "(min-width:768px)",
   });
-  
+
+  const userInfo = useContext(AuthContext)
   const { profile } = useParams()
 
   //recoil
@@ -27,9 +29,10 @@ export default function OtherProfile() {
 
   //react-query
 
-  const {isLoading:userLoading, data:userData} = useUserQuery()
+  const {isLoading:userLoading, data:userData, refetch} = useUserQuery()
   const {isLoading:recruitmentLoading, data:recruitmentData} = useRecruitmentQuery()
   const otherUser = userData?.map(i => ({...i})).find(i => i.id === profile)
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === userInfo?.uid)
   const project = recruitmentData?.map(i => ({...i})).filter(item => item.writer === profile)
 
   const [menu, setMenu] = useState(true)
@@ -46,47 +49,76 @@ export default function OtherProfile() {
     return age
   }
 
+  // 팔로우 팔로잉
+  const followHandler = async() => {
+    if(!curUser?.following.includes(otherUser?.id as string)) {
+      await updateDocData('userInfo', curUser?.id as string, {following: [...curUser?.following as string[], otherUser?.id ] as string[]})
+      await updateDocData('userInfo', otherUser?.id as string, {followers: [...otherUser?.followers as string[], curUser?.id] as string[]})
+    } else {
+      await updateDocData('userInfo', curUser?.id as string, {following: curUser?.following.filter(i => i !== otherUser?.id)})
+      await updateDocData('userInfo', otherUser?.id as string, {followers: otherUser?.following.filter(i => i !== curUser?.id)})
+    }
+    refetch();
+  }
+
+  //profile Modal
+  const [profileModal, setProfileModal] = useState(false)
+  const [modalData, setModalData] = useState({
+    name: otherUser?.name as string,
+    list: '' as string,
+    items: [] as string[]
+  })
+  const profileModalHandler = (list:string, items:string[]) => {
+    setModalData({...modalData, list:list, items:items})
+    setProfileModal(true)
+  }
+
   return (
     <>
+    <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal} data={modalData}/>
     <div className='flex min-h-screen justify-center bg-zinc-200'>
-      <div className={`w-full max-w-[700px] items-center min-h-screen relative flex flex-col`}>
+      <div className={`w-full max-w-[700px] items-center min-h-screen relative flex flex-col mt-[100px]`}>
         <div className={`flex justify-center items-center w-full h-52 mt-20 mr-5`}>
-          <div className={`flex justify-center items-center ${isDefault? 'w-60 mr-10' : 'w-40 mx-10'} h-52 `}>
-            <img src={otherUser?.pic} alt='My picture' className='w-40 h-40 object-cover border border-[#9ec08c] rounded-[100%]'/>
+          <div className={`flex justify-center items-center ${isDefault? 'w-[160px] h-[160px] mr-10' : 'w-[120px] h-[120px] mx-10'} h-52 shrink-0`}>
+            <img src={otherUser?.pic} alt='My picture' className='w-full h-full object-cover border border-[#9ec08c] rounded-[100%]'/>
           </div>
           <div>
             <div className='font-bold text-2xl mb-3'>{`${otherUser?.name}`}</div>
-            <div className='flex justify-between w-44 text-lg font-semibold mb-3'>
-              <div>팔로우 <span className='font-normal'>56</span></div>
-              <div>팔로워 <span className='font-normal'>12</span></div>
+            <div className='flex justify-between w-full max-w-[180px] text-lg font-semibold mb-3'>
+              <div onClick={() => profileModalHandler('팔로워', otherUser?.followers as string[])}
+                className='cursor-pointer'
+                >팔로워 <span className='font-normal'>{otherUser?.followers.length}</span></div>
+              <div onClick={() => profileModalHandler('팔로잉', otherUser?.following as string[])}
+                className='cursor-pointer'
+                >팔로잉 <span className='font-normal'>{otherUser?.following.length}</span></div>
             </div>
             <div className='min-w-40 h-14'>
-              <div className='w-full max-w-[16rem]'>{otherUser?.intro}</div>
+              <div className='w-full max-w-[16rem] text-sm sm:text-base'>{otherUser?.intro}</div>
             </div>
           </div>
         </div>
         <div className='flex justify-center items-center w-full mt-6'>
+          <button onClick={followHandler}
+            className={`btn ${curUser?.following.includes(otherUser?.id as string) ? 'btn--reverse' : ''} border-[2px] border-black w-40 flex justify-center items-center mr-2`}>{`${curUser?.following.includes(otherUser?.id as string) ? '팔로잉' : '팔로우하기'}`}<RiUserFollowFill className='ml-2' /></button>
           <button 
-            className='btn btn--green w-40 flex justify-center items-center mr-2'>팔로우하기<RiUserFollowFill className='ml-2' /></button>
-          <button 
-            className='btn btn--green w-40 flex justify-center items-center ml-2'>알림설정<BsFillBellFill className='ml-2' /></button>
+            className='btn border-[2px] border-black w-40 flex justify-center items-center ml-2'>알림설정<BsFillBellFill className='ml-2' /></button>
         </div>
         <div className={`w-[100%] h-72 flex flex-col items-center mt-10`}>
           <table className='flex justify-between w-[90%] max-w-[600px] border-collapse border-spacing-0'>
             <tbody className='w-full'>
-              <tr className='w-full flex border-b border-slate-400 p-4'>
+              <tr className='w-full flex border-transparent border-b-slate-400 border-[0.5px] p-4'>
                 <th className='text-left w-[55%] px-5'><BsGenderAmbiguous className='inline text-xl mr-2'/>성별</th>
                 <td>{otherUser?.gender}</td>
               </tr>
-              <tr className='w-full flex border-b border-slate-400 p-4'>
+              <tr className='w-full flex border-transparent border-b-slate-400 border-[0.5px] p-4'>
                 <th className='text-left w-[55%] px-5'><RiCake2Line className='inline text-xl mr-2'/>나이</th>
                 <td><>만 { age() }세</></td>
               </tr>
-              <tr className='w-full flex border-b border-slate-400 p-4'>
+              <tr className='w-full flex border-transparent border-b-slate-400 border-[0.5px] p-4'>
                 <th className='text-left w-[55%] px-5'><BsFilm className='inline text-xl mr-2'/>관심분야</th>
                 <td>{otherUser?.interest.join(', ')}</td>
               </tr>
-              <tr className='w-full flex border-b border-slate-400 p-4'>
+              <tr className='w-full flex border-transparent border-b-slate-400 border-[0.5px] p-4'>
                 <th className='text-left w-[55%] px-5'><RiTeamLine className='inline text-xl mr-2'/>파트</th>
                 <td>{otherUser?.team.join(', ')}</td>
               </tr>
@@ -94,7 +126,7 @@ export default function OtherProfile() {
           </table>
         </div>
 
-        <div className='flex justify-center w-[90%] max-w-[700px] text-center text-lg font-semibold mt-5 mb-2 border border-transparent border-t-slate-400'>
+        <div className='flex justify-center w-[90%] max-w-[700px] text-center text-lg font-semibold mt-10 mb-2 border border-transparent border-t-slate-400'>
           <button onClick={() => setMenu(true)}
             className={`py-5 mr-8 cursor-pointer break-keep border border-transparent ${menu? 'border-t-black border-[1.5px] text-black' : 'text-gray-400' }`}>
               경력사항
@@ -105,11 +137,11 @@ export default function OtherProfile() {
           </button>
         </div>
         {menu ?
-        <div className='flex flex-col items-center w-full max-w-[600px] pr-10 h-[20%] mb-20'>
+        <div className='flex flex-col items-center w-full max-w-[600px] pr-10 mb-20'>
           <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 text-xl w-full max-w-[600px]">
             {otherUser?.experience.map((t,i) => (
-              <div key={i} className='flex justify-between mx-10 my-2 w-full max-w-[430px]'>
-                <li className='w-full max-w-[370px]'>{t}</li>
+              <div key={i} className='flex justify-between mx-10 my-2 w-full'>
+                <li className='w-full'>{t}</li>
               </div>
             ))}
           </ul>

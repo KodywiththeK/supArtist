@@ -299,7 +299,7 @@ export default function RecruitmentDetail() {
       </div>
       <div className="flex flex-col items-start mx-auto mt-10 max-w-2xl pb-24 px-4 sm:px-6 sm:pb-32 lg:max-w-7xl lg:px-8 ">
         <div className="w-full max-w-[1200px] h-[1px] border-[0.6px] border-transparent border-b-black mt-10 mb-5"></div>
-        <div className="w-full max-w-[1200px] text-xl font-semibold">댓글</div>
+        <div className="w-full max-w-[1200px] text-xl font-semibold">{`댓글 ${thisData.comments.length}개`}</div>
         <div className="w-full max-w-[1200px] py-5 pr-2">
           <ul className="pl-5 py-5 rounded-xl bg-white space-y-3 text-slate-500">
             {thisData?.comments?.map((item, index) => (

@@ -17,7 +17,9 @@ export interface UserDataType {
   team: string[],
   experience: string[],
   heart: string[],
-  apply: {id: string, state: null | boolean }[]
+  apply: {id: string, state: null | boolean }[],
+  followers: string[],
+  following: string[]
 }
 
 const getUserData = async():Promise<UserDataType[]> => {
@@ -40,7 +42,9 @@ const getUserData = async():Promise<UserDataType[]> => {
         team: doc.data().team,
         experience: doc.data().experience,
         heart: doc.data().heart,
-        apply: doc.data().apply
+        apply: doc.data().apply,
+        followers: doc.data().followers,
+        following: doc.data().following
       })
     })
   } catch(err) {
