@@ -2,22 +2,22 @@ import React, { useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Footer from "./common/Footer";
 import Header from "./common/Header";
-import ChangePwd from "./profile/ChangePwd";
 import Home from "./home/Home";
-import Profile from './profile/Profile'
+import ProfilePage from './profile/ProfilePage';
 import LoginPage from "./login/LoginPage";
 import { AuthContext } from "./store/AuthContext";
 import MyApplication from "./profile/MyApplication";
 import MyWork from "./profile/MyWork";
 import MyProfile from "./profile/MyProfile";
 import ProfileEdit from "./profile/ProfileEdit";
-import { db } from "./firebase/firebase";
 import Recruitment from "./Recruitment/Recruitment";
-import RecruitmentDetail from './Recruitment/RecruitmentDetail'
+import RecruitmentDetail from './Recruitment/RecruitmentDetail';
 import NewProject from "./Recruitment/NewProject";
 import OtherProfile from "./profile/OtherProfile";
 import ProjectEdit from "./Recruitment/ProjectEdit";
 import SearchResult from "./Recruitment/SearchResult";
+import MessagePage from "./message/MessagePage";
+import ChattingRoom from "./message/ChattingRoom";
 
 
 
@@ -57,8 +57,12 @@ export default function App() {
       <Route path='/newProject' element={<NewProject />} />
       <Route path='/projectEdit/:id' element={<ProjectEdit />} />
 
+      <Route path="/directMessage" element={<MessagePage />} >
+        <Route path="/directMessage/:id" element={<ChattingRoom />} />
+      </Route>
+
       <Route path='/other/:profile' element={<OtherProfile />}/>
-      <Route path='/:profile' element={<Profile />}>
+      <Route path='/:profile' element={<ProfilePage />}>
         <Route path="/:profile" element={<MyProfile />} />
         <Route path="/:profile/myApplication" element={<MyApplication />} />
         <Route path="/:profile/myWork" element={<MyWork />} />

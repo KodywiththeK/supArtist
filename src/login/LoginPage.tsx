@@ -17,7 +17,7 @@ const LoginPage = () => {
   }
 
   return (<>
-    <div className='relative z-30 w-full h-screen mb-[-350px] flex items-start'>
+    <div className='relative z-40 w-full h-screen mb-[-350px] flex items-start'>
       <Default><>
         <div className='relative w-1/2 h-full flex flex-col'>
           <div className='absolute top-[25%] left-[10%] mr-[5%] flex flex-col'>

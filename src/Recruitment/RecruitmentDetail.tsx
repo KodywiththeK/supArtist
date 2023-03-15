@@ -149,7 +149,7 @@ export default function RecruitmentDetail() {
     })
     recruitmentRefetch();
   }
-  console.log(comment.text)
+  console.log(comment.created)
   const commentRemoveHandler = async(id: string) => {
     await updateDocData('recruitment', thisData?.id as string, {
       comments: thisData.comments.filter(i => i.id !== id).sort((a,b) => b.created - a.created) as {

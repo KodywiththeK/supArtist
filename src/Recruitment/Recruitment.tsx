@@ -78,10 +78,12 @@ export default function Recruitment() {
       <Filter filter={filter} setFilter={setFilter}/>
       <div className="flex flex-col items-center mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-center text-[40px] font-bold mt-[85px] pb-4 px-10 border-[0.8px] border-transparent border-b-black">Recruitments</h2>
-        <div onClick={() => setFilter(true)}
-          className={`flex items-center justify-end w-full mb-5 text-2xl font-bold cursor-pointer ${!isDefault && 'mt-10'}`}>
-          <span className="mr-2">Filter</span>
-          <HiAdjustmentsHorizontal />
+        <div className="w-full flex justify-end">
+          <div onClick={() => setFilter(true)}
+            className={`flex items-center justify-end mb-5 text-2xl font-bold cursor-pointer ${!isDefault && 'mt-10'}`}>
+            <span className="mr-2">Filter</span>
+            <HiAdjustmentsHorizontal />
+          </div>
         </div>
         <div className="flex w-full justify-between mb-10">
           <div className="flex items-center justify-between w-36 text-lg font-semibold">

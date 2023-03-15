@@ -12,7 +12,7 @@ const AuthProvider = ({children}: { children: React.ReactNode }) => {
       setUser(fbUser);
     });
     return subscribe;
-  }, []);
+  }, [user]);
 
   return <AuthContext.Provider value={user}>{children} </AuthContext.Provider>;
 };

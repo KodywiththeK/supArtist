@@ -107,6 +107,16 @@ export default function UserProfileInfoEdit() {
             await updateDocData('recruitment', post.id, {confirmed: confirmedArr})
           }
         })
+        userData?.map(async(user) => {
+          if(user.followers.includes(userId as string)) {
+            let followersArr = user.followers.filter(i => i !== userId)
+            await updateDocData('userInfo', user.id as string, {followers: followersArr} )
+          }
+          if(user.following.includes(userId as string)) {
+            let followingArr = user.following.filter(i => i !== userId)
+            await updateDocData('userInfo', user.id as string, {following: followingArr})
+          }
+        })
       })
       .then(() => {
         user?.delete().then(() => {

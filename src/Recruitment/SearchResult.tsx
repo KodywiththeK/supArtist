@@ -61,13 +61,15 @@ export default function SearchResult() {
     <div className="relative bg-zinc-200 min-h-screen">
       <div className="flex flex-col items-center mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-center text-[40px] font-bold mt-[85px] pb-4 px-10 border-[0.8px] border-transparent border-b-black">{`"${sortData.search}"의 검색 결과`}</h2>
-        <div onClick={() => {
-          navigate('/recruitment')
-          setSortData(sortingDefaultValue)
-        }}
-          className="flex items-center justify-end w-full mb-5 text-xl font-bold cursor-pointer">
-          <span className="mr-2">전체 목록으로 돌아가기</span>
-          <RiArrowGoBackFill />
+        <div className="w-full flex justify-end items-center">
+          <button onClick={() => {
+            navigate('/recruitment')
+            setSortData(sortingDefaultValue)
+            }}
+            className="flex items-center mb-5 text-xl font-bold cursor-pointer">
+            <span className="mr-2">전체 목록으로 돌아가기</span>
+            <RiArrowGoBackFill />
+          </button>
         </div>
         <div className="flex w-full justify-between mb-10">
           <div className="flex items-center justify-between w-36 text-lg font-semibold">

@@ -5,11 +5,13 @@ import { BsGenderAmbiguous, BsFilm, BsFillBellFill } from 'react-icons/bs'
 import { RiCake2Line, RiTeamLine, RiUserFollowFill } from 'react-icons/ri'
 import { useMediaQuery } from 'react-responsive'
 import { signOut } from 'firebase/auth'
-import { auth, updateDocData } from '../firebase/firebase'
+import { auth, db, updateDocData } from '../firebase/firebase'
 import { useRecoilValue } from 'recoil'
 import useUserQuery from '../reactQuery/userQuery'
 import useRecruitmentQuery from '../reactQuery/RecruitmentQuery'
 import ProfileModal from './ProileModal'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { FaPaperPlane } from 'react-icons/fa'
 
 
 export default function OtherProfile() {
@@ -20,6 +22,7 @@ export default function OtherProfile() {
 
   const userInfo = useContext(AuthContext)
   const { profile } = useParams()
+  const navigate = useNavigate();
 
   //recoil
   // const recruitmentData = useRecoilValue(recruitment)
@@ -73,6 +76,41 @@ export default function OtherProfile() {
     setProfileModal(true)
   }
 
+
+  // 채팅 시작
+  const handleSelect = async(chatUserId:string) => {
+    console.log(chatUserId)
+    const combinedId = userInfo?.uid as string > chatUserId ? userInfo?.uid as string + chatUserId : chatUserId + userInfo?.uid as string;
+    try {
+      const res = await getDoc(doc(db, 'chats', combinedId))
+      if(!res.exists()) {
+        // chatting collection 생성
+        await setDoc(doc(db, 'chats', combinedId), {messages:[]})
+        
+        // 채팅방 목록 생성 및 저장
+        await updateDocData('userChats', chatUserId, {
+          [combinedId+".userInfo"] : {
+            uid: userInfo?.uid as string,
+            displayName: curUser?.name,
+            photoURL: curUser?.pic
+          },
+          [combinedId+".date"]: `${String(new Date().getHours())}:${String(new Date().getMinutes())}`
+        })
+        await updateDocData('userChats', userInfo?.uid as string, {
+          [combinedId+".userInfo"] : {
+            uid: chatUserId,
+            displayName: otherUser?.name,
+            photoURL: otherUser?.pic
+          },
+          [combinedId+".date"]: `${String(new Date().getHours())}:${String(new Date().getMinutes())}`
+        })
+      }
+    } catch (err) {
+      console.error(err)
+    }
+    navigate(`/directMessage/${chatUserId}`)
+  }
+
   return (
     <>
     <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal} data={modalData}/>
@@ -100,8 +138,8 @@ export default function OtherProfile() {
         <div className='flex justify-center items-center w-full mt-6'>
           <button onClick={followHandler}
             className={`btn ${curUser?.following.includes(otherUser?.id as string) ? 'btn--reverse' : ''} border-[2px] border-black w-40 flex justify-center items-center mr-2`}>{`${curUser?.following.includes(otherUser?.id as string) ? '팔로잉' : '팔로우하기'}`}<RiUserFollowFill className='ml-2' /></button>
-          <button 
-            className='btn border-[2px] border-black w-40 flex justify-center items-center ml-2'>알림설정<BsFillBellFill className='ml-2' /></button>
+          <button onClick={() => handleSelect(otherUser?.id as string)}
+            className='btn border-[2px] border-black w-40 flex justify-center items-center ml-2'>채팅하기<FaPaperPlane className='ml-2' /></button>
         </div>
         <div className={`w-[100%] h-72 flex flex-col items-center mt-10`}>
           <table className='flex justify-between w-[90%] max-w-[600px] border-collapse border-spacing-0'>

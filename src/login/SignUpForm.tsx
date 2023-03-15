@@ -71,6 +71,7 @@ const SignUpForm = (props:SignUpFormPropsType) => {
         followers: [],
         following: []
       })
+      await setDoc(doc(db, 'userChats', String(result.user.uid)), {})
     })
     .then(async() => {
       // const userResult = await getUserData();

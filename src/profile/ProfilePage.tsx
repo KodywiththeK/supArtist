@@ -24,7 +24,7 @@ export const age = (bday:string) => {
   return age
 }
 
-export default function Profile() {
+export default function ProfilePage() {
 
   const navigate = useNavigate()
 

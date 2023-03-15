@@ -13,6 +13,7 @@ import { sorting, sortingDefaultValue } from '../recoil/sorting'
 import useUserQuery from '../reactQuery/userQuery'
 import useRecruitmentQuery, { ProjectType } from '../reactQuery/RecruitmentQuery'
 import ConfirmModal from './ConfirmModal'
+import { FaPaperPlane } from 'react-icons/fa'
 
 
 // #41523c
@@ -169,8 +170,8 @@ export default function Header() {
               </Default>            
             </div>
           </div>
-          <Default>
-          <div className='w-24 flex justify-start mt-[-5px] text-2xl rounded-2xl btn btn--white border-white'
+          <Default><>
+          <div className='w-24 ml-1 flex justify-start mt-[-5px] text-2xl rounded-lg btn btn--white border-white hover:scale-[1.1]'
             onClick={() => {
               if(userInfo === null) {
                 setConfirmModal(true)
@@ -182,13 +183,21 @@ export default function Header() {
             />
             <AiFillCaretDown className={`box-content cursor-pointer bg-transparent ${profile ? 'rotate-180' : ''}`}/>
           </div>
-          </Default>
+          <div onClick={() => {
+            if(userInfo === null) {
+                setConfirmModal(true)
+              } else navigate('/directMessage')
+          }}
+            className='flex justify-center items-center w-[50px] box-content py-[13px] pl-[3px] pr-[5px] mt-[-5px] ml-4 border-[2px] border-white rounded-[50%] text-white hover:bg-white hover:text-black hover:scale-[1.1] transition cursor-pointer'>
+            <FaPaperPlane className='text-xl'/>
+          </div>
+          </></Default>
         </div>
       </div> 
     </div> 
     {/* <div className={`w-full bg-white ${(profile && isDefault) ? 'h-[150px]' : 'h-[80px]'} ` }></div> */}
     <Mobile><>
-      <div className={`fixed z-40 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-0 visible' : 'mt-[-80px] invisible'} transition-all`}>
+      <div className={`fixed z-30 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-0 visible' : 'mt-[-80px] invisible'} transition-all`}>
         <input placeholder='모집 공고의 제목을 검색해보세요' 
           onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => {e.key === 'Enter' && inputHandler()}}
           onChange={(e:React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} 
@@ -197,7 +206,6 @@ export default function Header() {
         <button className='text-white ml-2 text-xl font-bold'
           onClick={() => setInput(false)}
           >취소</button>
-
         <>
         {(inputValue && input) && 
         <div className='absolute w-[78%] max-h-[250px] bg-white top-[70px] left-[5%] py-2 rounded'>
@@ -226,7 +234,8 @@ export default function Header() {
       </div>
     </></Mobile>
     <Default><>
-    {userInfo!==null && <div className={`fixed z-10 w-full h-[70px] bg-black opacity-80 text-white flex justify-center ${profile && isDefault ? 'mt-[80px]' : 'mt-0' } transition-all`}>
+    <div className={`w-full bg-black ${profile && isDefault ? 'h-[80px]' : 'h-0'} transition-all`}></div>
+    {userInfo!==null && <div className={`fixed z-10 w-full h-[70px] bg-black text-white flex justify-center transition-all`}>
       <div className='w-full max-w-screen-xl h-full px-2 flex justify-around items-center text-xl border-t border-t-slate-400'>
         <div className='flex items-center w-[1500px] ml-10 text-base'>{`${userInfo.displayName}님 이 로그인 중입니다.`}</div>
         <p className='btn btn--white w-full py-4 cursor-pointer hover:text-lg' 

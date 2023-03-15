@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useRecoilState } from 'recoil'
-import { age } from '../profile/Profile'
+import { age } from '../profile/ProfilePage'
 import { useNavigate } from 'react-router-dom'
 import { updateDocData } from '../firebase/firebase'
 import useUserQuery from '../reactQuery/userQuery'
@@ -100,12 +100,12 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 top-20 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="fixed inset-0 top-20 overflow-hidden">
+        <div className="fixed z-20 inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 top-20 right-0 flex max-w-full pl-10">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
               <Transition.Child
                 as={Fragment}
                 enter="transform transition ease-in-out duration-500 sm:duration-700"
@@ -118,7 +118,7 @@ export default function Applicants({thisData, showApplicant, setShowApplicant}: 
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
                   <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                     <div className="flex-1 overflow-y-auto py-6 px-4 sm:px-6">
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start justify-between mt-20">
                         <Dialog.Title className="text-xl font-semibold text-gray-900 mb-2">지원자 목록</Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
