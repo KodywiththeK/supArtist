@@ -13,7 +13,6 @@ export interface MessageType {
   writer: string,
   text: string,
   created: string,
-  now: number
 }
 
 export default function ChattingRoom() {
@@ -30,17 +29,17 @@ export default function ChattingRoom() {
   const curUser = userData?.map(i => ({...i})).find(i => i.id === userId)
   const chatUser = userData?.map(i => ({...i})).find(i => i.id === chatUserId)
   const chatId = (curUser && chatUser) && curUser.id as string > String(chatUser?.id) ? curUser?.id as string + String(chatUser?.id) : String(chatUser?.id) + curUser?.id as string;
-  console.log(chatId)
-
+  const localStorageUserId = (localStorage.getItem('userId') as string)
+  
   //input value
   const [inputValue, setInputValue] = useState<MessageType>({
     id: '',
-    writer: curUser?.id as string,
+    writer: localStorageUserId,
     text: '',
     created: '',
-    now: 0
   })
   console.log(inputValue)
+  
   const sendHandler = async() => {
     await updateDoc(doc(db, 'chats', chatId as string), {
       messages: arrayUnion({...inputValue})
@@ -50,19 +49,20 @@ export default function ChattingRoom() {
         text: inputValue.text
       },
       [chatId+".date"]: inputValue.created,
+      [chatId+".created"]: Date.now()
     })
     await updateDocData('userChats', chatUserId as string, {
       [chatId+".last"]: {
         text: inputValue.text
       },
       [chatId+".date"]: inputValue.created,
+      [chatId+".created"]: Date.now()
     })
     setInputValue({
       id: '',
-      writer: curUser?.id as string,
+      writer: localStorageUserId,
       text: '',
       created: '',
-      now: 0
     })
   }
 
@@ -100,7 +100,7 @@ export default function ChattingRoom() {
           {message.writer === userId ? 
             <div className='flex flex-row-reverse items-start mb-3 w-full drop-shadow-xl'>
               {/* <img src={curUser?.pic} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%]'/> */}
-              <div className='relative min-w-[100px] max-w-[60%] min-h-[55px] mt-[15px] mr-5 py-4 px-5 bg-[#97aef1] rounded-l-xl rounded-br-xl flex justify-center items-center text-white text-lg font-medium tracking-wide break-all whitespace-normal box-border'>
+              <div className='relative min-w-[100px] max-w-[60%] min-h-[55px] mt-[15px] mr-5 py-2 px-5 bg-[#45446c] rounded-l-xl rounded-br-xl flex justify-center items-center text-white text-lg font-medium tracking-wide break-all whitespace-normal box-border'>
                 <span>{message.text}</span>
                 <div className='absolute bottom-1 left-[-50px] text-gray-700 text-base'><span>{message.created}</span></div>
               </div>
@@ -132,7 +132,6 @@ export default function ChattingRoom() {
               id: String(Math.random()),
               text: e.target.value,
               created: `${String(new Date().getHours())}:${String(new Date().getMinutes())}`,
-              now: Date.now()
             }) 
           }}
           onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => {e.key === 'Enter' && sendHandler()}}

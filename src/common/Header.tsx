@@ -81,7 +81,7 @@ export default function Header() {
 
   return (<>
     <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={btn}/>
-    <div className={`fixed z-30 w-full h-[80px] bg-black  flex justify-center`}> {/* bg-[#f6f5f0] */}
+    <div className={`fixed z-40 w-full h-[80px] bg-black  flex justify-center`}> {/* bg-[#f6f5f0] */}
       <div className='w-full max-w-screen-xl h-full px-2 flex justify-between items-center'>
         <div className='flex items-center w-[70%] h-full'>
           <Default><>
@@ -234,8 +234,8 @@ export default function Header() {
       </div>
     </></Mobile>
     <Default><>
-    <div className={`w-full bg-black ${profile && isDefault ? 'h-[80px]' : 'h-0'} transition-all`}></div>
-    {userInfo!==null && <div className={`fixed z-10 w-full h-[70px] bg-black text-white flex justify-center transition-all`}>
+    {/* <div className={`w-full bg-black ${profile && isDefault ? 'h-[80px]' : 'h-0'} transition-all`}></div> */}
+    {userInfo!==null && <div className={`fixed z-30 w-full h-[70px] bg-black bg-opacity-80 text-white flex justify-center ${profile && isDefault ? 'mt-[80px]' : 'mt-0'} transition-all`}>
       <div className='w-full max-w-screen-xl h-full px-2 flex justify-around items-center text-xl border-t border-t-slate-400'>
         <div className='flex items-center w-[1500px] ml-10 text-base'>{`${userInfo.displayName}님 이 로그인 중입니다.`}</div>
         <p className='btn btn--white w-full py-4 cursor-pointer hover:text-lg' 

@@ -31,11 +31,10 @@ export default function MessagePage() {
 
   // search user
   const [inputValue, setInputValue] = useState('')
-  const searchedUser = userData?.map(i => ({...i})).filter(i => i.name.toLowerCase().includes(inputValue.toLowerCase()))
+  const searchedUser = userData?.map(i => ({...i})).filter(i => i.id !== user?.uid).filter(i => i.name.toLowerCase().includes(inputValue.toLowerCase()))
 
   // 채팅 시작
   const handleSelect = async(chatUserId:string) => {
-    console.log(chatUserId)
     const combinedId = user?.uid as string > chatUserId ? user?.uid as string + chatUserId : chatUserId + user?.uid as string;
     try {
       const res = await getDoc(doc(db, 'chats', combinedId))
@@ -80,7 +79,7 @@ export default function MessagePage() {
     }
     user?.uid && getChats()
   },[user?.uid])
-  console.log(Object.entries(chats))
+
 
 
   //profile Modal
@@ -128,6 +127,7 @@ export default function MessagePage() {
               :  
                 <>
                 <div className='mb-2 mt-3'>
+                  <div className='text-lg font-semibold ml-2 mb-5 text-gray-200 '>검색 결과</div>
                 {searchedUser?.map((user, index) => (
                   <div key={index}
                     onClick={() => {
@@ -135,7 +135,7 @@ export default function MessagePage() {
                       handleSelect(user.id)
                       navigate(`/directMessage/${user?.id}`)
                     }}
-                    className='flex items-center w-full h-[80px] py-2 pl-3 mb-1 cursor-pointer hover:underline'>
+                    className='flex items-center w-full h-[80px] py-2 pl-3 mb-1 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 rounded-lg'>
                     <img src={user.pic} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />
                     <div className='flex flex-col ml-3'>
                       <p className='text-lg text-gray-100 font-semibold'>{user.name}</p>
@@ -147,10 +147,11 @@ export default function MessagePage() {
               }
               </>}
               <div className='w-full h-0 border-[0.5px] border-transparent border-b-gray-400 mb-3 rounded-xl'></div>
+              <div className='text-lg font-semibold ml-2 text-gray-200'>대화 목록</div>
               <div className='w-full h-screen py-5 overflow-x-hidden'>
-                {Object.entries(chats)?.sort((a,b) => b[1].now - a[1].now).map((chat) => (
-                  <div className='w-full h-[90px] flex justify-between items-center'>
-                    <div key={chat[0]}
+                {Object.entries(chats)?.sort((a,b) => b[1].created - a[1].created).map((chat) => (
+                  <div key={chat[0]} className='w-full h-[90px] flex justify-between items-center'>
+                    <div 
                       onClick={() => navigate(`/directMessage/${chat[1].userInfo.uid}`)}
                       className='flex items-center w-full h-[80px] pl-3 mb-1 cursor-pointer hover:scale-[1.05] transition'>
                       <img src={chat[1].userInfo.photoURL} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />

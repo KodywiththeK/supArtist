@@ -10,9 +10,16 @@ const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const subscribe = auth.onAuthStateChanged(fbUser => {
       console.log(`구독 실행`, fbUser);
       setUser(fbUser);
+      if(fbUser !== null) {
+        localStorage.setItem('userId', fbUser?.uid as string)
+        console.log('저장')
+      } else {
+        localStorage.removeItem('userId')
+        console.log('삭제')
+      }
     });
     return subscribe;
-  }, [user]);
+  }, []);
 
   return <AuthContext.Provider value={user}>{children} </AuthContext.Provider>;
 };
