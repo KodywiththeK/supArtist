@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut, sendEmailVerification } from 'firebase/auth';
 import { FcGoogle } from 'react-icons/fc'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
@@ -31,27 +31,37 @@ const LoginForm = (props:LoginFormPropsType) => {
   // confirm modal control
   const [confirmModal, setConfirmModal] = useState(false)
   const getModalAnswer = (answer:boolean) => {
-    console.log(answer)
-    answer && props.setForm
+    if(answer) {
+      props.setForm
+    }
   }
   const confirmTitle = '로그인 오류'
-  const confirmDes = '로그인 정보가 없거나 올바르지 않습니다. 회원가입 하시겠습니까?'
-  const confirmBtn = '회원가입하기'
+  const [confirmDes, setConfirmDes] = useState('')
+  const [confirmBtn, setConfirmBtn] = useState('')
 
   // Alert modal control
   const [alertModal, setAlertModal] = useState(false)
   const alertTitle = '알림'
   const [alertDes, setAlertDes] = useState('')
 
-  const onSubmit: SubmitHandler<loginType> = (data) => {
-    signInWithEmailAndPassword(auth, data.email, data.password)
-      .then(() => {
+  const onSubmit: SubmitHandler<loginType> = async(data) => {
+    try {
+      const userSignIn = await signInWithEmailAndPassword(auth, data.email, data.password)
+      if(userSignIn.user.emailVerified) {
         navigate('/')
-      })
-      .catch(() => {
-        setConfirmModal(true)
-      })
+      } else {
+        if(confirm('아직 이메일 인증이 완료되지 않았습니다. 혹시 메일을 받지 못하셨다면, 해당 이메일로 인증메일을 다시 보내드릴까요?')) {
+          sendEmailVerification((userSignIn.user))
+        }
+        signOut(auth)
+      }
+    } catch (err) {
+      setConfirmBtn('회원가입')
+      setConfirmDes('로그인 정보가 없거나 올바르지 않습니다. 회원가입 하시겠습니까?')
+      setConfirmModal(true)
+    }
   }; 
+
   const resetPasswordRequest: SubmitHandler<setPwdType> = (data) => {
     sendPasswordResetEmail(auth, data.email)
       .then(() => {

@@ -44,7 +44,7 @@ export default function MyWork() {
       ))}
       </>
       :
-      <div className='flex w-full ml-10'>내 프로젝트를 시작해보세요!</div>
+      <div className='flex w-full ml-10 mb-10 text-lg'>내 프로젝트를 시작해보세요!</div>
     }
     </div>
   </div>

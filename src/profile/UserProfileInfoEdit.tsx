@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from 'react-responsive';
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db, deleteDocData, storage, updateDocData } from '../firebase/firebase';
 import { AuthContext } from '../store/AuthContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -86,17 +86,31 @@ export default function UserProfileInfoEdit() {
   const onChangeHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
     setPwd(e.target.value)
   } 
+  const getUserChatsInfo = async() => {
+    const result = await getDocs(collection(db, 'chats'))
+    const arr = [] as string[]
+    result.forEach((doc) => {
+      if(String(doc.id).includes(user?.uid as string)) {
+        arr.push(String(doc.id))
+      }
+    })
+    return arr
+  }
+
   const handleSignOut = async() => {
-    if (user != null) {
-      await deleteDocData('userInfo', userId as string)
-      .then(() => {
-        recruitmentData?.map((post) => {
-          if(post.writer === userId) {
-            deleteDocData('recruitment', post.id)
-          }
+    if (user !== null) {
+      try {
+        const userChatInfo = await getUserChatsInfo()
+        userChatInfo.map(async data => {
+          await deleteDocData('chats', data)
         })
-      })
-      .then(() => {
+        await deleteDocData('userChats', userId as string)
+        await deleteDocData('userInfo', userId as string)
+        recruitmentData?.map(async(post) => {
+            if(post.writer === userId) {
+              await deleteDocData('recruitment', post.id)
+            }
+          })
         recruitmentData?.map(async(post) => {
           if(post.applicant.includes(userId as string)) {
             let applicantArr = post.applicant.filter(i => i !== userId)
@@ -117,18 +131,19 @@ export default function UserProfileInfoEdit() {
             await updateDocData('userInfo', user.id as string, {following: followingArr})
           }
         })
-      })
-      .then(() => {
-        user?.delete().then(() => {
+
+        await user?.delete().then(() => {
           setAlertTitle('탈퇴 완료')
           setAlertDes('계정이 삭제되었습니다.')
           setAlertModal(true)
           navigate('/login')
         })
-      })
-      .catch((error) => {
+        .catch((error) => {
+          console.error(error)
+        })
+      } catch (error) {
         console.error(error)
-      })
+      } 
     }
   }
 

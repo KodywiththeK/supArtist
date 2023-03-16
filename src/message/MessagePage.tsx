@@ -155,7 +155,7 @@ export default function MessagePage() {
               {!inputValue && <>
               <div className='text-lg font-semibold ml-2 my-[10px] text-gray-200'>대화 목록</div>
               <div className='w-full py-2 overflow-x-hidden ' style={isDefault ? {height: 'calc(100% - 150px)'} : {height: 'calc(100% - 220px)'} }>
-                {Object.entries(chats)?.sort((a,b) => b[1].created - a[1].created).map((chat) => (
+                {chats && Object.entries(chats)?.sort((a,b) => b[1].created - a[1].created).map((chat) => (
                   <div key={chat[0]} className='w-full h-[90px] flex justify-between items-center'>
                     <div 
                       onClick={() => navigate(`/directMessage/${chat[1].userInfo.uid}`)}
@@ -173,6 +173,7 @@ export default function MessagePage() {
             </div>
           </div>
         </div>
+      <Mobile>
         <div className='fixed bottom-0 w-full '>
           <div className='flex justify-between items-center w-full h-[90px] bg-[#f6f5f0] flex-1'>
             <button onClick={() => navigate('/')}
@@ -197,7 +198,8 @@ export default function MessagePage() {
             </button>
           </div>
         </div>
-        <Default>
+      </Mobile>
+      <Default>
         <div className='relative w-[60vw] h-full bg-[#45446c] flex flex-col items-start '>
           <div className='absolute z-0 inset-0 w-full bg-[#e1e1f7] px-5 flex flex-col justify-center items-center'>
             <div className='w-[150px] h-[150px] border-[2px] border-gray-500 box-content rounded-[50%] flex justify-center items-center drop-shadow-2xl'>

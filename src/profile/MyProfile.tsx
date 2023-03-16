@@ -71,7 +71,7 @@ export default function MyProfile() {
         ))} 
         </>
         :
-        <div className='flex w-full ml-10 mb-20'>현재 찜한 프로젝트가 없습니다. 관심있는 프로젝트에 하트를 눌러보세요!</div>
+        <div className='flex w-full ml-10 mb-10 text-lg'>현재 찜한 프로젝트가 없습니다. 관심있는 프로젝트에 하트를 눌러보세요!</div>
       }
       </div>
     </div>

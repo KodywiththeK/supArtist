@@ -121,7 +121,7 @@ export default function MyApplication() {
         ))}
         </>
         :
-        <div className='flex w-full ml-10'>지원하신 내역이 없습니다.</div>
+        <div className='flex text-lg font-semibold w-full ml-10 mb-10'>지원하신 내역이 없습니다.</div>
       }
     </div>
   </div>
