@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from 'react-responsive';
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteField, doc, DocumentData, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db, deleteDocData, storage, updateDocData } from '../firebase/firebase';
 import { AuthContext } from '../store/AuthContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -32,6 +32,7 @@ export default function UserProfileInfoEdit() {
   //auth
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
+  const isGoogle = userInfo?.providerData[0].providerId === 'google.com';
 
   //recoil
   // const userData = useRecoilValue(user)
@@ -86,7 +87,7 @@ export default function UserProfileInfoEdit() {
   const onChangeHandler = (e:React.ChangeEvent<HTMLInputElement>) => {
     setPwd(e.target.value)
   } 
-  const getUserChatsInfo = async() => {
+  const getChatsInfo = async() => {
     const result = await getDocs(collection(db, 'chats'))
     const arr = [] as string[]
     result.forEach((doc) => {
@@ -96,21 +97,41 @@ export default function UserProfileInfoEdit() {
     })
     return arr
   }
+  const getUserChatsInfo = async() => {
+    const result = await getDocs(collection(db, 'userChats'))
+    const arr = [] as {[x:string] : string[]}[]
+    result.forEach((user) => {
+      arr.push({ [user.id] : [String(Object.keys(user.data()).flat())] })
+    })
+    return (arr.filter(i => Object.values(i).filter(j => j.includes(user?.uid as string)))).map(k => Object.entries(k)).map(l => [l[0][0] , l[0][1].flat().join()]).filter(m => m[1].length !== 0)
+  }
 
   const handleSignOut = async() => {
     if (user !== null) {
       try {
-        const userChatInfo = await getUserChatsInfo()
-        userChatInfo.map(async data => {
+        // 유저의 채팅 메세지 삭제
+        const chatInfo = await getChatsInfo()
+        chatInfo.map(async data => {
           await deleteDocData('chats', data)
         })
+        // 유저가 포함된 채팅방 삭제
+        const userChatInfo = await getUserChatsInfo()
+        userChatInfo.map(async(data) => {
+          await updateDoc(doc(db, 'userChats', data[0]), {
+            [data[1]] : deleteField()
+          })
+        })
+        // 탈퇴하는 유저의 채팅방 전체 삭제
         await deleteDocData('userChats', userId as string)
+        // 유저 기본 프로필 정보 삭제
         await deleteDocData('userInfo', userId as string)
+        // 유저가 올린 게시물 삭제
         recruitmentData?.map(async(post) => {
             if(post.writer === userId) {
               await deleteDocData('recruitment', post.id)
             }
           })
+        // 유저가 지원했던 프로젝트에서 이름 삭제
         recruitmentData?.map(async(post) => {
           if(post.applicant.includes(userId as string)) {
             let applicantArr = post.applicant.filter(i => i !== userId)
@@ -121,6 +142,7 @@ export default function UserProfileInfoEdit() {
             await updateDocData('recruitment', post.id, {confirmed: confirmedArr})
           }
         })
+        // 유저의 팔로우 팔로잉 기록 삭제
         userData?.map(async(user) => {
           if(user.followers.includes(userId as string)) {
             let followersArr = user.followers.filter(i => i !== userId)
@@ -132,6 +154,7 @@ export default function UserProfileInfoEdit() {
           }
         })
 
+        // 회원탈퇴
         await user?.delete().then(() => {
           setAlertTitle('탈퇴 완료')
           setAlertDes('계정이 삭제되었습니다.')
@@ -429,13 +452,23 @@ export default function UserProfileInfoEdit() {
     </form>
     <div className='w-full max-w-[750px] border border-transparent border-b-gray-400 mt-20'></div>
     <h2 className='mt-16 text-2xl font-bold'>회원 탈퇴</h2>
-    <div className='flex w-full mt-6'>
-      <input className={`${isDefault ? 'w-[70%]' : 'w-full'} max-w-[400px] text-black py-2 px-4 bg-gray-100 border rounded-md border-black outline-none focus:outline-none`}
-        placeholder='비밀번호를 입력해주세요'
-        type='password' onChange={onChangeHandler} value={pwd} />
-      <button className='btn border border-black ml-5 text-sm'
-        onClick={checkOldPwd}>계정 삭제</button>
-    </div>
+    {isGoogle ? 
+      <button className='btn btn--reverse mt-6 w-full border border-black text-sm'
+        onClick={() => {
+          setTitle('회원탈퇴')
+          setDes('작성한 모든글과 정보가 삭제됩니다. 정말 탈퇴하시겠습니까?')
+          setConfirmBtn('탈퇴하기')
+          setConfirmModal(true)
+        }}>계정 삭제</button>
+      :
+      <div className='flex w-full mt-6'>
+        <input className={`${isDefault ? 'w-[70%]' : 'w-full'} max-w-[400px] text-black py-2 px-4 bg-gray-100 border rounded-md border-black outline-none focus:outline-none`}
+          placeholder='비밀번호를 입력해주세요'
+          type='password' onChange={onChangeHandler} value={pwd} />
+        <button className='btn border border-black ml-5 text-sm'
+          onClick={checkOldPwd}>계정 삭제</button>
+      </div>
+    }
   </>
   )
 }

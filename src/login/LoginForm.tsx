@@ -2,11 +2,12 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut, sendEmailV
 import { FcGoogle } from 'react-icons/fc'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase/firebase';
+import { auth, db } from '../firebase/firebase';
 import { signInWithGoogle } from './googleLogin';
 import ConfirmModal from '../common/ConfirmModal';
 import AlertModal from '../common/AlertModal';
 import { useState } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 interface loginType {
   email: string,
@@ -82,7 +83,26 @@ const LoginForm = (props:LoginFormPropsType) => {
 
   const handleGoogleLogin = async() => {
     await signInWithGoogle()
-    .then(() => navigate('/'))
+    const res = await getDoc(doc(db, 'userInfo', auth.currentUser?.uid as string))  
+    if(!res.exists()) {
+      await setDoc(doc(db, 'userInfo', String(auth.currentUser?.uid)), {
+        email: auth.currentUser?.email as string,
+        name: auth.currentUser?.displayName as string,
+        phone: auth.currentUser?.phoneNumber as string,
+        pic: auth.currentUser?.photoURL as string,
+        intro: '프로필 설정에 들어가서 프로필을 작성해보세요!',
+        gender: '',
+        bday: '',
+        interest: [],
+        team: [],
+        experience: ['완성도 높은 프로필을 작성할수록 합격률이 올라갑니다 :)'],
+        heart: [],
+        apply: [],
+        followers: [],
+        following: []
+      })
+    }
+    navigate('/')
   }
 
 

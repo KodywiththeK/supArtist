@@ -13,33 +13,35 @@ export default function Home() {
   const userInfo = useContext(AuthContext)
 
   //react-query
-  const {isLoading:userLoading, data:userData, refetch} = useUserQuery()
-  console.log(userData?.find((user) => user.id === userInfo?.uid))
-  useEffect(() => {
-    const setGoogleUser = async() => {
-      if(userData?.find((user) => user.id === userInfo?.uid) === undefined) {
-        await setDoc(doc(db, 'userInfo', String(userInfo?.uid)), {
-          email: userInfo?.email,
-          name: userInfo?.displayName,
-          phone: userInfo?.phoneNumber,
-          pic: userInfo?.photoURL,
-          intro: '프로필 설정에 들어가서 프로필을 작성해보세요!',
-          gender: '',
-          bday: '',
-          interest: [],
-          team: [],
-          experience: ['완성도 높은 프로필을 작성할수록 합격률이 올라갑니다 :)'],
-          heart: [],
-          apply: [],
-          followers: [],
-          following: []
-        })
-      }
-    }
-    setGoogleUser();
-    refetch();
-    console.log(userData)
-  },[])
+  const {isLoading:userLoading, data:userData} = useUserQuery()
+  console.log(userData)
+  console.log(userInfo?.uid as string)
+  // console.log(userData?.find((user) => user.id === userInfo?.uid))
+  // useEffect(() => {
+  //   const setGoogleUser = async() => {
+  //     if(userData?.find((user) => user.id === userInfo?.uid) === undefined) {
+  //       await setDoc(doc(db, 'userInfo', String(userInfo?.uid)), {
+  //         email: userInfo?.email,
+  //         name: userInfo?.displayName,
+  //         phone: userInfo?.phoneNumber,
+  //         pic: userInfo?.photoURL,
+  //         intro: '프로필 설정에 들어가서 프로필을 작성해보세요!',
+  //         gender: '',
+  //         bday: '',
+  //         interest: [],
+  //         team: [],
+  //         experience: ['완성도 높은 프로필을 작성할수록 합격률이 올라갑니다 :)'],
+  //         heart: [],
+  //         apply: [],
+  //         followers: [],
+  //         following: []
+  //       })
+  //     }
+  //   }
+  //   setGoogleUser();
+  //   refetch();
+  //   console.log(userData)
+  // },[])
 
   return (<>
   <div className='w-full min-h-screen relative overflow-x-hidden'>

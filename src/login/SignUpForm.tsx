@@ -120,8 +120,8 @@ const SignUpForm = (props:SignUpFormPropsType) => {
     <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={confirmTitle} des={confirmDes} confirmBtn={confirmBtn}/>
     <div className='w-full max-w-sm flex flex-col'>
       <div className='w-full flex flex-col mb-10'>
-        <h3 className='text-3xl font-semibold mb-4'>Register</h3>
-        <div className='text-base mb-2'>{'Welcome! please fill the form below.'}</div>
+        <h3 className='text-3xl font-semibold mb-4'>회원가입</h3>
+        <div className='text-base mb-2'>환영합니다😃 가입 양식에 맞게 정보를 입력해주세요!</div>
       </div>
 
       <form className='w-full flex flex-col'

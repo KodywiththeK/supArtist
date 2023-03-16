@@ -23,8 +23,8 @@ export default function MessagePage() {
 
   //react-query
   const {isLoading:userLoading, data:userData} = useUserQuery()
-  const curUser = userData?.map(i => ({...i})).find(i => i.id === localStorageUserId)
-  console.log(curUser)
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === localStorageUserId as string)
+  console.log(localStorageUserId)
   const chatUser = (chatUserId:string) => userData?.map(i => ({...i})).find(i => i.id === chatUserId)
 
   //media-query
@@ -191,7 +191,7 @@ export default function MessagePage() {
               <FaPaperPlane className='text-2xl mt-3'/>
               <span>메세지</span>  
             </button>
-            <button onClick={() => { navigate(`/${localStorageUserId}`) }}
+            <button onClick={() => { navigate(`/${localStorageUserId as string}`) }}
               className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4'>
               <BsFillPersonFill className='text-2xl mt-3'/>
               <span>프로필</span>
