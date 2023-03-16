@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { BsFacebook, BsInstagram, BsYoutube, BsTwitter } from 'react-icons/bs'
 import { Default, Mobile } from '../mediaQuery'
 import { BsCardChecklist, BsFillPersonFill } from 'react-icons/bs'
@@ -6,6 +6,7 @@ import { AiFillHome } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../store/AuthContext'
 import { FaListAlt, FaPaperPlane } from 'react-icons/fa'
+import ConfirmModal from './ConfirmModal'
 
 export default function Footer() {
 
@@ -13,7 +14,17 @@ export default function Footer() {
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
 
+  //Confirm Modal Control
+  const title = '비회원 제한'
+  const des = '먼저 로그인하셔야 합니다. 로그인하시겠습니까?'
+  const btn = '로그인 페이지로 이동'
+  const [confirmModal, setConfirmModal] = useState(false)
+  const getModalAnswer = (answer:boolean) => {
+    answer && navigate('/login')
+  }
+
   return (<>
+    <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={btn}/>
     <hr />
     <Default>
     <div className='relative z-10 flex flex-col justify-center items-center w-full h-[35vh] bg-[#333333]'>
@@ -81,32 +92,32 @@ export default function Footer() {
     <div className='z-30 fixed bottom-0 w-full '>
       <div className='flex justify-between items-center w-full h-[90px] bg-[#f6f5f0] flex-1'>
         <button onClick={() => navigate('/')}
-          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4 '>
           <AiFillHome className='text-2xl mt-3'/>
           <span>홈</span>
         </button>
         <button onClick={() => {
           if(userInfo === null) {
-            confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+            setConfirmModal(true)
           } else navigate('/recruitment')}}
-          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4'>
           <FaListAlt className='text-2xl mt-3'/>
           <span>모집공고</span>  
         </button>
         <button onClick={() => {
           if(userInfo === null) {
-            confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+            setConfirmModal(true)
           } else navigate('/directMessage')}}
-          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4 '>
           <FaPaperPlane className='text-2xl mt-3'/>
           <span>메세지</span>  
         </button>
         <button onClick={() => {
           if(userInfo === null) {
-            confirm('먼저 로그인하셔야 합니다. 로그인하시겠습니까?') && navigate('/login')
+            setConfirmModal(true)
           } else navigate(`/${userId}`)
           }}
-          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] focus:bg-[#2c2a29] focus:text-[#619004] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+          className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4 '>
           <BsFillPersonFill className='text-2xl mt-3'/>
           <span>프로필</span>
         </button>

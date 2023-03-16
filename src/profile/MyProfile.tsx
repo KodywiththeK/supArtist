@@ -36,10 +36,10 @@ export default function MyProfile() {
     <>
     <div className='flex flex-col w-full max-w-[700px]'>
       <label className='text-black ml-6 my-4 text-xl font-semibold'>경력사항</label>
-      <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 text-lg sm:text-xl w-full max-w-[600px]">
+      <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 text-lg sm:text-xl w-full">
         {curUser?.experience.map((t,i) => (
-          <div key={i} className='flex justify-between mx-10 my-2 w-full'>
-            <li className='w-full'>{t}</li>
+          <div key={i} className='mx-8 my-2 '>
+            <li className=''>{t}</li>
           </div>
         ))}
       </ul>
@@ -48,7 +48,7 @@ export default function MyProfile() {
       {project?.length!==0 ? <>
         {project?.map((data, index) => (
           <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
-            <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
+            <div className="relative aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
               <img
                 src={data.pic}
                 alt='작품 이미지'

@@ -33,7 +33,7 @@ export default function HomeVisual() {
           영상 스태프는 <br /> Sup-Artist
         </h1>
         <div style={{textShadow: '1px 1px 2px gray'}} 
-          className='drop-shadow-2xl text-ow text-3xl leading-relaxed my-3 text-white font-semibold'>
+          className='drop-shadow-2xl text-ow text-3xl leading-relaxed my-3 text-white font-semibold break-keep'>
           당신이 선택한 작품의 제작과정을 함께하며, <br />
           그 현장의 열정을 직접 경험해보세요!
         </div>

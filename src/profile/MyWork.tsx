@@ -28,7 +28,7 @@ export default function MyWork() {
     {project?.length !== 0 ? <>
       {project?.map((data, index) => (
         <Link to={`/recruitmentDetail/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
-          <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
+          <div className="relative aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">
             <img
               src={data.pic}
               alt='작품 이미지'
