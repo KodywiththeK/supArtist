@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <QueryClientProvider client={queryClient}>
           <ScrollToTop />
           <App />
-          <ReactQueryDevtools />
+          {/* <ReactQueryDevtools /> */}
         </QueryClientProvider>
       </BrowserRouter>
     </AuthProvider>

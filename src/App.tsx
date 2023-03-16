@@ -21,6 +21,8 @@ import ChattingRoom from "./message/ChattingRoom";
 
 
 
+export const localStorageUserId = (localStorage.getItem('userId') as string)
+
 export default function App() {
 
   const userInfo = useContext(AuthContext)

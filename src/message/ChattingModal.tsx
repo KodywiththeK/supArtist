@@ -67,7 +67,7 @@ export default function ChattingModal({profileModal, setProfileModal, data, hand
                             setProfileModal(false)
                             navigate(`/directMessage/${item?.id}`)
                           }}
-                            key={index} className='flex items-center w-full ml-2 my-3 hover:underline cursor-pointer'>
+                            key={index} className='flex items-center w-full p-2 rounded-lg hover:bg-gray-200 hover:underline cursor-pointer'>
                             <img src={item?.pic} alt='profile' className='w-[50px] h-[50px] rounded-[50%] object-cover mr-5'/>
                             <div className="text-base text-gray-500">{item?.name}</div>
                           </div>

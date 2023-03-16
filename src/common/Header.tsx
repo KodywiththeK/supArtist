@@ -81,7 +81,7 @@ export default function Header() {
 
   return (<>
     <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={btn}/>
-    <div className={`fixed z-40 w-full h-[80px] bg-black  flex justify-center`}> {/* bg-[#f6f5f0] */}
+    <div className={`fixed z-50 w-full h-[80px] bg-black  flex justify-center`}> {/* bg-[#f6f5f0] */}
       <div className='w-full max-w-screen-xl h-full px-2 flex justify-between items-center'>
         <div className='flex items-center w-[70%] h-full'>
           <Default><>
@@ -197,7 +197,7 @@ export default function Header() {
     </div> 
     {/* <div className={`w-full bg-white ${(profile && isDefault) ? 'h-[150px]' : 'h-[80px]'} ` }></div> */}
     <Mobile><>
-      <div className={`fixed z-30 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-0 visible' : 'mt-[-80px] invisible'} transition-all`}>
+      <div className={`fixed z-50 w-full h-[80px] bg-black flex justify-around items-center px-4 ${input ? 'mt-0 visible' : 'mt-[-80px] invisible'} transition-all`}>
         <input placeholder='모집 공고의 제목을 검색해보세요' 
           onKeyDown={(e:React.KeyboardEvent<HTMLInputElement>) => {e.key === 'Enter' && inputHandler()}}
           onChange={(e:React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} 

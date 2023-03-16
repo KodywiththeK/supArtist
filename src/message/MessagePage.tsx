@@ -4,11 +4,13 @@ import { AuthContext } from '../store/AuthContext'
 import { Default, Mobile } from '../mediaQuery'
 import { useMediaQuery } from 'react-responsive'
 import useUserQuery from '../reactQuery/userQuery'
-import { BsChatDots } from 'react-icons/bs'
-import { FaPaperPlane } from 'react-icons/fa'
+import { BsChatDots, BsFillPersonFill } from 'react-icons/bs'
+import { FaListAlt, FaPaperPlane } from 'react-icons/fa'
 import { doc, DocumentData, DocumentSnapshot, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { db, updateDocData } from '../firebase/firebase'
 import ChattingModal from './ChattingModal'
+import { localStorageUserId } from '../App'
+import { AiFillHome, AiOutlineCloseCircle } from 'react-icons/ai'
 
 
 
@@ -21,7 +23,8 @@ export default function MessagePage() {
 
   //react-query
   const {isLoading:userLoading, data:userData} = useUserQuery()
-  const curUser = userData?.map(i => ({...i})).find(i => i.id === user?.uid as string)
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === localStorageUserId)
+  console.log(curUser)
   const chatUser = (chatUserId:string) => userData?.map(i => ({...i})).find(i => i.id === chatUserId)
 
   //media-query
@@ -84,11 +87,11 @@ export default function MessagePage() {
 
   //profile Modal
   const [profileModal, setProfileModal] = useState(false)
-  const [modalData, setModalData] = useState({
+  const modalData = {
     name: curUser?.name as string,
     list: '팔로잉',
     items: curUser?.following as string[]
-  })
+  }
 
   // #34335c
   // #45446c
@@ -98,9 +101,9 @@ export default function MessagePage() {
   return (
     <>
     <ChattingModal profileModal={profileModal} setProfileModal={setProfileModal} data={modalData} handleSelect={handleSelect}/>
-    <div className='relative z-20 flex min-h-screen justify-between mb-[-375px]'>
-        <div className='w-[40vw] h-[800px] bg-[#34335c] text-white flex flex-col items-end '>
-          <div className='flex flex-col w-full h-[80px] items-end mt-[80px] bg-[#34335c] '>
+    <div className={`fixed inset-0 overflow-hidden ${isDefault ? 'z-20' : 'z-40'} flex justify-between`}>
+        <div className={`${isDefault ? 'w-[40vw] items-end' : 'w-full' } h-full bg-[#34335c] text-white flex flex-col`}>
+          <div className={`flex flex-col w-full h-[80px] ${isDefault ? 'items-end' : 'items-center' } mt-[80px] bg-[#34335c]`}>
             <div className='w-full max-w-[450px] h-[80px] pl-6 flex items-center justify-between'>
               <p className='text-2xl font-bold'>{curUser?.name}</p>
               <button onClick={(e) => {
@@ -110,11 +113,14 @@ export default function MessagePage() {
                 className='btn btn--white mr-4 w-[80px] border border-white'>My list</button>
             </div>
           </div>
-          <div className='w-full h-full bg-[#45446c] flex justify-end'>
-            <div className='w-full max-w-[450px] h-full pl-3 flex flex-col'>
+          <div className={`w-full h-full bg-[#45446c] flex ${isDefault ? 'justify-end' : 'justify-center pr-4' }`}>
+            <div className='relative w-full max-w-[450px] h-full pl-3 flex flex-col'>
               <input onChange={(e) => {setInputValue(e.target.value)}} value={inputValue}
-                className='outline-none bg-white bg-opacity-10 rounded-lg transparent text-lg text-gray-200 p-4 placeholder:text-gray-400 placeholder:italic tracking-wide'
+                tabIndex={1}
+                className='outline-none bg-opacity-10 rounded-lg w-full h-[70px] bg-white text-lg text-gray-200 p-4 placeholder:text-gray-400 placeholder:italic tracking-wide'
                 placeholder='다른 이용자의 이름을 검색해보세요'/>
+              {inputValue && <AiOutlineCloseCircle className='absolute right-3 top-[22px] text-2xl text-gray-200 cursor-pointer' onClick={() => setInputValue('')}/>}
+              <div className='w-full h-0 border-[0.5px] border-transparent border-b-gray-400 mb-[10px] rounded-xl'></div>
               {inputValue && <>
               {searchedUser?.length === 0 ? 
                 <>
@@ -126,10 +132,10 @@ export default function MessagePage() {
                 </>
               :  
                 <>
-                <div className='mb-2 mt-3'>
-                  <div className='text-lg font-semibold ml-2 mb-5 text-gray-200 '>검색 결과</div>
-                {searchedUser?.map((user, index) => (
-                  <div key={index}
+                <div className='text-lg font-semibold ml-2 my-[10px] text-gray-200 '>검색 결과</div>
+                <div className='mb-2 py-2 w-full' style={isDefault ? {height: 'calc(100% - 150px)'} : {height: 'calc(100% - 220px)'} }>
+                  {searchedUser?.map((user, index) => (
+                  <div key={index} tabIndex={1}
                     onClick={() => {
                       setInputValue('')
                       handleSelect(user.id)
@@ -146,9 +152,9 @@ export default function MessagePage() {
                 </>
               }
               </>}
-              <div className='w-full h-0 border-[0.5px] border-transparent border-b-gray-400 mb-3 rounded-xl'></div>
-              <div className='text-lg font-semibold ml-2 text-gray-200'>대화 목록</div>
-              <div className='w-full h-screen py-5 overflow-x-hidden'>
+              {!inputValue && <>
+              <div className='text-lg font-semibold ml-2 my-[10px] text-gray-200'>대화 목록</div>
+              <div className='w-full py-2 overflow-x-hidden ' style={isDefault ? {height: 'calc(100% - 150px)'} : {height: 'calc(100% - 220px)'} }>
                 {Object.entries(chats)?.sort((a,b) => b[1].created - a[1].created).map((chat) => (
                   <div key={chat[0]} className='w-full h-[90px] flex justify-between items-center'>
                     <div 
@@ -163,12 +169,37 @@ export default function MessagePage() {
                     <div className='h-full flex items-center mr-6'>{chat[1].date}</div>
                   </div>
                 ))}
-              </div>
+              </div></>}
             </div>
           </div>
         </div>
-        <div className='relative w-[60vw] h-screen bg-[#e1e1f7] flex flex-col items-start '>
-          <div className='absolute z-0 top-0 w-full max-w-[800px] h-full px-5 flex flex-col justify-center items-center'>
+        <div className='fixed bottom-0 w-full '>
+          <div className='flex justify-between items-center w-full h-[90px] bg-[#f6f5f0] flex-1'>
+            <button onClick={() => navigate('/')}
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              <AiFillHome className='text-2xl mt-3'/>
+              <span>홈</span>
+            </button>
+            <button onClick={() => { navigate('/recruitment')}}
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              <FaListAlt className='text-2xl mt-3'/>
+              <span>모집공고</span>  
+            </button>
+            <button onClick={() => { navigate('/directMessage')}}
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              <FaPaperPlane className='text-2xl mt-3'/>
+              <span>메세지</span>  
+            </button>
+            <button onClick={() => { navigate(`/${localStorageUserId}`) }}
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              <BsFillPersonFill className='text-2xl mt-3'/>
+              <span>프로필</span>
+            </button>
+          </div>
+        </div>
+        <Default>
+        <div className='relative w-[60vw] h-full bg-[#45446c] flex flex-col items-start '>
+          <div className='absolute z-0 inset-0 w-full bg-[#e1e1f7] px-5 flex flex-col justify-center items-center'>
             <div className='w-[150px] h-[150px] border-[2px] border-gray-500 box-content rounded-[50%] flex justify-center items-center drop-shadow-2xl'>
               <FaPaperPlane className='text-[90px] text-gray-700 mr-3' />
             </div>
@@ -179,6 +210,10 @@ export default function MessagePage() {
           </div>
           <Outlet />
         </div>
+      </Default>
+      <Mobile>
+        <Outlet />
+      </Mobile>
     </div>
     </>
   )
