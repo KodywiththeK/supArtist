@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react'
 import {BsPersonFill, BsFilm, BsFillCameraReelsFill } from 'react-icons/bs'
 import { AiFillHome, AiFillCaretDown } from 'react-icons/ai'
-import { BiSearch } from 'react-icons/bi'
+import { BiLogIn, BiSearch } from 'react-icons/bi'
 import { AuthContext } from '../store/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
@@ -111,7 +111,14 @@ export default function Header() {
             </button>
           </Mobile>
         </div>
-
+        
+        {userInfo === null ?
+          <div onClick={() => navigate('/login')}
+            className={`flex items-center justify-center mx-2 ${isDefault ? 'btn btn--white text-2xl font-semibold' : 'text-white text-xl font-semibold border border-white rounded-lg px-3 py-2'} cursor-pointer`}>
+            <p>Log in</p>
+            <BiLogIn />
+          </div>
+        :
         <div className='flex items-start justify-end mt-6 h-[80%] w-[90%] text-2xl mx-2'>
           <div className='flex items-start w-full'>
             <div className='flex w-full justify-end relative'>
@@ -124,22 +131,14 @@ export default function Header() {
                 />
               <BiSearch tabIndex={1}
                 onClick={() => {
-                if(userInfo === null) {
-                  setConfirmModal(true)
-                } else {
                   inputRef.current?.focus()
                   inputHandler()
-                }
-              }}
+                }}
                 className='mr-3 ml-[-40px] box-content rounded-3xl p-2 cursor-pointer focus:outline-none'/>
               </></Default>
               <Mobile>
-              <BiSearch onClick={() => {
-                if(userInfo === null) {
-                  setConfirmModal(true)
-                } else inputHandler()
-              }}
-                className='mr-3 bg-white box-content rounded-xl p-2 cursor-pointer'/>
+                <BiSearch onClick={() => { inputHandler() }}
+                  className='mr-3 bg-white box-content rounded-xl p-2 cursor-pointer'/>
               </Mobile>  
               <Default>
                 <>
@@ -172,27 +171,19 @@ export default function Header() {
           </div>
           <Default><>
           <div className='w-24 ml-1 flex justify-start mt-[-5px] text-2xl rounded-lg btn btn--white border-white hover:scale-[1.1]'
-            onClick={() => {
-              if(userInfo === null) {
-                setConfirmModal(true)
-              } else setProfile(!profile)
-            }}
+            onClick={() => { setProfile(!profile) }}
           >
             <BsPersonFill 
               className={`w-8 box-content cursor-pointer bg-transparent`}
             />
             <AiFillCaretDown className={`box-content cursor-pointer bg-transparent ${profile ? 'rotate-180' : ''}`}/>
           </div>
-          <div onClick={() => {
-            if(userInfo === null) {
-                setConfirmModal(true)
-              } else navigate('/directMessage')
-          }}
+          <div onClick={() => { navigate('/directMessage') }}
             className='flex justify-center items-center w-[50px] box-content py-[13px] pl-[3px] pr-[5px] mt-[-5px] ml-4 border-[2px] border-white rounded-[50%] text-white hover:bg-white hover:text-black hover:scale-[1.1] transition cursor-pointer'>
             <FaPaperPlane className='text-xl'/>
           </div>
           </></Default>
-        </div>
+        </div>}
       </div> 
     </div> 
     {/* <div className={`w-full bg-white ${(profile && isDefault) ? 'h-[150px]' : 'h-[80px]'} ` }></div> */}

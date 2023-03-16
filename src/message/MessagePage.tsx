@@ -176,22 +176,22 @@ export default function MessagePage() {
         <div className='fixed bottom-0 w-full '>
           <div className='flex justify-between items-center w-full h-[90px] bg-[#f6f5f0] flex-1'>
             <button onClick={() => navigate('/')}
-              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4 '>
               <AiFillHome className='text-2xl mt-3'/>
               <span>홈</span>
             </button>
             <button onClick={() => { navigate('/recruitment')}}
-              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4 '>
               <FaListAlt className='text-2xl mt-3'/>
               <span>모집공고</span>  
             </button>
             <button onClick={() => { navigate('/directMessage')}}
-              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4 '>
               <FaPaperPlane className='text-2xl mt-3'/>
               <span>메세지</span>  
             </button>
             <button onClick={() => { navigate(`/${localStorageUserId}`) }}
-              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] hover:bg-[#2c2a29] hover:text-[#619004] h-full w-1/4 transition'>
+              className='flex flex-col w-full pt-2 justify-start items-center bg-[#f6f5f0] text-[#2c2a29] h-full w-1/4'>
               <BsFillPersonFill className='text-2xl mt-3'/>
               <span>프로필</span>
             </button>

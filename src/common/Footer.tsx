@@ -35,7 +35,7 @@ export default function Footer() {
         <span className='text-[#CCCCCC] font-bold text-sm'>이용자보호 비전과 계획</span>
       </div>
       <div className='mt-3'>
-        <span className='text-[#999999] font-bold text-sm mr-1'>대표</span><span className='text-[#777777] font-medium text-sm mr-1 after:content-["|"] after:mx-2'>김동성</span>
+        <span className='text-[#999999] font-bold text-sm mr-1'>대표</span><span className='text-[#777777] font-medium text-sm mr-1 after:content-["|"] after:mx-2'>000</span>
         <span className='text-[#999999] font-bold text-sm mr-1'>사업자번호</span><span className='text-[#777777] font-medium text-sm mr-1 after:content-["|"] after:mx-2'>000-00-00000</span>
         <span className='text-[#999999] font-bold text-sm mr-1'>주소</span><span className='text-[#777777] font-medium text-sm mr-1 after:content-["|"] after:mx-2'>서울특별시 00동</span>
         <span className='text-[#999999] font-bold text-sm mr-1'>전화</span><span className='text-[#777777] font-medium text-sm mr-1'>02-0000-0000</span>
@@ -54,7 +54,7 @@ export default function Footer() {
         <span className='text-[#999999] font-bold text-sm mr-1 after:content-["·"] after:mx-2'>ZeroBase</span>
         <span className='text-[#999999] font-bold text-sm mr-1'>Front-end School</span>
       </div>
-      <div className='mt-3 text-[#666666] font-bold text-sm mr-1'>{`© ${(new Date).getFullYear()} Sup-Artist Company. All Rights Reserved.`}</div>
+      <div className='mt-3 text-[#666666] font-bold text-sm mr-1'>{`© ${(new Date).getFullYear()} KODYwiththeK. All Rights Reserved.`}</div>
     </div>
     </Default>
     <Mobile><>
@@ -68,7 +68,7 @@ export default function Footer() {
         <span className='text-[#CCCCCC] font-bold text-sm'>이용자보호 비전과 계획</span>
       </div>
       <div className='mt-3'>
-        <span className='text-[#999999] font-bold text-sm mr-1'>대표</span><span className='text-[#777777] font-medium text-sm mr-1 after:content-["|"] after:mx-2'>김동성</span>
+        <span className='text-[#999999] font-bold text-sm mr-1'>대표</span><span className='text-[#777777] font-medium text-sm mr-1 after:content-["|"] after:mx-2'>000</span>
         <span className='text-[#999999] font-bold text-sm mr-1'>사업자번호</span><span className='text-[#777777] font-medium text-sm mr-1'>000-00-00000</span>
       </div>
       <div>
@@ -87,7 +87,7 @@ export default function Footer() {
         <span className='text-[#999999] font-bold text-sm mr-1 after:content-["·"] after:mx-2'>ZeroBase</span>
         <span className='text-[#999999] font-bold text-sm mr-1'>Front-end School</span>
       </div>
-      <div className='mt-3 text-[#666666] font-bold text-sm mr-1'>{`© ${(new Date).getFullYear()} Sup-Artist Company. All Rights Reserved.`}</div>
+      <div className='mt-3 text-[#666666] font-bold text-sm mr-1'>{`© ${(new Date).getFullYear()} KODYwiththeK. All Rights Reserved.`}</div>
     </div>
     <div className='z-30 fixed bottom-0 w-full '>
       <div className='flex justify-between items-center w-full h-[90px] bg-[#f6f5f0] flex-1'>
