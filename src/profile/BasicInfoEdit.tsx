@@ -32,7 +32,7 @@ export default function BasicInfoEdit() {
   // const [_, setUserData] = useRecoilState(user)
   
   // react-query
-  const {data, isLoading} = useUserQuery()
+  const {data, isLoading, refetch} = useUserQuery()
   const userData = data?.map((i) => ({...i})) as UserDataType[]
   const curUser = userData?.find(i => i.id === userInfo?.uid)
 
@@ -77,6 +77,7 @@ export default function BasicInfoEdit() {
       setAlertModal(true)
       resetField('name')
       setUserNameChange(false)
+      refetch()
     })
     .catch((e) => {
       console.log(e)

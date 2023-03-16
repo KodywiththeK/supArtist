@@ -62,7 +62,7 @@ export default function Recruitment() {
   }
 
   // 페이지네이션
-  const [postsPerPage, setPostsPerPage] = useState(4)
+  const [postsPerPage, setPostsPerPage] = useState(8)
   const [curPage, setCurPage] = useState(1)
   const lastPostIdx = curPage * postsPerPage
   const firstPostIdx = lastPostIdx - postsPerPage

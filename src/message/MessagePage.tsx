@@ -9,15 +9,15 @@ import { FaListAlt, FaPaperPlane } from 'react-icons/fa'
 import { doc, DocumentData, DocumentSnapshot, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
 import { db, updateDocData } from '../firebase/firebase'
 import ChattingModal from './ChattingModal'
-import { localStorageUserId } from '../App'
 import { AiFillHome, AiOutlineCloseCircle } from 'react-icons/ai'
+import defaultImage from '../images/DefaultProfile.jpeg'
 
 
 
 export default function MessagePage() {
 
   const navigate = useNavigate()
-
+  const localStorageUserId = (localStorage.getItem('userId') as string)
   const user = useContext(AuthContext)
   // const userId = userInfo?.uid as string
 
@@ -142,7 +142,7 @@ export default function MessagePage() {
                       navigate(`/directMessage/${user?.id}`)
                     }}
                     className='flex items-center w-full h-[80px] py-2 pl-3 mb-1 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 rounded-lg'>
-                    <img src={user.pic} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />
+                    <img src={user.pic ? user.pic : defaultImage} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />
                     <div className='flex flex-col ml-3'>
                       <p className='text-lg text-gray-100 font-semibold'>{user.name}</p>
                     </div>
@@ -160,7 +160,7 @@ export default function MessagePage() {
                     <div 
                       onClick={() => navigate(`/directMessage/${chat[1].userInfo?.uid}`)}
                       className='flex items-center w-full h-[80px] pl-3 mb-1 cursor-pointer hover:scale-[1.05] transition'>
-                      <img src={chat[1].userInfo?.photoURL} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />
+                      <img src={chat[1].userInfo?.photoURL ? chat[1].userInfo?.photoURL : defaultImage} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />
                       <div className='flex flex-col ml-4'>
                         <p className='text-lg text-gray-100 font-semibold'>{chat[1].userInfo?.displayName}</p>
                         <p className='text-gray-200'>{chat[1].last?.text}</p>

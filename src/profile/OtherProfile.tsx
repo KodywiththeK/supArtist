@@ -12,6 +12,7 @@ import useRecruitmentQuery from '../reactQuery/RecruitmentQuery'
 import ProfileModal from './ProileModal'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { FaPaperPlane } from 'react-icons/fa'
+import defaultImage from '../images/DefaultProfile.jpeg'
 
 
 export default function OtherProfile() {
@@ -114,15 +115,15 @@ export default function OtherProfile() {
   return (
     <>
     <ProfileModal profileModal={profileModal} setProfileModal={setProfileModal} data={modalData}/>
-    <div className='flex min-h-screen justify-center bg-zinc-200'>
-      <div className={`w-full max-w-[700px] items-center min-h-screen relative flex flex-col mt-[100px]`}>
-        <div className={`flex justify-center items-center w-full h-52 mt-20 mr-5`}>
-          <div className={`flex justify-center items-center ${isDefault? 'w-[160px] h-[160px] mr-10' : 'w-[120px] h-[120px] mx-10'} h-52 shrink-0`}>
-            <img src={otherUser?.pic} alt='My picture' className='w-full h-full object-cover border border-[#9ec08c] rounded-[100%]'/>
+    <div className={`w-full items-center min-h-screen relative flex flex-col bg-zinc-200 px-5`}>
+      <div className={`w-full max-w-[700px] items-center min-h-screen relative flex flex-col mt-[20px]`}>
+        <div className={`flex justify-center items-center w-full h-52 mt-[170px] mr-5 sm:ml-0`}>
+          <div className={`flex justify-center items-center shrink-0 ${isDefault? 'w-[160px] h-[160px] ' : 'w-[120px] h-[120px]'} mr-5 sm:mr-10 h-52 `}>
+            <img src={otherUser?.pic ? otherUser?.pic : defaultImage} alt='My picture' className='w-full h-full object-cover border border-[#9ec08c] rounded-[100%]'/>
           </div>
           <div>
-            <div className='font-bold text-2xl mb-3'>{`${otherUser?.name}`}</div>
-            <div className='flex justify-between w-full max-w-[180px] text-lg font-semibold mb-3'>
+            <div className='font-bold text-xl sm:text-2xl mb-3'>{`${otherUser?.name}`}</div>
+            <div className='flex justify-between w-44 text-base sm:text-lg font-semibold mb-3'>
               <div onClick={() => profileModalHandler('팔로워', otherUser?.followers as string[])}
                 className='cursor-pointer'
                 >팔로워 <span className='font-normal'>{otherUser?.followers.length}</span></div>
@@ -150,7 +151,7 @@ export default function OtherProfile() {
               </tr>
               <tr className='w-full flex border-transparent border-b-slate-400 border-[0.5px] p-4'>
                 <th className='text-left w-[55%] px-5'><RiCake2Line className='inline text-xl mr-2'/>나이</th>
-                <td><>만 { age() }세</></td>
+                <td><>{otherUser?.bday ? `만 ${age()}세` : ''}</></td>
               </tr>
               <tr className='w-full flex border-transparent border-b-slate-400 border-[0.5px] p-4'>
                 <th className='text-left w-[55%] px-5'><BsFilm className='inline text-xl mr-2'/>관심분야</th>
@@ -175,7 +176,7 @@ export default function OtherProfile() {
           </button>
         </div>
         {menu ?
-        <div className='flex flex-col items-center w-full max-w-[600px] pr-10 mb-20'>
+        <div className='flex flex-col items-center w-full max-w-[600px] mb-20'>
           <ul className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 text-xl w-full max-w-[600px]">
             {otherUser?.experience.map((t,i) => (
               <div key={i} className='flex justify-between mx-10 my-2 w-full'>
@@ -184,7 +185,7 @@ export default function OtherProfile() {
             ))}
           </ul>
         </div> : 
-        <div className='flex flex-wrap justify-around '>
+        <div className='flex flex-wrap justify-around w-full max-w-[700px] mb-20 '>
           {project?.map((data, index) => (
             <Link to={`/recruitment/${data.id}`} key={index} className="group drop-shadow-xl mb-10 mx-2">
               <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-white xl:aspect-w-7 xl:aspect-h-8">

@@ -12,6 +12,7 @@ import { auth } from '../firebase/firebase'
 import useUserQuery from '../reactQuery/userQuery'
 import ConfirmModal from '../common/ConfirmModal'
 import ProfileModal from './ProileModal'
+import defaultImage from '../images/DefaultProfile.jpeg'
 
 export const age = (bday:string) => {
   const today = new Date();
@@ -113,7 +114,7 @@ export default function ProfilePage() {
       <div className={`${isDefault ? 'w-[60vw] pl-[10%] items-start' : 'w-full items-center'} min-h-screen relative flex flex-col bg-zinc-200 px-5`}>
         <div className={`flex ${isDefault ? 'justify-start' : 'justify-center'}  items-center w-full h-52 mt-[170px] mr-5 sm:ml-0`}>
           <div className={`flex justify-center items-center shrink-0 ${isDefault? 'w-[160px] h-[160px] ' : 'w-[120px] h-[120px]'} mr-5 sm:mr-10 h-52 `}>
-            <img src={curUser?.pic} alt='My picture' className='w-full h-full object-cover border border-[#9ec08c] rounded-[100%]'/>
+            <img src={curUser?.pic ? curUser?.pic : defaultImage } alt='My picture' className='w-full h-full object-cover border border-[#9ec08c] rounded-[100%]'/>
           </div>
           <div>
             <div className='font-bold text-xl sm:text-2xl mb-3'>{`${curUser?.name}`}</div>

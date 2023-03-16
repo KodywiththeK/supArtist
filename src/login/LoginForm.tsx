@@ -47,15 +47,17 @@ const LoginForm = (props:LoginFormPropsType) => {
 
   const onSubmit: SubmitHandler<loginType> = async(data) => {
     try {
-      const userSignIn = await signInWithEmailAndPassword(auth, data.email, data.password)
-      if(userSignIn.user.emailVerified) {
-        navigate('/')
-      } else {
-        if(confirm('아직 이메일 인증이 완료되지 않았습니다. 혹시 메일을 받지 못하셨다면, 해당 이메일로 인증메일을 다시 보내드릴까요?')) {
-          sendEmailVerification((userSignIn.user))
-        }
-        signOut(auth)
-      }
+      await signInWithEmailAndPassword(auth, data.email, data.password)
+      navigate('/')
+      // const userSignIn = await signInWithEmailAndPassword(auth, data.email, data.password)
+      // if(userSignIn.user.emailVerified) {
+      //   navigate('/')
+      // } else {
+      //   if(confirm('아직 이메일 인증이 완료되지 않았습니다. 혹시 메일을 받지 못하셨다면, 해당 이메일로 인증메일을 다시 보내드릴까요?')) {
+      //     sendEmailVerification((userSignIn.user))
+      //   }
+      //   signOut(auth)
+      // }
     } catch (err) {
       setConfirmBtn('회원가입')
       setConfirmDes('로그인 정보가 없거나 올바르지 않습니다. 회원가입 하시겠습니까?')

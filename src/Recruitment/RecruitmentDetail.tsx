@@ -306,8 +306,11 @@ export default function RecruitmentDetail() {
             <div key={index} className='flex justify-between items-center w-full'>
               <div className="flex items-center">
                 <img onClick={() => item?.writer !== curUser?.id ? navigate(`/other/${item?.writer}`) : navigate(`/${item?.writer}`)}
-                  src={userData?.find(i => i?.id === item?.writer)?.pic} alt='profile' className="w-[45px] h-[45px] object-cover rounded-[50%] mr-4 shrink-0 cursor-pointer hover:scale-[1.1]" />
-                <li className='w-full max-w-[370px]'>{item.text}</li>
+                  src={userData?.find(i => i?.id === item?.writer)?.pic} alt='profile' className="w-[50px] h-[50px] object-cover rounded-[50%] mr-4 shrink-0 border border-gray-400 cursor-pointer hover:scale-[1.1]" />
+                <li className='w-full max-w-[370px]'>
+                  <p className="font-semibold">{userData?.find(i => i?.id === item.writer)?.name}</p>
+                  <p>{item.text}</p>
+                </li>
               </div>
               {item?.writer === curUser.id && <button onClick={(e) => {
                 e.preventDefault();

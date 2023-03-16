@@ -1,11 +1,10 @@
 import { arrayUnion, doc, DocumentData, DocumentSnapshot, onSnapshot, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AiOutlineCloseSquare } from 'react-icons/ai';
-import { useMediaQuery } from 'react-responsive';
 import { useNavigate, useParams } from 'react-router-dom'
-import { localStorageUserId } from '../App';
 import { db, updateDocData } from '../firebase/firebase';
 import useUserQuery from '../reactQuery/userQuery';
+import defaultImage from '../images/DefaultProfile.jpeg'
 
 import { AuthContext } from '../store/AuthContext';
 
@@ -24,11 +23,7 @@ export default function ChattingRoom() {
   const userInfo = useContext(AuthContext)
   const userId = userInfo?.uid
 
-  //media-query
-  const isDefault: boolean = useMediaQuery({
-    query: "(min-width:768px)",
-  });
-
+  const localStorageUserId = (localStorage.getItem('userId') as string)
   //react-query
   const {isLoading:userLoading, data:userData} = useUserQuery()
   const curUser = userData?.map(i => ({...i})).find(i => i.id === localStorageUserId as string)
@@ -93,7 +88,7 @@ export default function ChattingRoom() {
     <div className='absolute top-0 z-20 w-full mt-[80px] h-[80px] bg-[#34335c]'>
       <div className='w-full max-w-[820px] h-full pl-2 pr-4 flex justify-between items-center bg-[#696699]'>
         <div onClick={() => navigate(`/other/${chatUserId}`)} className='text-2xl font-semibold text-gray-200 cursor-pointer ml-5 flex items-center'>
-          <img src={chatUser?.pic} alt='profile' className='w-[45px] h-[45px] object-cover rounded-[50%] mr-3' />
+          <img src={chatUser?.pic ? chatUser?.pic : defaultImage} alt='profile' className='w-[45px] h-[45px] object-cover rounded-[50%] mr-3' />
           <p>{chatUser?.name}</p>
         </div>
         <button onClick={() => {
@@ -117,7 +112,7 @@ export default function ChattingRoom() {
             </div>
           :
             <div className='flex items-start mb-3 w-full drop-shadow-xl'>
-              <img src={chatUser?.pic} alt='profile' onClick={() => navigate(`/other/${chatUser?.id}`)}
+              <img src={chatUser?.pic ? chatUser?.pic : defaultImage} alt='profile' onClick={() => navigate(`/other/${chatUser?.id}`)}
                 className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-700 box-content cursor-pointer'/>
               <div className='relative min-w-[100px] max-w-[60%] min-h-[55px] mt-[15px] ml-5 py-2 px-4 bg-[#97aef1] rounded-r-xl rounded-bl-xl flex justify-center items-center text-white text-base font-medium tracking-wide break-all whitespace-normal box-border'>
                 <span>{message.text}</span>
