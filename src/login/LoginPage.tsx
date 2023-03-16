@@ -17,7 +17,7 @@ const LoginPage = () => {
   }
 
   return (<>
-    <div className='relative z-40 w-full h-screen mb-[-350px] flex items-start'>
+    <div className='fixed inset-0 overflow-hidden z-50 flex items-start overflow-hidden'>
       <Default><>
         <div className='relative w-1/2 h-full flex flex-col'>
           <div className='absolute top-[25%] left-[10%] mr-[5%] flex flex-col'>
