@@ -158,15 +158,15 @@ export default function MessagePage() {
                 {chats && Object.entries(chats)?.sort((a,b) => b[1].created - a[1].created).map((chat) => (
                   <div key={chat[0]} className='w-full h-[90px] flex justify-between items-center'>
                     <div 
-                      onClick={() => navigate(`/directMessage/${chat[1].userInfo.uid}`)}
+                      onClick={() => navigate(`/directMessage/${chat[1].userInfo?.uid}`)}
                       className='flex items-center w-full h-[80px] pl-3 mb-1 cursor-pointer hover:scale-[1.05] transition'>
-                      <img src={chat[1].userInfo.photoURL} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />
+                      <img src={chat[1].userInfo?.photoURL} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%] border border-gray-300' />
                       <div className='flex flex-col ml-4'>
-                        <p className='text-lg text-gray-100 font-semibold'>{chat[1].userInfo.displayName}</p>
+                        <p className='text-lg text-gray-100 font-semibold'>{chat[1].userInfo?.displayName}</p>
                         <p className='text-gray-200'>{chat[1].last?.text}</p>
                       </div>
                     </div>
-                    <div className='h-full flex items-center mr-6'>{chat[1].date}</div>
+                    <div className='h-full flex items-center mr-6'>{chat[1]?.date}</div>
                   </div>
                 ))}
               </div></>}

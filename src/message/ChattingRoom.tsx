@@ -31,18 +31,19 @@ export default function ChattingRoom() {
 
   //react-query
   const {isLoading:userLoading, data:userData} = useUserQuery()
-  const curUser = userData?.map(i => ({...i})).find(i => i.id === localStorageUserId)
+  const curUser = userData?.map(i => ({...i})).find(i => i.id === localStorageUserId as string)
   const chatUser = userData?.map(i => ({...i})).find(i => i.id === chatUserId)
   const chatId = (curUser && chatUser) && curUser.id as string > String(chatUser?.id) ? curUser?.id as string + String(chatUser?.id) : String(chatUser?.id) + curUser?.id as string;
   
   //input value
   const [inputValue, setInputValue] = useState<MessageType>({
     id: '',
-    writer: localStorageUserId,
+    writer: localStorageUserId as string,
     text: '',
     created: '',
   })
   console.log(inputValue)
+  console.log(localStorageUserId)
   
   const sendHandler = async() => {
     await updateDoc(doc(db, 'chats', chatId as string), {
@@ -64,7 +65,7 @@ export default function ChattingRoom() {
     })
     setInputValue({
       id: '',
-      writer: localStorageUserId,
+      writer: localStorageUserId as string,
       text: '',
       created: '',
     })
@@ -106,7 +107,7 @@ export default function ChattingRoom() {
         className='w-full h-full max-w-[820px] flex flex-col py-5 px-8 overflow-y-scroll overflow-x-hidden bg-[#e1e1f7]'>
         {messages.map(message => (
           <div key={message.id} ref={ref}>
-          {message.writer === localStorageUserId ? 
+          {message.writer === localStorageUserId as string ? 
             <div className='flex flex-row-reverse items-start mb-3 w-full drop-shadow-xl'>
               {/* <img src={curUser?.pic} alt='profile' className='w-[60px] h-[60px] object-cover rounded-[50%]'/> */}
               <div className='relative min-w-[100px] max-w-[60%] min-h-[55px] mt-[15px] mr-5 py-2 px-4 bg-[#45446c] rounded-l-xl rounded-br-xl flex justify-center items-center text-white text-base font-medium tracking-wide break-all whitespace-normal box-border'>
