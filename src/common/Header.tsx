@@ -83,7 +83,7 @@ export default function Header() {
     <ConfirmModal confirmModal={confirmModal} setConfirmModal={setConfirmModal} getModalAnswer={getModalAnswer} title={title} des={des} confirmBtn={btn}/>
     <div className={`fixed z-50 w-full h-[80px] bg-black  flex justify-center`}> {/* bg-[#f6f5f0] */}
       <div className='w-full max-w-screen-xl h-full px-2 flex justify-between items-center'>
-        <div className='flex items-center w-[70%] h-full'>
+        <div className={`flex items-center ${isDefault ? 'w-[70%]' : 'w-[62%]'} h-full`}>
           <Default><>
             <button onClick={() => navigate('/')}
               className='box-content rounded px-3 py-5 ml-2 flex text-2xl justify-center items-center btn btn--white'>
