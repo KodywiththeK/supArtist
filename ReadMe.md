@@ -11,9 +11,6 @@
 
 ### 기획 배경
 
-![title](https://invented-song-ea3.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F89ffdbaa-007e-401a-add8-cc83473a24a2%2FUntitled.png?id=5a9383b8-fbaa-4651-877c-ebf4400377ae&table=block&spaceId=18a88457-e512-4cdc-adbf-d1fdfb29ae1d&width=2000&userId=&cache=v2)   
-
-
 1. 촬영장에서의 현장 보조 스태프에 대한 지속적인 수요가 있습니다.
 2. 하지만 첨부된 사진처럼 체계화 되어있지 않은 영상 보조스태프를 구하는 방식.
 3. 영상촬영 현장 보조스태프 아르바이트는, 특별한 예술적 지식이나 능력이 필요하지 않은 단순 노동 형태의 아르바이트 입니다.
@@ -30,11 +27,22 @@
 
 [https://github.com/KodywiththeK/supArtist](https://github.com/KodywiththeK/supArtist)
 
+## 개발 로그
+
+https://invented-song-ea3.notion.site/SupArtist-f547aa2a26a446b184eebbe3c1d4dbc0
+
 ## 시연 영상
 
 [https://www.youtube.com/watch?v=CzJGwBmNu3M](https://www.youtube.com/watch?v=CzJGwBmNu3M)
 
 ## Project
+
+### 🔗 주요 기능
+
+- 회원기능: 회원가입 및 로그인(구글 소셜로그인), 회원정보 수정, 로그아웃, 회원탈퇴
+- 커머스 기능: 정렬 및 필터링, 검색 및 자동완성, 회원관심리스트
+- 커뮤니티 기능: 게시글 CRUD, 사진 업로드, 좋아요 및 댓글, 페이지네이션
+- 사용자 기능: 유저간 팔로잉 팔로우, 채팅
 
 ### 🛠 기술 스택
 
