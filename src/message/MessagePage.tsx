@@ -19,12 +19,10 @@ export default function MessagePage() {
   const navigate = useNavigate()
   const localStorageUserId = (localStorage.getItem('userId') as string)
   const user = useContext(AuthContext)
-  // const userId = userInfo?.uid as string
 
   //react-query
   const {isLoading:userLoading, data:userData} = useUserQuery()
   const curUser = userData?.map(i => ({...i})).find(i => i.id === localStorageUserId as string)
-  console.log(localStorageUserId)
   const chatUser = (chatUserId:string) => userData?.map(i => ({...i})).find(i => i.id === chatUserId)
 
   //media-query

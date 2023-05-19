@@ -103,9 +103,14 @@ export default function UserProfileInfoEdit() {
     result.forEach((user) => {
       arr.push({ [user.id] : [String(Object.keys(user.data()).flat())] })
     })
-    return (arr.filter(i => Object.values(i).filter(j => j.includes(user?.uid as string)))).map(k => Object.entries(k)).map(l => [l[0][0] , l[0][1].flat().join()]).filter(m => m[1].length !== 0)
+    return (arr.filter(i => Object.values(i)
+                  .filter(j => j.includes(user?.uid as string))))
+                  .map(k => Object.entries(k))
+                  .map(l => [l[0][0] , l[0][1].flat().join()])
+                  .filter(m => m[1].length !== 0)
   }
 
+  //회원 탈퇴 핸들러
   const handleSignOut = async() => {
     if (user !== null) {
       try {
